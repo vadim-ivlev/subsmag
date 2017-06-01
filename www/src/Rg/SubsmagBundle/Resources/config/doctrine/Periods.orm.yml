@@ -1,0 +1,27 @@
+Rg\SubsmagBundle\Entity\Periods:
+    type: entity
+    table: subsmag.periods
+    repositoryClass: Rg\SubsmagBundle\Repository\PeriodsRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        monthStart:
+            type: smallint
+            column: month_start
+        yearStart:
+            type: smallint
+            column: year_start
+        periodMonths:
+            type: smallint
+            column: period_months
+        quantityMonthsStart:
+            type: smallint
+            column: quantity_months_start
+        quantityMonthsEnd:
+            type: smallint
+            column: quantity_months_end
+    lifecycleCallbacks: {  }

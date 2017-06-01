@@ -1,0 +1,57 @@
+Rg\SubsmagBundle\Entity\Actions:
+    type: entity
+    table: subsmag.actions
+    repositoryClass: Rg\SubsmagBundle\Repository\ActionsRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+            column: name
+        introtext:
+            type: string
+            length: 255
+            column: introtext
+        description:
+            type: text
+            column: description
+        dateStart:
+            type: datetime
+            column: date_start
+        dateEnd:
+            type: datetime
+            column: date_end
+        discount:
+            type: smallint
+            column: discount
+        giftDescription:
+            type: text
+            column: gift_description
+        flagVisibleOnSite:
+            type: boolean
+            column: flag_visible_on_site
+        flagPercentOrFix:
+            type: string
+            length: '1'
+            column: flag_percent_or_fix
+        cntUsed:
+            type: integer
+            column: cnt_used
+        userId:
+            type: integer
+            column: user_id
+        productId:
+            type: integer
+            column: product_id
+        kitId:
+            type: integer
+            column: kit_id
+        promocodeId:
+            type: integer
+            column: promocode_id
+    lifecycleCallbacks: {  }

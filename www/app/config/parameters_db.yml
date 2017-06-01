@@ -1,0 +1,6 @@
+parameters:
+    database.subsmag.host: 212.69.111.17
+    database.subsmag.port: "3306"
+    database.subsmag.name: subsmag
+    database.subsmag.user: subsmag
+    database.subsmag.password: aeN4ebao_kahKailaexo

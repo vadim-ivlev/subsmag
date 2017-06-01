@@ -1,0 +1,24 @@
+# Doctrine Configuration
+doctrine:
+    dbal:
+        default_connection: subsmag
+        connections:
+            subsmag:
+                driver:   pdo_mysql
+                host:     "%database.subsmag.host%"
+                port:     "%database.subsmag.port%"
+                dbname:   "%database.subsmag.name%"
+                user:     "%database.subsmag.user%"
+                password: "%database.subsmag.password%"
+                charset:  UTF8
+                unix_socket: /var/run/mysqld/mysqld.sock
+
+    orm:
+        auto_generate_proxy_classes: "%kernel.debug%"
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    RgSubsmagBundle:  ~
+

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Product</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ product.id }}</td>
+            </tr>
+            <tr>
+                <th>Nameproduct</th>
+                <td>{{ product.nameProduct }}</td>
+            </tr>
+            <tr>
+                <th>Frequency</th>
+                <td>{{ product.frequency }}</td>
+            </tr>
+            <tr>
+                <th>Flagsubscribe</th>
+                <td>{% if product.flagSubscribe %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Flagbuy</th>
+                <td>{% if product.flagBuy %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Postindex</th>
+                <td>{{ product.postIndex }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('products_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('products_edit', { 'id': product.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

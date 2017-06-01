@@ -1,0 +1,28 @@
+Rg\SubsmagBundle\Entity\Promocodes:
+    type: entity
+    table: subsmag.promocodes
+    repositoryClass: Rg\SubsmagBundle\Repository\PromocodesRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        code:
+            type: string
+            length: '10'
+            column: code
+        dateStart:
+            type: datetime
+            column: date_start
+        dateEnd:
+            type: datetime
+            column: date_end
+        flagUsed:
+            type: boolean
+            column: flag_used
+        actionId:
+            type: integer
+            column: action_id
+    lifecycleCallbacks: {  }
