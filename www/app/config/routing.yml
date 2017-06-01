@@ -1,3 +1,7 @@
+rg_subsmag:
+    resource: "@RgSubsmagBundle/Resources/config/routing.yml"
+    prefix:   /
+
 app:
     resource: '@AppBundle/Controller/'
     type: annotation
