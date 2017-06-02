@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Kit</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ kit.id }}</td>
+            </tr>
+            <tr>
+                <th>Namekit</th>
+                <td>{{ kit.nameKit }}</td>
+            </tr>
+            <tr>
+                <th>Flagsubscribe</th>
+                <td>{% if kit.flagSubscribe %}Yes{% else %}No{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('kits_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('kits_edit', { 'id': kit.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

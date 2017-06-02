@@ -1,0 +1,24 @@
+areas_index:
+    path:     /
+    defaults: { _controller: "RgSubsmagBundle:Areas:index" }
+    methods:  GET
+
+areas_show:
+    path:     /{id}/show
+    defaults: { _controller: "RgSubsmagBundle:Areas:show" }
+    methods:  GET
+
+areas_new:
+    path:     /new
+    defaults: { _controller: "RgSubsmagBundle:Areas:new" }
+    methods:  [GET, POST]
+
+areas_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "RgSubsmagBundle:Areas:edit" }
+    methods:  [GET, POST]
+
+areas_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "RgSubsmagBundle:Areas:delete" }
+    methods:  DELETE

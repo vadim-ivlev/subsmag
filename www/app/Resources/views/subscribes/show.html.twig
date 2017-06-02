@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Subscribe</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ subscribe.id }}</td>
+            </tr>
+            <tr>
+                <th>Nameperiodid</th>
+                <td>{{ subscribe.namePeriodId }}</td>
+            </tr>
+            <tr>
+                <th>Areaid</th>
+                <td>{{ subscribe.areaId }}</td>
+            </tr>
+            <tr>
+                <th>Subscribeperiodstart</th>
+                <td>{% if subscribe.subscribePeriodStart %}{{ subscribe.subscribePeriodStart|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Subscribeperiodend</th>
+                <td>{% if subscribe.subscribePeriodEnd %}{{ subscribe.subscribePeriodEnd|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Periodid</th>
+                <td>{{ subscribe.periodId }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('subscribes_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('subscribes_edit', { 'id': subscribe.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

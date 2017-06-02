@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Action</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ action.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ action.name }}</td>
+            </tr>
+            <tr>
+                <th>Introtext</th>
+                <td>{{ action.introtext }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ action.description }}</td>
+            </tr>
+            <tr>
+                <th>Datestart</th>
+                <td>{% if action.dateStart %}{{ action.dateStart|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Dateend</th>
+                <td>{% if action.dateEnd %}{{ action.dateEnd|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Discount</th>
+                <td>{{ action.discount }}</td>
+            </tr>
+            <tr>
+                <th>Giftdescription</th>
+                <td>{{ action.giftDescription }}</td>
+            </tr>
+            <tr>
+                <th>Flagvisibleonsite</th>
+                <td>{% if action.flagVisibleOnSite %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Flagpercentorfix</th>
+                <td>{{ action.flagPercentOrFix }}</td>
+            </tr>
+            <tr>
+                <th>Cntused</th>
+                <td>{{ action.cntUsed }}</td>
+            </tr>
+            <tr>
+                <th>Userid</th>
+                <td>{{ action.userId }}</td>
+            </tr>
+            <tr>
+                <th>Productid</th>
+                <td>{{ action.productId }}</td>
+            </tr>
+            <tr>
+                <th>Kitid</th>
+                <td>{{ action.kitId }}</td>
+            </tr>
+            <tr>
+                <th>Promocodeid</th>
+                <td>{{ action.promocodeId }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('actions_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('actions_edit', { 'id': action.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Order</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ order.id }}</td>
+            </tr>
+            <tr>
+                <th>Userid</th>
+                <td>{{ order.userId }}</td>
+            </tr>
+            <tr>
+                <th>Productid</th>
+                <td>{{ order.productId }}</td>
+            </tr>
+            <tr>
+                <th>Kitid</th>
+                <td>{{ order.kitId }}</td>
+            </tr>
+            <tr>
+                <th>Zoneid</th>
+                <td>{{ order.zoneId }}</td>
+            </tr>
+            <tr>
+                <th>Subscribeid</th>
+                <td>{{ order.subscribeId }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{% if order.date %}{{ order.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>{{ order.address }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ order.price }}</td>
+            </tr>
+            <tr>
+                <th>Flagpaid</th>
+                <td>{% if order.flagPaid %}Yes{% else %}No{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('orders_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('orders_edit', { 'id': order.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

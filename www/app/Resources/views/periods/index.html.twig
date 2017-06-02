@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Periods list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Monthstart</th>
+                <th>Yearstart</th>
+                <th>Periodmonths</th>
+                <th>Quantitymonthsstart</th>
+                <th>Quantitymonthsend</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for period in periods %}
+            <tr>
+                <td><a href="{{ path('periods_show', { 'id': period.id }) }}">{{ period.id }}</a></td>
+                <td>{{ period.monthStart }}</td>
+                <td>{{ period.yearStart }}</td>
+                <td>{{ period.periodMonths }}</td>
+                <td>{{ period.quantityMonthsStart }}</td>
+                <td>{{ period.quantityMonthsEnd }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('periods_show', { 'id': period.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('periods_edit', { 'id': period.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('periods_new') }}">Create a new period</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Promocode</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ promocode.id }}</td>
+            </tr>
+            <tr>
+                <th>Code</th>
+                <td>{{ promocode.code }}</td>
+            </tr>
+            <tr>
+                <th>Datestart</th>
+                <td>{% if promocode.dateStart %}{{ promocode.dateStart|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Dateend</th>
+                <td>{% if promocode.dateEnd %}{{ promocode.dateEnd|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Flagused</th>
+                <td>{% if promocode.flagUsed %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Actionid</th>
+                <td>{{ promocode.actionId }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('promocodes_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('promocodes_edit', { 'id': promocode.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,24 @@
+periods_index:
+    path:     /
+    defaults: { _controller: "RgSubsmagBundle:Periods:index" }
+    methods:  GET
+
+periods_show:
+    path:     /{id}/show
+    defaults: { _controller: "RgSubsmagBundle:Periods:show" }
+    methods:  GET
+
+periods_new:
+    path:     /new
+    defaults: { _controller: "RgSubsmagBundle:Periods:new" }
+    methods:  [GET, POST]
+
+periods_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "RgSubsmagBundle:Periods:edit" }
+    methods:  [GET, POST]
+
+periods_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "RgSubsmagBundle:Periods:delete" }
+    methods:  DELETE

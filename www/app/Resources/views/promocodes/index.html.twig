@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Promocodes list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code</th>
+                <th>Datestart</th>
+                <th>Dateend</th>
+                <th>Flagused</th>
+                <th>Actionid</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for promocode in promocodes %}
+            <tr>
+                <td><a href="{{ path('promocodes_show', { 'id': promocode.id }) }}">{{ promocode.id }}</a></td>
+                <td>{{ promocode.code }}</td>
+                <td>{% if promocode.dateStart %}{{ promocode.dateStart|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if promocode.dateEnd %}{{ promocode.dateEnd|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if promocode.flagUsed %}Yes{% else %}No{% endif %}</td>
+                <td>{{ promocode.actionId }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('promocodes_show', { 'id': promocode.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('promocodes_edit', { 'id': promocode.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('promocodes_new') }}">Create a new promocode</a>
+        </li>
+    </ul>
+{% endblock %}

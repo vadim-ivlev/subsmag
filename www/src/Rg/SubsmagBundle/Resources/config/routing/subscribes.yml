@@ -1,0 +1,24 @@
+subscribes_index:
+    path:     /
+    defaults: { _controller: "RgSubsmagBundle:Subscribes:index" }
+    methods:  GET
+
+subscribes_show:
+    path:     /{id}/show
+    defaults: { _controller: "RgSubsmagBundle:Subscribes:show" }
+    methods:  GET
+
+subscribes_new:
+    path:     /new
+    defaults: { _controller: "RgSubsmagBundle:Subscribes:new" }
+    methods:  [GET, POST]
+
+subscribes_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "RgSubsmagBundle:Subscribes:edit" }
+    methods:  [GET, POST]
+
+subscribes_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "RgSubsmagBundle:Subscribes:delete" }
+    methods:  DELETE

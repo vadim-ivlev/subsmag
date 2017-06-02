@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Actions list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Introtext</th>
+                <th>Description</th>
+                <th>Datestart</th>
+                <th>Dateend</th>
+                <th>Discount</th>
+                <th>Giftdescription</th>
+                <th>Flagvisibleonsite</th>
+                <th>Flagpercentorfix</th>
+                <th>Cntused</th>
+                <th>Userid</th>
+                <th>Productid</th>
+                <th>Kitid</th>
+                <th>Promocodeid</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for action in actions %}
+            <tr>
+                <td><a href="{{ path('actions_show', { 'id': action.id }) }}">{{ action.id }}</a></td>
+                <td>{{ action.name }}</td>
+                <td>{{ action.introtext }}</td>
+                <td>{{ action.description }}</td>
+                <td>{% if action.dateStart %}{{ action.dateStart|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if action.dateEnd %}{{ action.dateEnd|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ action.discount }}</td>
+                <td>{{ action.giftDescription }}</td>
+                <td>{% if action.flagVisibleOnSite %}Yes{% else %}No{% endif %}</td>
+                <td>{{ action.flagPercentOrFix }}</td>
+                <td>{{ action.cntUsed }}</td>
+                <td>{{ action.userId }}</td>
+                <td>{{ action.productId }}</td>
+                <td>{{ action.kitId }}</td>
+                <td>{{ action.promocodeId }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('actions_show', { 'id': action.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('actions_edit', { 'id': action.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('actions_new') }}">Create a new action</a>
+        </li>
+    </ul>
+{% endblock %}

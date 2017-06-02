@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Subscribes list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nameperiodid</th>
+                <th>Areaid</th>
+                <th>Subscribeperiodstart</th>
+                <th>Subscribeperiodend</th>
+                <th>Periodid</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for subscribe in subscribes %}
+            <tr>
+                <td><a href="{{ path('subscribes_show', { 'id': subscribe.id }) }}">{{ subscribe.id }}</a></td>
+                <td>{{ subscribe.namePeriodId }}</td>
+                <td>{{ subscribe.areaId }}</td>
+                <td>{% if subscribe.subscribePeriodStart %}{{ subscribe.subscribePeriodStart|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if subscribe.subscribePeriodEnd %}{{ subscribe.subscribePeriodEnd|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ subscribe.periodId }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('subscribes_show', { 'id': subscribe.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('subscribes_edit', { 'id': subscribe.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('subscribes_new') }}">Create a new subscribe</a>
+        </li>
+    </ul>
+{% endblock %}
