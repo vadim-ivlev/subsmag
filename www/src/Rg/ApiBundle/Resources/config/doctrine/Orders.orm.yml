@@ -1,0 +1,40 @@
+Rg\ApiBundle\Entity\Orders:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\OrdersRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            column: user_id
+        productId:
+            type: integer
+            column: product_id
+        kitId:
+            type: integer
+            column: kit_id
+        zoneId:
+            type: integer
+            column: zone_id
+        subscribeId:
+            type: integer
+            column: subscribe_id
+        date:
+            type: datetime
+            column: date
+        address:
+            type: varchar
+            length: '255'
+            column: address
+        price:
+            type: float
+            column: price
+        flagPaid:
+            type: boolean
+            column: flag_paid
+    lifecycleCallbacks: {  }

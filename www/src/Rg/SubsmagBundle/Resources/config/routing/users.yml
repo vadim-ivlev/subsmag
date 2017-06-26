@@ -1,0 +1,24 @@
+#users_index:
+#    path:     /
+#    defaults: { _controller: "RgSubsmagBundle:Users:index" }
+#    methods:  GET
+#
+#users_show:
+#    path:     /{id}/show
+#    defaults: { _controller: "RgSubsmagBundle:Users:show" }
+#    methods:  GET
+#
+#users_new:
+#    path:     /new
+#    defaults: { _controller: "RgSubsmagBundle:Users:new" }
+#    methods:  [GET, POST]
+#
+#users_edit:
+#    path:     /{id}/edit
+#    defaults: { _controller: "RgSubsmagBundle:Users:edit" }
+#    methods:  [GET, POST]
+#
+#users_delete:
+#    path:     /{id}/delete
+#    defaults: { _controller: "RgSubsmagBundle:Users:delete" }
+#    methods:  DELETE

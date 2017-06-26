@@ -1,0 +1,27 @@
+Rg\ApiBundle\Entity\Periods:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\PeriodsRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        monthStart:
+            type: smallint
+            column: month_start
+        yearStart:
+            type: smallint
+            column: yearStart
+        periodMonths:
+            type: smallint
+            column: period_months
+        quantityMonthsStart:
+            type: smallint
+            column: quantity_months_start
+        quantityMonthsEnd:
+            type: smallint
+            column: quantity_months_end
+    lifecycleCallbacks: {  }

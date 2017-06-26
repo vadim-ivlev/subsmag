@@ -1,0 +1,12 @@
+{
+  "nameProduct": "Российская газета",
+  "frequency": 1,
+  "flagSubscribe": 1,
+  "flagBuy": 1,
+  "postIndex": 127001,
+  "kits": {
+      "0": 1,
+      "1": 4,
+      "2": 3
+    }
+}

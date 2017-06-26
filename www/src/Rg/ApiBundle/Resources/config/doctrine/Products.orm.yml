@@ -1,0 +1,28 @@
+Rg\ApiBundle\Entity\Products:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\ProductsRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        nameProduct:
+            type: string
+            length: '128'
+            column: name_product
+        frequency:
+            type: smallint
+            column: frequency
+        flagSubscribe:
+            type: boolean
+            column: flag_subscribe
+        flagBuy:
+            type: boolean
+            column: flag_buy
+        postIndex:
+            type: integer
+            column: post_index
+    lifecycleCallbacks: {  }

@@ -1,0 +1,19 @@
+Rg\ApiBundle\Entity\Kits:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\KitsRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        nameKit:
+            type: string
+            length: '255'
+            column: name_kit
+        flagSubscribe:
+            type: boolean
+            column: flag_subscribe
+    lifecycleCallbacks: {  }

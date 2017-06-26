@@ -1,0 +1,16 @@
+Rg\ApiBundle\Entity\Areas:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\AreasRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        nameArea:
+            type: string
+            length: '50'
+            column: name_area
+    lifecycleCallbacks: {  }
