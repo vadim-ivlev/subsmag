@@ -1,24 +1,24 @@
-orders_index:
-    path:     /
-    defaults: { _controller: "RgSubsmagBundle:Orders:index" }
-    methods:  GET
-
-orders_show:
-    path:     /{id}/show
-    defaults: { _controller: "RgSubsmagBundle:Orders:show" }
-    methods:  GET
-
-orders_new:
-    path:     /new
-    defaults: { _controller: "RgSubsmagBundle:Orders:new" }
-    methods:  [GET, POST]
-
-orders_edit:
-    path:     /{id}/edit
-    defaults: { _controller: "RgSubsmagBundle:Orders:edit" }
-    methods:  [GET, POST]
-
-orders_delete:
-    path:     /{id}/delete
-    defaults: { _controller: "RgSubsmagBundle:Orders:delete" }
-    methods:  DELETE
+#orders_index:
+#    path:     /
+#    defaults: { _controller: "RgSubsmagBundle:Orders:index" }
+#    methods:  GET
+#
+#orders_show:
+#    path:     /{id}/show
+#    defaults: { _controller: "RgSubsmagBundle:Orders:show" }
+#    methods:  GET
+#
+#orders_new:
+#    path:     /new
+#    defaults: { _controller: "RgSubsmagBundle:Orders:new" }
+#    methods:  [GET, POST]
+#
+#orders_edit:
+#    path:     /{id}/edit
+#    defaults: { _controller: "RgSubsmagBundle:Orders:edit" }
+#    methods:  [GET, POST]
+#
+#orders_delete:
+#    path:     /{id}/delete
+#    defaults: { _controller: "RgSubsmagBundle:Orders:delete" }
+#    methods:  DELETE

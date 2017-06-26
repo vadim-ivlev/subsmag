@@ -1,24 +1,24 @@
-zones_index:
-    path:     /
-    defaults: { _controller: "RgSubsmagBundle:Zones:index" }
-    methods:  GET
-
-zones_show:
-    path:     /{id}/show
-    defaults: { _controller: "RgSubsmagBundle:Zones:show" }
-    methods:  GET
-
-zones_new:
-    path:     /new
-    defaults: { _controller: "RgSubsmagBundle:Zones:new" }
-    methods:  [GET, POST]
-
-zones_edit:
-    path:     /{id}/edit
-    defaults: { _controller: "RgSubsmagBundle:Zones:edit" }
-    methods:  [GET, POST]
-
-zones_delete:
-    path:     /{id}/delete
-    defaults: { _controller: "RgSubsmagBundle:Zones:delete" }
-    methods:  DELETE
+#zones_index:
+#    path:     /
+#    defaults: { _controller: "RgSubsmagBundle:Zones:index" }
+#    methods:  GET
+#
+#zones_show:
+#    path:     /{id}/show
+#    defaults: { _controller: "RgSubsmagBundle:Zones:show" }
+#    methods:  GET
+#
+#zones_new:
+#    path:     /new
+#    defaults: { _controller: "RgSubsmagBundle:Zones:new" }
+#    methods:  [GET, POST]
+#
+#zones_edit:
+#    path:     /{id}/edit
+#    defaults: { _controller: "RgSubsmagBundle:Zones:edit" }
+#    methods:  [GET, POST]
+#
+#zones_delete:
+#    path:     /{id}/delete
+#    defaults: { _controller: "RgSubsmagBundle:Zones:delete" }
+#    methods:  DELETE

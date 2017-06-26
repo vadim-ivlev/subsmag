@@ -1,3 +1,7 @@
+rg_api:
+    resource: "@RgApiBundle/Resources/config/routing.yml"
+    prefix:   /
+
 rg_subsmag:
     resource: "@RgSubsmagBundle/Resources/config/routing.yml"
     prefix:   /
@@ -37,3 +41,8 @@ rg_subsmag_subscribes:
 rg_subsmag_zones:
     resource: "@RgSubsmagBundle/Resources/config/routing/zones.yml"
     prefix:   /zones
+
+rg_subsmag_users:
+    resource: "@RgSubsmagBundle/Resources/config/routing/users.yml"
+    prefix:   /users
+

@@ -10,6 +10,12 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    periods:
+            1: 'ОСНОВНАЯ I полугодие'
+            2: 'ТЕКУЩАЯ I полугодие'
+            3: 'ОСНОВНАЯ II полугодие'
+            4: 'ТЕКУЩАЯ II полугодие'
+
 
 framework:
     #esi: ~
@@ -71,3 +77,5 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+

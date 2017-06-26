@@ -1,24 +1,24 @@
-kits_index:
-    path:     /
-    defaults: { _controller: "RgSubsmagBundle:Kits:index" }
-    methods:  GET
-
-kits_show:
-    path:     /{id}/show
-    defaults: { _controller: "RgSubsmagBundle:Kits:show" }
-    methods:  GET
-
-kits_new:
-    path:     /new
-    defaults: { _controller: "RgSubsmagBundle:Kits:new" }
-    methods:  [GET, POST]
-
-kits_edit:
-    path:     /{id}/edit
-    defaults: { _controller: "RgSubsmagBundle:Kits:edit" }
-    methods:  [GET, POST]
-
-kits_delete:
-    path:     /{id}/delete
-    defaults: { _controller: "RgSubsmagBundle:Kits:delete" }
-    methods:  DELETE
+#kits_index:
+#    path:     /
+#    defaults: { _controller: "RgSubsmagBundle:Kits:index" }
+#    methods:  GET
+#
+#kits_show:
+#    path:     /{id}/show
+#    defaults: { _controller: "RgSubsmagBundle:Kits:show" }
+#    methods:  GET
+#
+#kits_new:
+#    path:     /new
+#    defaults: { _controller: "RgSubsmagBundle:Kits:new" }
+#    methods:  [GET, POST]
+#
+#kits_edit:
+#    path:     /{id}/edit
+#    defaults: { _controller: "RgSubsmagBundle:Kits:edit" }
+#    methods:  [GET, POST]
+#
+#kits_delete:
+#    path:     /{id}/delete
+#    defaults: { _controller: "RgSubsmagBundle:Kits:delete" }
+#    methods:  DELETE

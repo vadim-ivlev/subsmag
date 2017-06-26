@@ -1,7 +1,7 @@
-rg_subsmag_products:
-    resource: "@RgSubsmagBundle/Resources/config/routing/products.yml"
-    prefix:   /products
-
-rg_subsmag_homepage:
-    path:     /
-    defaults: { _controller: RgSubsmagBundle:Default:index }
+#rg_subsmag_products:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/products.yml"
+#    prefix:   /products
+#
+#rg_subsmag_homepage:
+#    path:     /
+#    defaults: { _controller: RgSubsmagBundle:Default:index }
