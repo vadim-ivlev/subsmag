@@ -21,7 +21,10 @@ Rg\ApiBundle\Entity\Subscribes:
         subscribePeriodEnd:
             type: datetime
             column: subscribe_period_end
-        periodId:
-            type: smallint
-            column: period_id
+        productId:
+            type: integer
+            column: product_id
+        kitId:
+            type: integer
+            column: kit_id
     lifecycleCallbacks: {  }

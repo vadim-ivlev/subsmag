@@ -37,6 +37,27 @@ class Periods
      */
     private $quantityMonthsEnd;
 
+    /**
+     * @var int
+     */
+    private $subscribeId;
+
+    /**
+     * @return int
+     */
+    public function getSubscribeId()
+    {
+        return $this->subscribeId;
+    }
+
+    /**
+     * @param int $subscribeId
+     */
+    public function setSubscribeId($subscribeId)
+    {
+        $this->subscribeId = $subscribeId;
+    }
+
 
     /**
      * Get id

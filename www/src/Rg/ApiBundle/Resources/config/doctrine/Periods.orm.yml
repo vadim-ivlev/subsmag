@@ -14,7 +14,7 @@ Rg\ApiBundle\Entity\Periods:
             column: month_start
         yearStart:
             type: smallint
-            column: yearStart
+            column: year_start
         periodMonths:
             type: smallint
             column: period_months
@@ -24,4 +24,7 @@ Rg\ApiBundle\Entity\Periods:
         quantityMonthsEnd:
             type: smallint
             column: quantity_months_end
+        subscribeId:
+            type: smallint
+            column: subscribe_id
     lifecycleCallbacks: {  }

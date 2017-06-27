@@ -36,4 +36,9 @@ $metadata->mapField(array(
    'fieldName' => 'quantityMonthsEnd',
    'type' => 'smallint',
   ));
+$metadata->mapField(array(
+   'columnName' => 'subscribeId',
+   'fieldName' => 'subscribeId',
+   'type' => 'smallint',
+  ));
 $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);

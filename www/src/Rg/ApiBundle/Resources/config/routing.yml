@@ -118,12 +118,12 @@ rg_api_zones_show:
     methods:  [GET, HEAD]
 
 rg_api_zones_zonebyregion:
-    path:     /api/zones/get-by-area/{region}/
+    path:     /api/zones/by-area/{region}/
     defaults: { _controller: RgApiBundle:Zones:zonebyregion, _format:json }
     methods:  [GET, HEAD]
 
 rg_api_zones_regionsbyzone:
-    path:     /api/areas/get-by-zone/{zoneNumber}/
+    path:     /api/areas/by-zone/{zoneNumber}/
     defaults: { _controller: RgApiBundle:Zones:regionsbyzone, _format:json }
     methods:  [GET, HEAD]
 
@@ -217,5 +217,44 @@ rg_api_kits_create:
 rg_api_kits_edit:
     path:     /api/kits/{id}/
     defaults: { _controller: RgApiBundle:Kits:edit, _format:json }
+#    requirements: { id: \d+ }
+    methods:   [PUT]
+
+
+
+
+
+
+
+rg_api_subscribes_index:
+    path:     /api/subscribes/
+    defaults: { _controller: RgApiBundle:Subscribes:index, _format:json }
+    methods:  [GET, HEAD]
+
+rg_api_subscribes_show:
+    path:     /api/subscribes/{id}/
+    defaults: { _controller: RgApiBundle:Subscribes:show, _format:json }
+#    requirements: { id: \d+ }
+    methods:  [GET, HEAD]
+
+rg_api_subscribes_create:
+    path:     /api/subscribes/
+    defaults: { _controller: RgApiBundle:Subscribes:create, _format:json }
+    methods:  [POST]
+
+rg_api_subscribes_edit:
+    path:     /api/subscribes/{id}/
+    defaults: { _controller: RgApiBundle:Subscribes:edit, _format:json }
+#    requirements: { id: \d+ }
+    methods:   [PUT]
+
+rg_api_periods_create:
+    path:     /api/periods/
+    defaults: { _controller: RgApiBundle:Periods:create, _format:json }
+    methods:  [POST]
+
+rg_api_periods_edit:
+    path:     /api/periods/{id}/
+    defaults: { _controller: RgApiBundle:Periods:edit, _format:json }
 #    requirements: { id: \d+ }
     methods:   [PUT]

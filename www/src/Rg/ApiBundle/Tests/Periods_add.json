@@ -1,1 +1,8 @@
-{}
+{
+  "monthStart": 12,
+  "yearStart": 2017,
+  "periodMonths": 10,
+  "quantityMonthsStart": 5,
+  "quantityMonthsEnd": 5,
+  "subscribeId": 1
+}

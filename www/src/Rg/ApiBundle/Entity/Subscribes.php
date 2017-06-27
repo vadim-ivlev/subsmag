@@ -37,6 +37,48 @@ class Subscribes
      */
     private $periodId;
 
+    /**
+     * @var int
+     */
+    private $productId;
+
+    /**
+     * @var int
+     */
+    private $kitId;
+
+    /**
+     * @return int
+     */
+    public function getProductId()
+    {
+        return $this->productId;
+    }
+
+    /**
+     * @param int $productId
+     */
+    public function setProductId($productId)
+    {
+        $this->productId = $productId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getKitId()
+    {
+        return $this->kitId;
+    }
+
+    /**
+     * @param int $kitId
+     */
+    public function setKitId($kitId)
+    {
+        $this->kitId = $kitId;
+    }
+
 
     /**
      * Get id

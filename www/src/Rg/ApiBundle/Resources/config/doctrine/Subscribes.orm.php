@@ -32,8 +32,13 @@ $metadata->mapField(array(
    'type' => 'datetime',
   ));
 $metadata->mapField(array(
-   'columnName' => 'periodId',
-   'fieldName' => 'periodId',
+   'columnName' => 'productId',
+   'fieldName' => 'kitId',
+   'type' => 'integer',
+  ));
+$metadata->mapField(array(
+   'columnName' => 'kitId',
+   'fieldName' => 'kitId',
    'type' => 'integer',
   ));
 $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);
