@@ -22,4 +22,10 @@ $metadata->mapField(array(
    'fieldName' => 'flagSubscribe',
    'type' => 'boolean',
   ));
+$metadata->mapField(array(
+   'columnName' => 'image',
+   'fieldName' => 'image',
+   'type' => 'string',
+   'length' => 255,
+  ));
 $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);

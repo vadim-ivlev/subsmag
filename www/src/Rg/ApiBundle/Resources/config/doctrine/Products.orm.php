@@ -37,4 +37,9 @@ $metadata->mapField(array(
    'fieldName' => 'postIndex',
    'type' => 'integer',
   ));
+$metadata->mapField(array(
+   'columnName' => 'image',
+   'fieldName' => 'image',
+   'type' => 'string',
+  ));
 $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_AUTO);

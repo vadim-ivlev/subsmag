@@ -47,6 +47,7 @@ class AreasController extends Controller
 
         $response = $out->json($areasList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -70,6 +71,7 @@ class AreasController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -98,6 +100,7 @@ class AreasController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -130,6 +133,7 @@ class AreasController extends Controller
             $response = $out->json($action->getId());
         }
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -197,6 +201,7 @@ class AreasController extends Controller
         if ($caught) {
             //собираем JSON для вывода, если ошибок нет
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -204,6 +209,7 @@ class AreasController extends Controller
         $arr = [print_r($request->getContent(), true)];
         $response = $out->json($arr);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 

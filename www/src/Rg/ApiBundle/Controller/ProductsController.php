@@ -40,6 +40,7 @@ class ProductsController extends Controller
                 'code' => 200,
                 'id' => null
             ];
+            header('Access-Control-Allow-Origin: *');
             return $out->json($arrError);
         }
 
@@ -50,11 +51,14 @@ class ProductsController extends Controller
             $productsList[$key]['flagSubscribe'] = $product->getFlagSubscribe();
             $productsList[$key]['flagBuy'] = $product->getFlagBuy();
             $productsList[$key]['postIndex'] = $data->dataClearInt($product->getPostIndex());
-            $productsList[$key]['kits'] = $kitRep->getKitByProductId($product->getId());;
+            $productsList[$key]['image'] = $data->dataClearStr($product->getImage());
+//            $productsList[$key]['kits'] = $kitRep->getKitByProductId($product->getId());
+            $productsList[$key]['kits'] = $kitRep->getRelationByEntityId($product->getId(), 'product', 'kit');
         }
 
         $response = $out->json($productsList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -79,6 +83,7 @@ class ProductsController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
 //            throw $this->createNotFoundException('Unable to find post.');
         }
@@ -89,14 +94,16 @@ class ProductsController extends Controller
         $productsList['flagSubscribe'] = $product->getFlagSubscribe();
         $productsList['flagBuy'] = $product->getFlagBuy();
         $productsList['postIndex'] = $data->dataClearInt($product->getPostIndex());
+        $productsList['image'] = $data->dataClearStr($product->getImage());
 
-        $kits = $kitRep->getRelationByEntityId($id, 'kit', 'product');
+        $kits = $kitRep->getRelationByEntityId($id, 'product', 'kit');
         $productsList['kits'] = $kits;
 
 
         //собираем JSON для вывода
         $response = $out->json($productsList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 
 //        return $this->render('RgApiBundle:Default:index.html.twig');
@@ -118,6 +125,7 @@ class ProductsController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -131,7 +139,8 @@ class ProductsController extends Controller
         $product->setFlagSubscribe($arrJSONIn['flagSubscribe']);
         $product->setFlagBuy($arrJSONIn['flagBuy']);
         $product->setPostIndex($data->dataClearInt($arrJSONIn['postIndex']));
-        
+        $product->setImage($data->dataClearStr($arrJSONIn['image']));
+
         $em->persist($product);
         try {
             $em->flush();
@@ -166,6 +175,7 @@ class ProductsController extends Controller
             }
         }
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -224,6 +234,9 @@ class ProductsController extends Controller
         if (isset($arrJSONIn['postIndex']))
             $productsList['postIndex'] = $product->setPostIndex($data->dataClearInt($arrJSONIn['postIndex']));
 
+        if (isset($arrJSONIn['image']))
+            $productsList['image'] = $product->setImage($data->dataClearStr($arrJSONIn['image']));
+
         try {
             $em->flush();
         }
@@ -264,6 +277,7 @@ class ProductsController extends Controller
         $arr = [print_r($request->getContent(), true)];
         $response = $out->json($arr);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }

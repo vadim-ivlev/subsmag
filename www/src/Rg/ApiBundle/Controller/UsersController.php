@@ -46,6 +46,7 @@ class UsersController extends Controller
         //собираем JSON для вывода
         $response = $out->json($usersList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }
@@ -84,6 +85,7 @@ class UsersController extends Controller
         //собираем JSON для вывода
         $response = $out->json($usersList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 
 //        return $this->render('RgApiBundle:Default:index.html.twig');
@@ -105,6 +107,7 @@ class UsersController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -141,6 +144,7 @@ class UsersController extends Controller
             $response = $out->json($user->getId());
         }
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -227,6 +231,7 @@ class UsersController extends Controller
         $arr = [print_r($request->getContent(), true)];
         $response = $out->json($arr);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }

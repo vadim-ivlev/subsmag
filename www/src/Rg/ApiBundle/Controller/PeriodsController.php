@@ -30,6 +30,7 @@ class PeriodsController extends Controller
 
         $response = $out->json($periodsList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -57,6 +58,7 @@ class PeriodsController extends Controller
         //собираем JSON для вывода
         $response = $out->json($arrOut);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -76,6 +78,7 @@ class PeriodsController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -111,6 +114,7 @@ class PeriodsController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -195,6 +199,7 @@ class PeriodsController extends Controller
         if ($caught) {
             //собираем JSON для вывода, если ошибок нет
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -202,6 +207,7 @@ class PeriodsController extends Controller
         $arr = [print_r($request->getContent(), true)];
         $response = $out->json($arr);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 

@@ -11,6 +11,10 @@ namespace Rg\ApiBundle\Repository;
 use Rg\ApiBundle\Controller\Outer as Out;
 
 
+/*
+ * Класс с методами для реализации Много-ко-многим
+ * */
+
 /**
  * Class Relations
  * @package Rg\ApiBundle\Repository
@@ -19,10 +23,11 @@ class Relations extends \Doctrine\ORM\EntityRepository
 {
 
     /**
-     * @param $entity_id
-     * @param $action_id
-     * @param $rel_entity_name - В единственном числе!
-     * @param $target_entity_name - В единственном числе!
+     * Добавленние связи
+     * @param $entity_id - ид элемента сущности 1 в связи
+     * @param $action_id - ид элемента сущности 2 в связи
+     * @param $rel_entity_name - В единственном числе! - название сущности
+     * @param $target_entity_name - В единственном числе! - название сущности
      * @return bool|\Symfony\Component\HttpFoundation\JsonResponse
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -61,9 +66,10 @@ class Relations extends \Doctrine\ORM\EntityRepository
 
 
     /**
-     * @param $action_id
-     * @param $rel_entity_name - В единственном числе!
-     * @param $target_entity_name - В единственном числе!
+     * Получение связи по ид элемента сущности
+     * @param $action_id - ид элемента сущности, по которому хотим выбрать связи
+     * @param $rel_entity_name - В единственном числе! - название сущности
+     * @param $target_entity_name - В единственном числе! - название сущности
      * @return array
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -109,11 +115,12 @@ class Relations extends \Doctrine\ORM\EntityRepository
 
 
     /**
+     * Удаление свзей. Вызывается при обновлении, в том числе.
      * @param $entity_id
      * @param $action_id
      * @param $rel_entity_name - В единственном числе!
      * @param $target_entity_name - В единственном числе!
-     * @param bool $rmAllFromAction
+     * @param bool $rmAllFromAction - флаг-защита для того, чтобы случайно не удалить все связи сущностей
      * @return bool|\Symfony\Component\HttpFoundation\JsonResponse
      * @throws \Doctrine\DBAL\DBALException
      */

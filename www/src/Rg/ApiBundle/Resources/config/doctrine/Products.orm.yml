@@ -25,4 +25,7 @@ Rg\ApiBundle\Entity\Products:
         postIndex:
             type: integer
             column: post_index
+        image:
+            type: string
+            column: image
     lifecycleCallbacks: {  }

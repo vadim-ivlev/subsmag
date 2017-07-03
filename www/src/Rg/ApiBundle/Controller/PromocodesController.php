@@ -36,6 +36,7 @@ class PromocodesController extends Controller
                 'code' => 200,
                 'id' => null
             ];
+            header('Access-Control-Allow-Origin: *');
             return $out->json($arrError);
 //            throw $this->createNotFoundException('Unable to find Blog post.');
         }
@@ -51,6 +52,7 @@ class PromocodesController extends Controller
 
         $response = $out->json($promocodesList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }
@@ -75,6 +77,7 @@ class PromocodesController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
 //            throw $this->createNotFoundException('Unable to find post.');
         }
@@ -89,6 +92,7 @@ class PromocodesController extends Controller
         //собираем JSON для вывода
         $response = $out->json($promocodesList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 
 //        return $this->render('RgApiBundle:Default:index.html.twig');
@@ -130,6 +134,7 @@ class PromocodesController extends Controller
         //собираем JSON для вывода
         $response = $out->json($promocodesList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -276,6 +281,7 @@ class PromocodesController extends Controller
         $arr = [print_r($request->getContent(), true)];
         $response = $out->json($arr);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }

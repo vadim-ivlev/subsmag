@@ -4,6 +4,7 @@
   "flagSubscribe": 1,
   "flagBuy": 1,
   "postIndex": 127001,
+  "image": "/path/to/img.png",
   "kits": {
       "0": 1,
       "1": 4,

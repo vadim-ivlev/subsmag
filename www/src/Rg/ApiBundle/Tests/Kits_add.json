@@ -1,6 +1,7 @@
 {
   "nameKit": "Российская газета. Комплект №1",
   "flagSubscribe": 1,
+  "image": "/path/to/img.png",
   "products": {
     "0": 2,
     "1": 3,

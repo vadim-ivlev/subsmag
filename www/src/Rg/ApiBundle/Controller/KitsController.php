@@ -40,6 +40,7 @@ class KitsController extends Controller
                 'code' => 200,
                 'id' => null
             ];
+            header('Access-Control-Allow-Origin: *');
             return $out->json($arrError);
         }
 
@@ -51,6 +52,7 @@ class KitsController extends Controller
             $kitsList[$key]['id'] = $data->dataClearInt($kit->getId());
             $kitsList[$key]['nameKit'] = $data->dataClearStr($kit->getNameKit());
             $kitsList[$key]['flagSubscribe'] = $kit->getFlagSubscribe();
+            $kitsList[$key]['image'] = $kit->getImage();
             $kitsList[$key]['products'] = $arrProducts;
         }
 
@@ -59,6 +61,7 @@ class KitsController extends Controller
 
         $response = $out->json($kitsList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -81,6 +84,7 @@ class KitsController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
 //            throw $this->createNotFoundException('Unable to find post.');
         }
@@ -93,11 +97,13 @@ class KitsController extends Controller
         $kitsList['id'] = $data->dataClearStr($kit->getId());
         $kitsList['nameKit'] = $data->dataClearStr($kit->getNameKit());
         $kitsList['flagSubscribe'] = $kit->getFlagSubscribe();
+        $kitsList['image'] = $kit->getImage();
         $kitsList['products'] = $arrProducts;
 
         //собираем JSON для вывода
         $response = $out->json($kitsList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 
 //        return $this->render('RgApiBundle:Default:index.html.twig');
@@ -119,6 +125,7 @@ class KitsController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -164,6 +171,7 @@ class KitsController extends Controller
             }
         }
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
@@ -213,6 +221,9 @@ class KitsController extends Controller
         if (isset($arrJSONIn['flagSubscribe']))
             $kitsList['flagSubscribe'] = $kit->setFlagSubscribe($arrJSONIn['flagSubscribe']);
 
+        if (isset($arrJSONIn['image']))
+            $kitsList['image'] = $kit->setImage($arrJSONIn['image']);
+
         try {
             $em->flush();
         }
@@ -233,6 +244,7 @@ class KitsController extends Controller
         if ($caught) {
             //собираем JSON для вывода, если ошибок нет
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -253,6 +265,7 @@ class KitsController extends Controller
         $arr = [print_r($request->getContent(), true)];
         $response = $out->json($arr);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }

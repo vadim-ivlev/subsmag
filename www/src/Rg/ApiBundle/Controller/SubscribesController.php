@@ -47,6 +47,7 @@ class SubscribesController extends Controller
                 'code' => 200,
                 'id' => null
             ];
+            header('Access-Control-Allow-Origin: *');
             return $out->json($arrError);
 //            throw $this->createNotFoundException('Unable to find Blog post.');
         }
@@ -118,6 +119,7 @@ class SubscribesController extends Controller
 
         $response = $out->json($subscribesList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }
@@ -157,6 +159,7 @@ class SubscribesController extends Controller
                 'code' => 200,
                 'id' => null
             ];
+            header('Access-Control-Allow-Origin: *');
             return $out->json($arrError);
 //            throw $this->createNotFoundException('Unable to find Blog post.');
         }
@@ -219,6 +222,7 @@ class SubscribesController extends Controller
 
         $response = $out->json($subscribesList);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }
@@ -239,6 +243,7 @@ class SubscribesController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -274,6 +279,8 @@ class SubscribesController extends Controller
                 'id' => null
             ];
             $response = $out->json($arrError);
+
+            header('Access-Control-Allow-Origin: *');
             return $response;
         }
 
@@ -366,6 +373,7 @@ class SubscribesController extends Controller
         $arr = [print_r($request->getContent(), true)];
         $response = $out->json($arr);
 
+        header('Access-Control-Allow-Origin: *');
         return $response;
 //        return $this->render('RgApiBundle:Default:index.html.twig');
     }
