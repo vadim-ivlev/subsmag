@@ -1,1 +1,44 @@
-{}
+{
+  "userId": 123,
+  "zoneId": 1,
+  "productId": "1",
+  "kitId": "0",
+  "subscribeId": 10,
+  "date": "2017-06-13 12:05:25",
+  "address": "127001, г. Москва, Красная площадь, д. 1",
+  "price": 100500.99,
+  "order": [
+    {
+      "0": [
+        {
+          "itemType": "kit",
+          "items": {
+            "0": {
+              "id": 1,
+              "quantity": 3
+            },
+            "1": {
+              "id": 5,
+              "quantity": 1
+            }
+          }
+        }
+      ],
+      "1": [
+        {
+          "itemType": "product",
+          "items": {
+            "0": {
+              "id": 5,
+              "quantity": 1
+            },
+            "1": {
+              "id": 2,
+              "quantity": 4
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -28,7 +28,7 @@ Rg\ApiBundle\Entity\Orders:
             type: datetime
             column: date
         address:
-            type: varchar
+            type: text
             length: '255'
             column: address
         price:

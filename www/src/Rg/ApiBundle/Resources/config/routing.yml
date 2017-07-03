@@ -258,3 +258,31 @@ rg_api_periods_edit:
     defaults: { _controller: RgApiBundle:Periods:edit, _format:json }
 #    requirements: { id: \d+ }
     methods:   [PUT]
+
+
+
+
+
+
+
+rg_api_orders_index:
+    path:     /api/orders/
+    defaults: { _controller: RgApiBundle:Orders:index, _format:json }
+    methods:  [GET, HEAD]
+
+rg_api_orders_show:
+    path:     /api/orders/{id}/
+    defaults: { _controller: RgApiBundle:Orders:show, _format:json }
+#    requirements: { id: \d+ }
+    methods:  [GET, HEAD]
+
+rg_api_orders_create:
+    path:     /api/orders/
+    defaults: { _controller: RgApiBundle:Orders:create, _format:json }
+    methods:  [POST]
+
+rg_api_orders_edit:
+    path:     /api/orders/{id}/
+    defaults: { _controller: RgApiBundle:Orders:edit, _format:json }
+#    requirements: { id: \d+ }
+    methods:   [PUT]
