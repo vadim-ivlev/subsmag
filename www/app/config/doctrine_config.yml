@@ -25,5 +25,5 @@ doctrine:
             default:
                 connection: default
                 mappings:
-                    RgSubsmagBundle:  ~
+#                    RgSubsmagBundle:  ~
 

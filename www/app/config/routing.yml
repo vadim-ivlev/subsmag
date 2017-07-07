@@ -2,47 +2,47 @@ rg_api:
     resource: "@RgApiBundle/Resources/config/routing.yml"
     prefix:   /
 
-rg_subsmag:
-    resource: "@RgSubsmagBundle/Resources/config/routing.yml"
-    prefix:   /
+#rg_subsmag:
+#    resource: "@RgSubsmagBundle/Resources/config/routing.yml"
+#    prefix:   /
 
 app:
     resource: '@AppBundle/Controller/'
     type: annotation
 
-rg_subsmag_actions:
-    resource: "@RgSubsmagBundle/Resources/config/routing/actions.yml"
-    prefix:   /actions
-
-rg_subsmag_areas:
-    resource: "@RgSubsmagBundle/Resources/config/routing/areas.yml"
-    prefix:   /areas
-
-rg_subsmag_kits:
-    resource: "@RgSubsmagBundle/Resources/config/routing/kits.yml"
-    prefix:   /kits
-
-rg_subsmag_orders:
-    resource: "@RgSubsmagBundle/Resources/config/routing/orders.yml"
-    prefix:   /orders
-
-rg_subsmag_periods:
-    resource: "@RgSubsmagBundle/Resources/config/routing/periods.yml"
-    prefix:   /periods
-
-rg_subsmag_promocodes:
-    resource: "@RgSubsmagBundle/Resources/config/routing/promocodes.yml"
-    prefix:   /promocodes
-
-rg_subsmag_subscribes:
-    resource: "@RgSubsmagBundle/Resources/config/routing/subscribes.yml"
-    prefix:   /subscribes
-
-rg_subsmag_zones:
-    resource: "@RgSubsmagBundle/Resources/config/routing/zones.yml"
-    prefix:   /zones
-
-rg_subsmag_users:
-    resource: "@RgSubsmagBundle/Resources/config/routing/users.yml"
-    prefix:   /users
+#rg_subsmag_actions:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/actions.yml"
+#    prefix:   /actions
+#
+#rg_subsmag_areas:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/areas.yml"
+#    prefix:   /areas
+#
+#rg_subsmag_kits:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/kits.yml"
+#    prefix:   /kits
+#
+#rg_subsmag_orders:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/orders.yml"
+#    prefix:   /orders
+#
+#rg_subsmag_periods:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/periods.yml"
+#    prefix:   /periods
+#
+#rg_subsmag_promocodes:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/promocodes.yml"
+#    prefix:   /promocodes
+#
+#rg_subsmag_subscribes:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/subscribes.yml"
+#    prefix:   /subscribes
+#
+#rg_subsmag_zones:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/zones.yml"
+#    prefix:   /zones
+#
+#rg_subsmag_users:
+#    resource: "@RgSubsmagBundle/Resources/config/routing/users.yml"
+#    prefix:   /users
 

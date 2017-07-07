@@ -17,7 +17,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new AppBundle\AppBundle(),
-            new Rg\SubsmagBundle\RgSubsmagBundle(),
+//            new Rg\SubsmagBundle\RgSubsmagBundle(),
 //            new TestBundle\TestBundle(),
 
 //            new FOS\RestBundle\FOSRestBundle(),
