@@ -189,4 +189,3 @@ class Periods
         return $this->quantityMonthsEnd;
     }
 }
-

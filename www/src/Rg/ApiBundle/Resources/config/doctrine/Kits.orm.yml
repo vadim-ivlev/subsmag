@@ -16,4 +16,10 @@ Rg\ApiBundle\Entity\Kits:
         flagSubscribe:
             type: boolean
             column: flag_subscribe
+        sort:
+            type: smallint
+            column: sort
+        description:
+            type: text
+            column: description
     lifecycleCallbacks: {  }

@@ -188,5 +188,91 @@ class Products
     {
         return $this->postIndex;
     }
-}
+    /**
+     * @var string
+     */
+    private $keyword;
 
+
+    /**
+     * Set keyword
+     *
+     * @param string $keyword
+     *
+     * @return Products
+     */
+    public function setKeyword($keyword)
+    {
+        $this->keyword = $keyword;
+
+        return $this;
+    }
+
+    /**
+     * Get keyword
+     *
+     * @return string
+     */
+    public function getKeyword()
+    {
+        return $this->keyword;
+    }
+    /**
+     * @var integer
+     */
+    private $sort;
+
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     *
+     * @return Products
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
+    /**
+     * @var string
+     */
+    private $description;
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Products
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+}

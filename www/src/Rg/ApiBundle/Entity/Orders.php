@@ -303,4 +303,3 @@ class Orders
         return $this->flagPaid;
     }
 }
-

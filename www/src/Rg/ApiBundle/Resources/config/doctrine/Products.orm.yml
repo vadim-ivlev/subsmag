@@ -13,6 +13,10 @@ Rg\ApiBundle\Entity\Products:
             type: string
             length: '128'
             column: name_product
+        keyword:
+            type: string
+            length: '128'
+            column: keyword
         frequency:
             type: smallint
             column: frequency
@@ -28,4 +32,10 @@ Rg\ApiBundle\Entity\Products:
         image:
             type: string
             column: image
+        sort:
+            type: smallint
+            column: sort
+        description:
+            type: text
+            column: description
     lifecycleCallbacks: {  }

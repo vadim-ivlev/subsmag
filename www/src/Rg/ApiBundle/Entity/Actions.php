@@ -429,4 +429,3 @@ class Actions
         return $this->userId;
     }
 }
-

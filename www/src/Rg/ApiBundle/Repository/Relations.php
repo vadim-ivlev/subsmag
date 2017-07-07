@@ -9,6 +9,7 @@
 namespace Rg\ApiBundle\Repository;
 
 use Rg\ApiBundle\Controller\Outer as Out;
+use \Doctrine\ORM\EntityRepository;
 
 
 /*
@@ -19,7 +20,7 @@ use Rg\ApiBundle\Controller\Outer as Out;
  * Class Relations
  * @package Rg\ApiBundle\Repository
  */
-class Relations extends \Doctrine\ORM\EntityRepository
+class Relations extends EntityRepository
 {
 
     /**

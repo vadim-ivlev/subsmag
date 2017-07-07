@@ -102,4 +102,3 @@ class Zones
         return $this->tarifId;
     }
 }
-

@@ -168,4 +168,3 @@ class Promocodes
         return $this->actionId;
     }
 }
-

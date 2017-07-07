@@ -103,5 +103,62 @@ class Kits
     {
         return $this->flagSubscribe;
     }
-}
+    /**
+     * @var integer
+     */
+    private $sort;
 
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     *
+     * @return Kits
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
+    /**
+     * @var string
+     */
+    private $description;
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Kits
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+}

@@ -52,4 +52,3 @@ class Areas
         return $this->nameArea;
     }
 }
-

@@ -210,4 +210,3 @@ class Subscribes
         return $this->periodId;
     }
 }
-
