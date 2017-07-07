@@ -16,7 +16,4 @@ Rg\ApiBundle\Entity\Kits:
         flagSubscribe:
             type: boolean
             column: flag_subscribe
-        image:
-            type: string
-            column: image
     lifecycleCallbacks: {  }

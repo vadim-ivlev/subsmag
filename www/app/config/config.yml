@@ -1,6 +1,9 @@
 imports:
     - { resource: parameters.yml }
-    - { resource: parameters_db.yml }
+    #
+#    - { resource: parameters_db.yml }
+    - { resource: parameters_db_backend01.yml }
+    #
     - { resource: security.yml }
     - { resource: services.yml }
     - { resource: doctrine_config.yml }
@@ -69,6 +72,12 @@ doctrine:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
+# Migrations Configuration
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/DoctrineMigrations"
+    namespace: Application\Migrations
+    table_name: migration_versions
+    name: Subsmag Migrations
 
 # Swiftmailer Configuration
 swiftmailer:
