@@ -8,17 +8,17 @@ namespace Rg\ApiBundle\Entity;
 class Subscribes
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
     /**
-     * @var int
+     * @var integer
      */
     private $namePeriodId;
 
     /**
-     * @var int
+     * @var integer
      */
     private $areaId;
 
@@ -33,57 +33,20 @@ class Subscribes
     private $subscribePeriodEnd;
 
     /**
-     * @var int
-     */
-    private $periodId;
-
-    /**
-     * @var int
+     * @var integer
      */
     private $productId;
 
     /**
-     * @var int
+     * @var integer
      */
     private $kitId;
-
-    /**
-     * @return int
-     */
-    public function getProductId()
-    {
-        return $this->productId;
-    }
-
-    /**
-     * @param int $productId
-     */
-    public function setProductId($productId)
-    {
-        $this->productId = $productId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getKitId()
-    {
-        return $this->kitId;
-    }
-
-    /**
-     * @param int $kitId
-     */
-    public function setKitId($kitId)
-    {
-        $this->kitId = $kitId;
-    }
 
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -107,7 +70,7 @@ class Subscribes
     /**
      * Get namePeriodId
      *
-     * @return int
+     * @return integer
      */
     public function getNamePeriodId()
     {
@@ -131,7 +94,7 @@ class Subscribes
     /**
      * Get areaId
      *
-     * @return int
+     * @return integer
      */
     public function getAreaId()
     {
@@ -187,26 +150,50 @@ class Subscribes
     }
 
     /**
-     * Set periodId
+     * Set productId
      *
-     * @param integer $periodId
+     * @param integer $productId
      *
      * @return Subscribes
      */
-    public function setPeriodId($periodId)
+    public function setProductId($productId)
     {
-        $this->periodId = $periodId;
+        $this->productId = $productId;
 
         return $this;
     }
 
     /**
-     * Get periodId
+     * Get productId
      *
-     * @return int
+     * @return integer
      */
-    public function getPeriodId()
+    public function getProductId()
     {
-        return $this->periodId;
+        return $this->productId;
+    }
+
+    /**
+     * Set kitId
+     *
+     * @param integer $kitId
+     *
+     * @return Subscribes
+     */
+    public function setKitId($kitId)
+    {
+        $this->kitId = $kitId;
+
+        return $this;
+    }
+
+    /**
+     * Get kitId
+     *
+     * @return integer
+     */
+    public function getKitId()
+    {
+        return $this->kitId;
     }
 }

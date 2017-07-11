@@ -2,77 +2,58 @@
 
 namespace Rg\ApiBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * Orders
- * @ORM\Entity
- * @ORM\Table(name="orders")
  */
 class Orders
 {
     /**
-     * @var int
-     * @ORM\Id
-     * @ORM\Column(type="integer", options={"unsigned": true, "comment" : "ID заказа"})
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
     private $id;
 
     /**
-     * @var int
-     * @ORM\ManyToOne(targetEntity="ApiBundle\Entity\Users")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
-     * })
+     * @var integer
      */
     private $userId;
 
     /**
-     * @var int
-     * @ORM\Column(name="product_id", type="integer", length=11, options={"default":""})
+     * @var integer
      */
     private $productId;
 
     /**
-     * @var int
-     * @ORM\Column(name="kit_id", type="integer", length=11, options={"default":""})
+     * @var integer
      */
     private $kitId;
 
     /**
-     * @var int
-     * @ORM\Column(name="zone_id", type="integer", length=11, options={"default":""})
+     * @var integer
      */
     private $zoneId;
 
     /**
-     * @var int
-     * @ORM\Column(name="subscribe_id", type="integer", length=11, options={"default":""})
+     * @var integer
      */
     private $subscribeId;
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="date", type="date")
      */
     private $date;
 
     /**
      * @var string
-     * @ORM\Column(name="address", type="string", length=128, options={"default":""})
      */
     private $address;
 
     /**
      * @var float
-     * @ORM\Column(name="price", type="float", length=128, options={"default":""})
      */
     private $price;
 
     /**
-     * @var bool
-     * @ORM\Column(name="flag_paid", type="boolean")
+     * @var boolean
      */
     private $flagPaid;
 
@@ -80,7 +61,7 @@ class Orders
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -104,7 +85,7 @@ class Orders
     /**
      * Get userId
      *
-     * @return int
+     * @return integer
      */
     public function getUserId()
     {
@@ -128,7 +109,7 @@ class Orders
     /**
      * Get productId
      *
-     * @return int
+     * @return integer
      */
     public function getProductId()
     {
@@ -152,7 +133,7 @@ class Orders
     /**
      * Get kitId
      *
-     * @return int
+     * @return integer
      */
     public function getKitId()
     {
@@ -176,7 +157,7 @@ class Orders
     /**
      * Get zoneId
      *
-     * @return int
+     * @return integer
      */
     public function getZoneId()
     {
@@ -200,7 +181,7 @@ class Orders
     /**
      * Get subscribeId
      *
-     * @return int
+     * @return integer
      */
     public function getSubscribeId()
     {
@@ -296,7 +277,7 @@ class Orders
     /**
      * Get flagPaid
      *
-     * @return bool
+     * @return boolean
      */
     public function getFlagPaid()
     {

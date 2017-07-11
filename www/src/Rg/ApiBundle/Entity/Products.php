@@ -8,7 +8,7 @@ namespace Rg\ApiBundle\Entity;
 class Products
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -18,22 +18,27 @@ class Products
     private $nameProduct;
 
     /**
-     * @var int
+     * @var string
+     */
+    private $keyword;
+
+    /**
+     * @var integer
      */
     private $frequency;
 
     /**
-     * @var bool
+     * @var boolean
      */
     private $flagSubscribe;
 
     /**
-     * @var bool
+     * @var boolean
      */
     private $flagBuy;
 
     /**
-     * @var int
+     * @var integer
      */
     private $postIndex;
 
@@ -43,26 +48,20 @@ class Products
     private $image;
 
     /**
-     * @return string
+     * @var integer
      */
-    public function getImage()
-    {
-        return $this->image;
-    }
+    private $sort;
 
     /**
-     * @param string $image
+     * @var string
      */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    }
+    private $description;
 
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -94,6 +93,30 @@ class Products
     }
 
     /**
+     * Set keyword
+     *
+     * @param string $keyword
+     *
+     * @return Products
+     */
+    public function setKeyword($keyword)
+    {
+        $this->keyword = $keyword;
+
+        return $this;
+    }
+
+    /**
+     * Get keyword
+     *
+     * @return string
+     */
+    public function getKeyword()
+    {
+        return $this->keyword;
+    }
+
+    /**
      * Set frequency
      *
      * @param integer $frequency
@@ -110,7 +133,7 @@ class Products
     /**
      * Get frequency
      *
-     * @return int
+     * @return integer
      */
     public function getFrequency()
     {
@@ -134,7 +157,7 @@ class Products
     /**
      * Get flagSubscribe
      *
-     * @return bool
+     * @return boolean
      */
     public function getFlagSubscribe()
     {
@@ -158,7 +181,7 @@ class Products
     /**
      * Get flagBuy
      *
-     * @return bool
+     * @return boolean
      */
     public function getFlagBuy()
     {
@@ -182,46 +205,36 @@ class Products
     /**
      * Get postIndex
      *
-     * @return int
+     * @return integer
      */
     public function getPostIndex()
     {
         return $this->postIndex;
     }
-    /**
-     * @var string
-     */
-    private $keyword;
-
 
     /**
-     * Set keyword
+     * Set image
      *
-     * @param string $keyword
+     * @param string $image
      *
      * @return Products
      */
-    public function setKeyword($keyword)
+    public function setImage($image)
     {
-        $this->keyword = $keyword;
+        $this->image = $image;
 
         return $this;
     }
 
     /**
-     * Get keyword
+     * Get image
      *
      * @return string
      */
-    public function getKeyword()
+    public function getImage()
     {
-        return $this->keyword;
+        return $this->image;
     }
-    /**
-     * @var integer
-     */
-    private $sort;
-
 
     /**
      * Set sort
@@ -246,11 +259,6 @@ class Products
     {
         return $this->sort;
     }
-    /**
-     * @var string
-     */
-    private $description;
-
 
     /**
      * Set description
@@ -274,5 +282,51 @@ class Products
     public function getDescription()
     {
         return $this->description;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $kits;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->kits = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add kit
+     *
+     * @param \Rg\ApiBundle\Entity\Kits $kit
+     *
+     * @return Products
+     */
+    public function addKit(\Rg\ApiBundle\Entity\Kits $kit)
+    {
+        $this->kits[] = $kit;
+
+        return $this;
+    }
+
+    /**
+     * Remove kit
+     *
+     * @param \Rg\ApiBundle\Entity\Kits $kit
+     */
+    public function removeKit(\Rg\ApiBundle\Entity\Kits $kit)
+    {
+        $this->kits->removeElement($kit);
+    }
+
+    /**
+     * Get kits
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getKits()
+    {
+        return $this->kits;
     }
 }

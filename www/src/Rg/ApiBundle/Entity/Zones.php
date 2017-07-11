@@ -8,38 +8,22 @@ namespace Rg\ApiBundle\Entity;
 class Zones
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
     /**
-     * @var int
+     * @var integer
      */
     private $zoneNumber;
 
     /**
-     * @var int
+     * @var integer
      */
     private $areaId;
 
     /**
-     * @return int
-     */
-    public function getAreaId()
-    {
-        return $this->areaId;
-    }
-
-    /**
-     * @param int $areaId
-     */
-    public function setAreaId($areaId)
-    {
-        $this->areaId = $areaId;
-    }
-
-    /**
-     * @var int
+     * @var integer
      */
     private $tarifId;
 
@@ -47,7 +31,7 @@ class Zones
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -71,11 +55,35 @@ class Zones
     /**
      * Get zoneNumber
      *
-     * @return int
+     * @return integer
      */
     public function getZoneNumber()
     {
         return $this->zoneNumber;
+    }
+
+    /**
+     * Set areaId
+     *
+     * @param integer $areaId
+     *
+     * @return Zones
+     */
+    public function setAreaId($areaId)
+    {
+        $this->areaId = $areaId;
+
+        return $this;
+    }
+
+    /**
+     * Get areaId
+     *
+     * @return integer
+     */
+    public function getAreaId()
+    {
+        return $this->areaId;
     }
 
     /**
@@ -95,7 +103,7 @@ class Zones
     /**
      * Get tarifId
      *
-     * @return int
+     * @return integer
      */
     public function getTarifId()
     {

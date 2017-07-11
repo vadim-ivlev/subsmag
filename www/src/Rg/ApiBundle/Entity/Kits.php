@@ -2,15 +2,13 @@
 
 namespace Rg\ApiBundle\Entity;
 
-use Doctrine\ORM\EntityRepository;
-
 /**
  * Kits
  */
 class Kits
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -20,36 +18,25 @@ class Kits
     private $nameKit;
 
     /**
-     * @var bool
+     * @var boolean
      */
     private $flagSubscribe;
 
     /**
+     * @var integer
+     */
+    private $sort;
+
+    /**
      * @var string
      */
-    private $image;
-
-    /**
-     * @return string
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * @param string $image
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    }
+    private $description;
 
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -97,17 +84,12 @@ class Kits
     /**
      * Get flagSubscribe
      *
-     * @return bool
+     * @return boolean
      */
     public function getFlagSubscribe()
     {
         return $this->flagSubscribe;
     }
-    /**
-     * @var integer
-     */
-    private $sort;
-
 
     /**
      * Set sort
@@ -132,11 +114,6 @@ class Kits
     {
         return $this->sort;
     }
-    /**
-     * @var string
-     */
-    private $description;
-
 
     /**
      * Set description
@@ -160,5 +137,51 @@ class Kits
     public function getDescription()
     {
         return $this->description;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $products;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->products = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add product
+     *
+     * @param \Rg\ApiBundle\Entity\Products $product
+     *
+     * @return Kits
+     */
+    public function addProduct(\Rg\ApiBundle\Entity\Products $product)
+    {
+        $this->products[] = $product;
+
+        return $this;
+    }
+
+    /**
+     * Remove product
+     *
+     * @param \Rg\ApiBundle\Entity\Products $product
+     */
+    public function removeProduct(\Rg\ApiBundle\Entity\Products $product)
+    {
+        $this->products->removeElement($product);
+    }
+
+    /**
+     * Get products
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProducts()
+    {
+        return $this->products;
     }
 }

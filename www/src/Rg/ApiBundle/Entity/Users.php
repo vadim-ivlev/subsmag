@@ -2,74 +2,51 @@
 
 namespace Rg\ApiBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\DateTime;
-
 /**
- * Rg\ApiBundle\Entity\Users
- *
- * @ORM\Entity
- * @ORM\Table(name="users")
+ * Users
  */
 class Users
 {
     /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer", options={"unsigned": true, "comment" : "ID пользователя"})
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @var integer
      */
     private $id;
 
     /**
      * @var string
-     * @ORM\Column(name="login", type="string", length=128, options={"default":""}, unique=true)
      */
     private $login;
 
     /**
      * @var string
-     * @ORM\Column(name="password", type="string", length=255, options={"default":""})
      */
     private $password;
 
     /**
      * @var string
-     * @ORM\Column(name="user_key", type="string", length=255, options={"default":""})
      */
     private $userKey;
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="date_registration", type="date")
      */
     private $dateRegistration;
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="date_lastlogin", type="date")
      */
     private $dateLastlogin;
 
     /**
-     * @var bool
-     * @ORM\Column(name="date_lastlogin", type="boolean")
+     * @var boolean
      */
     private $flagCanRest;
-
-
-
-    public function __construct() {
-        $this->dateRegistration = new DateTime();
-    }
-
 
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -213,11 +190,10 @@ class Users
     /**
      * Get flagCanRest
      *
-     * @return bool
+     * @return boolean
      */
     public function getFlagCanRest()
     {
         return $this->flagCanRest;
     }
-
 }

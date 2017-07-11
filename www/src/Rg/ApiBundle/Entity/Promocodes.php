@@ -8,7 +8,7 @@ namespace Rg\ApiBundle\Entity;
 class Promocodes
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -28,12 +28,12 @@ class Promocodes
     private $dateEnd;
 
     /**
-     * @var bool
+     * @var boolean
      */
     private $flagUsed;
 
     /**
-     * @var int
+     * @var integer
      */
     private $actionId;
 
@@ -41,7 +41,7 @@ class Promocodes
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -137,7 +137,7 @@ class Promocodes
     /**
      * Get flagUsed
      *
-     * @return bool
+     * @return boolean
      */
     public function getFlagUsed()
     {

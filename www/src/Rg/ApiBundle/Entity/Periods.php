@@ -8,61 +8,45 @@ namespace Rg\ApiBundle\Entity;
 class Periods
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
     /**
-     * @var int
+     * @var integer
      */
     private $monthStart;
 
     /**
-     * @var int
+     * @var integer
      */
     private $yearStart;
 
     /**
-     * @var int
+     * @var integer
      */
     private $periodMonths;
 
     /**
-     * @var int
+     * @var integer
      */
     private $quantityMonthsStart;
 
     /**
-     * @var int
+     * @var integer
      */
     private $quantityMonthsEnd;
 
     /**
-     * @var int
+     * @var integer
      */
     private $subscribeId;
-
-    /**
-     * @return int
-     */
-    public function getSubscribeId()
-    {
-        return $this->subscribeId;
-    }
-
-    /**
-     * @param int $subscribeId
-     */
-    public function setSubscribeId($subscribeId)
-    {
-        $this->subscribeId = $subscribeId;
-    }
 
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -86,7 +70,7 @@ class Periods
     /**
      * Get monthStart
      *
-     * @return int
+     * @return integer
      */
     public function getMonthStart()
     {
@@ -110,7 +94,7 @@ class Periods
     /**
      * Get yearStart
      *
-     * @return int
+     * @return integer
      */
     public function getYearStart()
     {
@@ -134,7 +118,7 @@ class Periods
     /**
      * Get periodMonths
      *
-     * @return int
+     * @return integer
      */
     public function getPeriodMonths()
     {
@@ -158,7 +142,7 @@ class Periods
     /**
      * Get quantityMonthsStart
      *
-     * @return int
+     * @return integer
      */
     public function getQuantityMonthsStart()
     {
@@ -182,10 +166,34 @@ class Periods
     /**
      * Get quantityMonthsEnd
      *
-     * @return int
+     * @return integer
      */
     public function getQuantityMonthsEnd()
     {
         return $this->quantityMonthsEnd;
+    }
+
+    /**
+     * Set subscribeId
+     *
+     * @param integer $subscribeId
+     *
+     * @return Periods
+     */
+    public function setSubscribeId($subscribeId)
+    {
+        $this->subscribeId = $subscribeId;
+
+        return $this;
+    }
+
+    /**
+     * Get subscribeId
+     *
+     * @return integer
+     */
+    public function getSubscribeId()
+    {
+        return $this->subscribeId;
     }
 }

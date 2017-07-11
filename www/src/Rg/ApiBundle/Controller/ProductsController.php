@@ -96,9 +96,112 @@ class ProductsController extends Controller
         $productsList['postIndex'] = $data->dataClearInt($product->getPostIndex());
         $productsList['image'] = $data->dataClearStr($product->getImage());
 
+        $productsList['image'] = $data->dataClearStr($product->getImage());
+
         $kits = $kitRep->getRelationByEntityId($id, 'product', 'kit');
         $productsList['kits'] = $kits;
 
+        /** TODO: for Mighty Frontender. Remove it then.
+         *
+        **/
+       $productsList = array_merge($productsList, array(
+           'description' => 'Ежедневное издание Правительства Российской Федерации',
+           'versions' =>
+          array (
+            0 => array(
+               'name' => 'Печатная',
+               'alias' => 'print',
+               'available' => true,
+               'description' => 'Описание версии',
+            ),
+            1 => array(
+               'name' => 'Электронная',
+               'alias' => 'pdf',
+               'available' => false,
+               'description' => 'Описание версии',
+            ),
+          ),
+           'delivery' =>
+          array (
+            0 => array(
+               'name' => 'Почта России',
+               'alias' => 'postrus',
+               'description' => 'Мы отправим вам товара по почте чутка',
+            ),
+            1 => array(
+               'name' => 'Курьерская доставка',
+               'alias' => 'courier',
+               'description' => 'Мы сформируем банковскую квитанцию, которую вы сможете оплатить в любом отделении банка. Затем позвоните нам или сообщите по почте podpiska@rg.ru - и начинайте получать газету.',
+            ),
+          ),
+           'subscribesPeriods' => array(
+             'helpers' =>
+            array (
+              0 =>
+              (array(
+                 'name' => 'Полгода',
+                 'description' => 'январь-июнь',
+                 'monthStart' => 1,
+                 'monthEnd' => 3,
+                 'year' => 2017,
+                 'discount' => 10,
+              )),
+              1 =>
+              (array(
+                 'name' => 'Полгода',
+                 'description' => 'июль-декабрь',
+                 'monthStart' => 6,
+                 'monthEnd' => 12,
+                 'year' => 2017,
+                 'discount' => 10,
+              )),
+              2 =>
+              (array(
+                 'name' => 'Год',
+                 'description' => 'январь-декабрь',
+                 'monthStart' => 1,
+                 'monthEnd' => 12,
+                 'year' => 2018,
+                 'discount' => 20,
+              )),
+            ),
+             'year' =>
+            array (
+              0 =>
+              (array(
+                 'name' => 2017,
+                 'months' =>
+                array (
+                  0 =>
+                  (array(
+                     'name' => 'Январь',
+                     'number' => '1',
+                     'available' => false,
+                  )),
+                  1 =>
+                  (array(
+                     'name' => 'Февраль',
+                     'number' => '2',
+                     'available' => false,
+                  )),
+                  2 =>
+                  (array(
+                     'name' => 'Март',
+                     'number' => '3',
+                     'available' => true,
+                  )),
+                ),
+              )),
+            ),
+          ),
+           'price' =>
+          (array(
+             'minPrice' => 390,
+             'currency' => 'RUB',
+          )),
+)
+       );
+       /** END Myghty Frontender */
 
         //собираем JSON для вывода
         $response = $out->json($productsList);

@@ -8,7 +8,7 @@ namespace Rg\ApiBundle\Entity;
 class Actions
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -38,7 +38,7 @@ class Actions
     private $dateEnd;
 
     /**
-     * @var int
+     * @var integer
      */
     private $discount;
 
@@ -48,45 +48,57 @@ class Actions
     private $giftDescription;
 
     /**
-     * @var bool
+     * @var boolean
      */
     private $flagVisibleOnSite;
 
     /**
-     * @var bool
+     * @var integer
      */
     private $flagPercentOrFix;
 
     /**
-     * @var int
+     * @var integer
      */
     private $cntUsed;
 
     /**
-     * @var int
+     * @var integer
      */
     private $productId;
 
     /**
-     * @var int
+     * @var integer
      */
     private $kitId;
 
     /**
-     * @var int
+     * @var integer
      */
     private $promocodeId;
 
     /**
-     * @var int
+     * @var integer
      */
     private $userId;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $kits;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->kits = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -230,7 +242,7 @@ class Actions
     /**
      * Get discount
      *
-     * @return int
+     * @return integer
      */
     public function getDiscount()
     {
@@ -278,7 +290,7 @@ class Actions
     /**
      * Get flagVisibleOnSite
      *
-     * @return bool
+     * @return boolean
      */
     public function getFlagVisibleOnSite()
     {
@@ -288,7 +300,7 @@ class Actions
     /**
      * Set flagPercentOrFix
      *
-     * @param boolean $flagPercentOrFix
+     * @param integer $flagPercentOrFix
      *
      * @return Actions
      */
@@ -302,7 +314,7 @@ class Actions
     /**
      * Get flagPercentOrFix
      *
-     * @return bool
+     * @return integer
      */
     public function getFlagPercentOrFix()
     {
@@ -326,7 +338,7 @@ class Actions
     /**
      * Get cntUsed
      *
-     * @return int
+     * @return integer
      */
     public function getCntUsed()
     {
@@ -350,7 +362,7 @@ class Actions
     /**
      * Get productId
      *
-     * @return int
+     * @return integer
      */
     public function getProductId()
     {
@@ -374,7 +386,7 @@ class Actions
     /**
      * Get kitId
      *
-     * @return int
+     * @return integer
      */
     public function getKitId()
     {
@@ -398,7 +410,7 @@ class Actions
     /**
      * Get promocodeId
      *
-     * @return int
+     * @return integer
      */
     public function getPromocodeId()
     {
@@ -422,10 +434,44 @@ class Actions
     /**
      * Get userId
      *
-     * @return int
+     * @return integer
      */
     public function getUserId()
     {
         return $this->userId;
+    }
+
+    /**
+     * Add kit
+     *
+     * @param \Rg\ApiBundle\Entity\Kits $kit
+     *
+     * @return Actions
+     */
+    public function addKit(\Rg\ApiBundle\Entity\Kits $kit)
+    {
+        $this->kits[] = $kit;
+
+        return $this;
+    }
+
+    /**
+     * Remove kit
+     *
+     * @param \Rg\ApiBundle\Entity\Kits $kit
+     */
+    public function removeKit(\Rg\ApiBundle\Entity\Kits $kit)
+    {
+        $this->kits->removeElement($kit);
+    }
+
+    /**
+     * Get kits
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getKits()
+    {
+        return $this->kits;
     }
 }

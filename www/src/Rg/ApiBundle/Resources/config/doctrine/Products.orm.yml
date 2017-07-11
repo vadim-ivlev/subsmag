@@ -15,7 +15,7 @@ Rg\ApiBundle\Entity\Products:
             column: name_product
         keyword:
             type: string
-            length: '128'
+            length: '32'
             column: keyword
         frequency:
             type: smallint
@@ -38,4 +38,8 @@ Rg\ApiBundle\Entity\Products:
         description:
             type: text
             column: description
+    manyToMany:
+        kits:
+            targetEntity: Kits
+            mappedBy: products
     lifecycleCallbacks: {  }

@@ -8,7 +8,7 @@ namespace Rg\ApiBundle\Entity;
 class Areas
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
@@ -21,7 +21,7 @@ class Areas
     /**
      * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {

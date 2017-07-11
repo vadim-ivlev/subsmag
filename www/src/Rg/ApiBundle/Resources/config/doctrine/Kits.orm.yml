@@ -22,4 +22,15 @@ Rg\ApiBundle\Entity\Kits:
         description:
             type: text
             column: description
+    manyToMany:
+        products:
+            targetEntity: Products
+            joinTable:
+                name: kits_products
+                joinColumns:
+                    kit_id:
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    product_id:
+                        referencedColumnName: id
     lifecycleCallbacks: {  }

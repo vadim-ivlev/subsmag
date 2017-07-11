@@ -53,4 +53,12 @@ Rg\ApiBundle\Entity\Actions:
         userId:
             type: integer
             column: user_id
+    oneToMany:
+        kits:
+            targetEntity: Kits
+            mappedBy: action
+    oneToMany:
+        products:
+            targetEntity: Products
+            mappedBy: action
     lifecycleCallbacks: {  }
