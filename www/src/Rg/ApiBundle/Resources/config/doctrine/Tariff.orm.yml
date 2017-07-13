@@ -12,4 +12,21 @@ Rg\ApiBundle\Entity\Tariff:
         price:
             type: float
             column: price
+    manyToMany:
+        orders:
+            targetEntity: Order
+            mappedBy: tariffs
+    manyToOne:
+        product:
+            targetEntity: Product
+            inversedBy: tariffs
+        period:
+            targetEntity: Period
+            inversedBy: tariffs
+        delivery:
+            targetEntity: Delivery
+            inversedBy: tariffs
+        zone:
+            targetEntity: Zone
+            inversedBy: tariffs
     lifecycleCallbacks: {  }

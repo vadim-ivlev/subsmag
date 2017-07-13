@@ -22,6 +22,11 @@ class Interval
      */
     private $end;
 
+    /**
+     * @var \Rg\ApiBundle\Entity\Period
+     */
+    private $period;
+
 
     /**
      * Get id
@@ -80,4 +85,29 @@ class Interval
     {
         return $this->end;
     }
+
+    /**
+     * Set period
+     *
+     * @param \Rg\ApiBundle\Entity\Period $period
+     *
+     * @return Interval
+     */
+    public function setPeriod(\Rg\ApiBundle\Entity\Period $period = null)
+    {
+        $this->period = $period;
+
+        return $this;
+    }
+
+    /**
+     * Get period
+     *
+     * @return \Rg\ApiBundle\Entity\Period
+     */
+    public function getPeriod()
+    {
+        return $this->period;
+    }
 }
+

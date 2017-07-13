@@ -18,4 +18,11 @@ Rg\ApiBundle\Entity\Period:
         duration:
             type: smallint
             column: duration
+    oneToMany:
+        tariffs:
+            targetEntity: Tariff
+            mappedBy: period
+        intervals:
+            targetEntity: Interval
+            mappedBy: period
     lifecycleCallbacks: {  }

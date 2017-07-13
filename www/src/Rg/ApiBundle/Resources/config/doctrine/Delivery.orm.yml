@@ -13,4 +13,8 @@ Rg\ApiBundle\Entity\Delivery:
             type: string
             length: '200'
             column: name
+    oneToMany:
+        tariffs:
+            targetEntity: Tariff
+            mappedBy: delivery
     lifecycleCallbacks: {  }

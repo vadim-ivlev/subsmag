@@ -13,4 +13,8 @@ Rg\ApiBundle\Entity\Area:
             type: string
             length: '50'
             column: name
+    manyToOne:
+        zone:
+            targetEntity: Zone
+            inversedBy: areas
     lifecycleCallbacks: {  }

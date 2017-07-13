@@ -13,4 +13,11 @@ Rg\ApiBundle\Entity\Zone:
             type: string
             length: '30'
             column: name
+    oneToMany:
+        tariffs:
+            targetEntity: Tariff
+            mappedBy: zone
+        areas:
+            targetEntity: Area
+            mappedBy: zone
     lifecycleCallbacks: {  }

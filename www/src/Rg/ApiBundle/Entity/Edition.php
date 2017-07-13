@@ -32,6 +32,18 @@ class Edition
      */
     private $image;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $products;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->products = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -138,4 +150,39 @@ class Edition
     {
         return $this->image;
     }
+
+    /**
+     * Add product
+     *
+     * @param \Rg\ApiBundle\Entity\Product $product
+     *
+     * @return Edition
+     */
+    public function addProduct(\Rg\ApiBundle\Entity\Product $product)
+    {
+        $this->products[] = $product;
+
+        return $this;
+    }
+
+    /**
+     * Remove product
+     *
+     * @param \Rg\ApiBundle\Entity\Product $product
+     */
+    public function removeProduct(\Rg\ApiBundle\Entity\Product $product)
+    {
+        $this->products->removeElement($product);
+    }
+
+    /**
+     * Get products
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProducts()
+    {
+        return $this->products;
+    }
 }
+

@@ -13,4 +13,8 @@ Rg\ApiBundle\Entity\Payment:
             type: string
             length: '200'
             column: name
+    oneToMany:
+        orders:
+            targetEntity: Order
+            mappedBy: payment
     lifecycleCallbacks: {  }

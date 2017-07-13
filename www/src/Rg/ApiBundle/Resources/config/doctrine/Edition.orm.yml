@@ -23,4 +23,8 @@ Rg\ApiBundle\Entity\Edition:
         image:
             type: string
             column: image
+    manyToMany:
+        products:
+            targetEntity: Product
+            mappedBy: editions
     lifecycleCallbacks: {  }

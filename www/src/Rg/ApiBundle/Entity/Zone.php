@@ -17,6 +17,24 @@ class Zone
      */
     private $name;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tariffs;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $areas;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -51,4 +69,73 @@ class Zone
     {
         return $this->name;
     }
+
+    /**
+     * Add tariff
+     *
+     * @param \Rg\ApiBundle\Entity\Tariff $tariff
+     *
+     * @return Zone
+     */
+    public function addTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
+    {
+        $this->tariffs[] = $tariff;
+
+        return $this;
+    }
+
+    /**
+     * Remove tariff
+     *
+     * @param \Rg\ApiBundle\Entity\Tariff $tariff
+     */
+    public function removeTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
+    {
+        $this->tariffs->removeElement($tariff);
+    }
+
+    /**
+     * Get tariffs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTariffs()
+    {
+        return $this->tariffs;
+    }
+
+    /**
+     * Add area
+     *
+     * @param \Rg\ApiBundle\Entity\Area $area
+     *
+     * @return Zone
+     */
+    public function addArea(\Rg\ApiBundle\Entity\Area $area)
+    {
+        $this->areas[] = $area;
+
+        return $this;
+    }
+
+    /**
+     * Remove area
+     *
+     * @param \Rg\ApiBundle\Entity\Area $area
+     */
+    public function removeArea(\Rg\ApiBundle\Entity\Area $area)
+    {
+        $this->areas->removeElement($area);
+    }
+
+    /**
+     * Get areas
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAreas()
+    {
+        return $this->areas;
+    }
 }
+

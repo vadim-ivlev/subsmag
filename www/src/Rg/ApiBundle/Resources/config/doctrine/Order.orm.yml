@@ -22,4 +22,11 @@ Rg\ApiBundle\Entity\Order:
         is_paid:
             type: boolean
             column: is_paid
+    manyToOne:
+        payment:
+            targetEntity: Payment
+            inversedBy: orders
+    manyToMany:
+        tariffs:
+            targetEntity: Tariff
     lifecycleCallbacks: {  }

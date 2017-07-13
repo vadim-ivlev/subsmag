@@ -29,4 +29,11 @@ Rg\ApiBundle\Entity\Product:
         sort:
             type: smallint
             column: sort
+    oneToMany:
+        tariffs:
+            targetEntity: Tariff
+            mappedBy: product
+    manyToMany:
+        editions:
+            targetEntity: Edition
     lifecycleCallbacks: {  }

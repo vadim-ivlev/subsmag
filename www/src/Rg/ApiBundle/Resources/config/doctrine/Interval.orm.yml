@@ -15,4 +15,8 @@ Rg\ApiBundle\Entity\Interval:
         end:
             type: date
             column: end
+    manyToOne:
+        period:
+            targetEntity: Period
+            inversedBy: intervals
     lifecycleCallbacks: {  }

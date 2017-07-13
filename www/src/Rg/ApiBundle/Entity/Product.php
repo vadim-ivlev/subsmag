@@ -42,6 +42,24 @@ class Product
      */
     private $sort;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tariffs;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $editions;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->editions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -196,4 +214,73 @@ class Product
     {
         return $this->sort;
     }
+
+    /**
+     * Add tariff
+     *
+     * @param \Rg\ApiBundle\Entity\Tariff $tariff
+     *
+     * @return Product
+     */
+    public function addTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
+    {
+        $this->tariffs[] = $tariff;
+
+        return $this;
+    }
+
+    /**
+     * Remove tariff
+     *
+     * @param \Rg\ApiBundle\Entity\Tariff $tariff
+     */
+    public function removeTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
+    {
+        $this->tariffs->removeElement($tariff);
+    }
+
+    /**
+     * Get tariffs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTariffs()
+    {
+        return $this->tariffs;
+    }
+
+    /**
+     * Add edition
+     *
+     * @param \Rg\ApiBundle\Entity\Edition $edition
+     *
+     * @return Product
+     */
+    public function addEdition(\Rg\ApiBundle\Entity\Edition $edition)
+    {
+        $this->editions[] = $edition;
+
+        return $this;
+    }
+
+    /**
+     * Remove edition
+     *
+     * @param \Rg\ApiBundle\Entity\Edition $edition
+     */
+    public function removeEdition(\Rg\ApiBundle\Entity\Edition $edition)
+    {
+        $this->editions->removeElement($edition);
+    }
+
+    /**
+     * Get editions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEditions()
+    {
+        return $this->editions;
+    }
 }
+
