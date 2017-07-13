@@ -6,12 +6,12 @@
  * Time: 17:09
  */
 
-namespace Rg\ApiBundle\Listener;
+namespace Rg\ApiBundle\Listeners;
 
 
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
-class AllowListener
+class CorsAllowListener
 {
     public function onKernelResponse(FilterResponseEvent $event)
     {
