@@ -1,0 +1,15 @@
+Rg\ApiBundle\Entity\Tariff:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\TariffRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        price:
+            type: float
+            column: price
+    lifecycleCallbacks: {  }

@@ -14,7 +14,11 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('RgApiBundle:Default:index.html.twig');
+        $params = [];
+
+        $response = new JsonResponse();
+
+        return $response->setData($params);
     }
 
 }

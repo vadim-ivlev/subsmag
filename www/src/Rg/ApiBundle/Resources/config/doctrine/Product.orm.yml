@@ -1,0 +1,32 @@
+Rg\ApiBundle\Entity\Product:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\ProductRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '255'
+            column: name
+        description:
+            type: text
+            column: description
+        postal_index:
+            type: string
+            length: '10'
+            column: postal_index
+        is_active:
+            type: boolean
+            column: is_active
+        is_subscribable:
+            type: boolean
+            column: is_subscribable
+        sort:
+            type: smallint
+            column: sort
+    lifecycleCallbacks: {  }

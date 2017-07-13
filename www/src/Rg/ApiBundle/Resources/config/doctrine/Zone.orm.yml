@@ -1,0 +1,16 @@
+Rg\ApiBundle\Entity\Zone:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\ZoneRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '30'
+            column: name
+    lifecycleCallbacks: {  }

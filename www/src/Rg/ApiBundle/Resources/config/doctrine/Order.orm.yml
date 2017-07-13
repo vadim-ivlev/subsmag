@@ -1,0 +1,25 @@
+Rg\ApiBundle\Entity\Order:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\OrderRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        date:
+            type: datetime
+            column: date
+        address:
+            type: text
+            length: '1000'
+            column: address
+        sum:
+            type: float
+            column: sum
+        is_paid:
+            type: boolean
+            column: is_paid
+    lifecycleCallbacks: {  }

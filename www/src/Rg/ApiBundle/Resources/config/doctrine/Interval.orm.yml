@@ -1,0 +1,18 @@
+Rg\ApiBundle\Entity\Interval:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\IntervalRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        start:
+            type: date
+            column: start
+        end:
+            type: date
+            column: end
+    lifecycleCallbacks: {  }

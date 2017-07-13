@@ -1,0 +1,26 @@
+Rg\ApiBundle\Entity\Edition:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\EditionRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '128'
+            column: name
+        keyword:
+            type: string
+            length: '32'
+            column: keyword
+        frequency:
+            type: smallint
+            column: frequency
+        image:
+            type: string
+            column: image
+    lifecycleCallbacks: {  }

@@ -1,0 +1,16 @@
+Rg\ApiBundle\Entity\Payment:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\PaymentRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '200'
+            column: name
+    lifecycleCallbacks: {  }
