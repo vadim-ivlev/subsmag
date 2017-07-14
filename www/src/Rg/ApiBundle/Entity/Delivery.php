@@ -98,4 +98,3 @@ class Delivery
         return $this->tariffs;
     }
 }
-

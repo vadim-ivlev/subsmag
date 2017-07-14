@@ -214,4 +214,3 @@ class Tariff
         return $this->orders;
     }
 }
-

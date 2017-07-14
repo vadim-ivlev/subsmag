@@ -1,0 +1,32 @@
+Rg\ApiBundle\Entity\User:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\UserRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        login:
+            type: string
+            length: '200'
+            column: login
+        password:
+            type: string
+            length: '200'
+            column: password
+        key:
+            type: string
+            length: '200'
+            column: key
+        can_rest:
+            type: boolean
+            length: '200'
+            column: can_rest
+    oneToMany:
+        orders:
+            targetEntity: Order
+            mappedBy: user
+    lifecycleCallbacks: {  }

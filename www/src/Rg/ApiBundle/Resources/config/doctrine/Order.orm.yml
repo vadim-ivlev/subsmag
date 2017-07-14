@@ -26,6 +26,9 @@ Rg\ApiBundle\Entity\Order:
         payment:
             targetEntity: Payment
             inversedBy: orders
+        user:
+            targetEntity: User
+            inversedBy: orders
     manyToMany:
         tariffs:
             targetEntity: Tariff
