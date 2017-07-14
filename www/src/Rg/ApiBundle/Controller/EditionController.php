@@ -2,386 +2,88 @@
 
 namespace Rg\ApiBundle\Controller;
 
+use Rg\ApiBundle\Entity\Edition;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Rg\ApiBundle\Entity\Products;
-use Rg\ApiBundle\Entity\Kits;
 use Rg\ApiBundle\Controller\DataProcessing as Data;
 use Rg\ApiBundle\Controller\Outer as Out;
-use Rg\ApiBundle\Repository\KitsRepository;
-use Symfony\Component\Validator\Constraints\DateTime;
-use Symfony\Component\HttpFoundation\Response;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
 
 class EditionController extends Controller
 {
 
     //показать все
-    public function indexAction(Request $request)
+    public function indexAction()
     {
-        $data = new Data();
         $out = new Out();
 
         $em = $this->getDoctrine()->getManager();
 
-        $kitRep = new KitsRepository($em, $em->getClassMetadata(get_class(new Products())));
+        $editions = $em->getRepository('RgApiBundle:Edition')->findAll();
 
-        $products = $em->getRepository('RgApiBundle:Products')->findAll();
-
-        if (!$products) {
+        if (!$editions) {
             $arrError = [
                 'status' => "error",
-                'description' => 'Издания не найдены!',
+                'description' => 'Издание не найдено.',
                 'code' => 200,
                 'id' => null
             ];
-            header('Access-Control-Allow-Origin: *');
             return $out->json($arrError);
         }
 
-        foreach ($products as $key => $product) {
-            $productsList[$key]['id'] = $data->dataClearInt($product->getId());
-            $productsList[$key]['nameProduct'] = $data->dataClearStr($product->getNameProduct());
-            $productsList[$key]['frequency'] = $data->dataClearStr($product->getFrequency());
-            $productsList[$key]['flagSubscribe'] = $product->getFlagSubscribe();
-            $productsList[$key]['flagBuy'] = $product->getFlagBuy();
-            $productsList[$key]['postIndex'] = $data->dataClearInt($product->getPostIndex());
-            $productsList[$key]['image'] = $data->dataClearStr($product->getImage());
-//            $productsList[$key]['kits'] = $kitRep->getKitByProductId($product->getId());
-            $productsList[$key]['kits'] = $kitRep->getRelationByEntityId($product->getId(), 'product', 'kit');
-        }
+        $eds = array_map([$this, 'convertToArray'], $editions);
 
-        $response = $out->json($productsList);
+        $response = $out->json((object) $eds);
 
         return $response;
+    }
+
+    private function convertToArray(Edition $edition) {
+            return [
+                'id' => $edition->getId(),
+                'name' => $edition->getName(),
+                'keyword' => $edition->getKeyword(),
+                'frequency' => $edition->getFrequency(),
+                'image' => $edition->getImage(),
+            ];
     }
 
     public function showAction($id)
     {
-        $data = new Data();
-        $out = new Outer();
+        $out = new Out();
 
-        $id = $data->dataClearInt($id);
         $em = $this->getDoctrine()->getManager();
 
-        $kitRep = new KitsRepository($em, $em->getClassMetadata(get_class(new Kits())));
+        $edition = $em->getRepository('RgApiBundle:Edition')->find($id);
 
-        $product = $em->getRepository('RgApiBundle:Products')->findOneBy(['id' => $id]);
-
-        //если пользователь не найден
-        if (!$product) {
+        if (!$edition) {
             $arrError = [
                 'status' => "error",
-                'description' => 'Издание не найдено!',
+                'description' => 'Издание не найдено.',
                 'code' => 200,
                 'id' => null
             ];
-            $response = $out->json($arrError);
-            header('Access-Control-Allow-Origin: *');
-            return $response;
-//            throw $this->createNotFoundException('Unable to find post.');
+            return $out->json($arrError);
         }
 
-        $productsList['id'] = $data->dataClearStr($product->getId());
-        $productsList['nameProduct'] = $data->dataClearStr($product->getNameProduct());
-        $productsList['frequency'] = $data->dataClearStr($product->getFrequency());
-        $productsList['flagSubscribe'] = $product->getFlagSubscribe();
-        $productsList['flagBuy'] = $product->getFlagBuy();
-        $productsList['postIndex'] = $data->dataClearInt($product->getPostIndex());
-        $productsList['image'] = $data->dataClearStr($product->getImage());
+        $ed = $this->convertToArray($edition);
 
-        $productsList['image'] = $data->dataClearStr($product->getImage());
+        $response = $out->json((object) $ed);
 
-        $kits = $kitRep->getRelationByEntityId($id, 'product', 'kit');
-        $productsList['kits'] = $kits;
-
-        /** TODO: for Mighty Frontender. Remove it then.
-         *
-        **/
-       $productsList = array_merge($productsList, array(
-           'description' => 'Ежедневное издание Правительства Российской Федерации',
-           'versions' =>
-          array (
-            0 => array(
-               'name' => 'Печатная',
-               'alias' => 'print',
-               'available' => true,
-               'description' => 'Описание версии',
-            ),
-            1 => array(
-               'name' => 'Электронная',
-               'alias' => 'pdf',
-               'available' => false,
-               'description' => 'Описание версии',
-            ),
-          ),
-           'delivery' =>
-          array (
-            0 => array(
-               'name' => 'Почта России',
-               'alias' => 'postrus',
-               'description' => 'Мы отправим вам товара по почте чутка',
-            ),
-            1 => array(
-               'name' => 'Курьерская доставка',
-               'alias' => 'courier',
-               'description' => 'Мы сформируем банковскую квитанцию, которую вы сможете оплатить в любом отделении банка. Затем позвоните нам или сообщите по почте podpiska@rg.ru - и начинайте получать газету.',
-            ),
-          ),
-           'subscribesPeriods' => array(
-             'helpers' =>
-            array (
-              0 =>
-              (array(
-                 'name' => 'Полгода',
-                 'description' => 'январь-июнь',
-                 'monthStart' => 1,
-                 'monthEnd' => 3,
-                 'year' => 2017,
-                 'discount' => 10,
-              )),
-              1 =>
-              (array(
-                 'name' => 'Полгода',
-                 'description' => 'июль-декабрь',
-                 'monthStart' => 6,
-                 'monthEnd' => 12,
-                 'year' => 2017,
-                 'discount' => 10,
-              )),
-              2 =>
-              (array(
-                 'name' => 'Год',
-                 'description' => 'январь-декабрь',
-                 'monthStart' => 1,
-                 'monthEnd' => 12,
-                 'year' => 2018,
-                 'discount' => 20,
-              )),
-            ),
-             'year' =>
-            array (
-              0 =>
-              (array(
-                 'name' => 2017,
-                 'months' =>
-                array (
-                  0 =>
-                  (array(
-                     'name' => 'Январь',
-                     'number' => '1',
-                     'available' => false,
-                  )),
-                  1 =>
-                  (array(
-                     'name' => 'Февраль',
-                     'number' => '2',
-                     'available' => false,
-                  )),
-                  2 =>
-                  (array(
-                     'name' => 'Март',
-                     'number' => '3',
-                     'available' => true,
-                  )),
-                ),
-              )),
-            ),
-          ),
-           'price' =>
-          (array(
-             'minPrice' => 390,
-             'currency' => 'RUB',
-          )),
-)
-       );
-       /** END Myghty Frontender */
-
-        //собираем JSON для вывода
-        $response = $out->json($productsList);
-
-        header('Access-Control-Allow-Origin: *');
         return $response;
 
-//        return $this->render('RgApiBundle:Default:index.html.twig');
     }
 
     public function createAction(Request $request)
     {
-        $data = new Data();
-        $out = new Outer();
-
-        $arrJSONIn = json_decode($request->getContent(), true, 10);
-
-        //если пришел не JSON или не удалось его декодить
-        if (!is_array($arrJSONIn)) {
-            $arrError = [
-                'status' => "error",
-                'description' => "Некорректный запрос в POST!",
-                'code' => 200,
-                'id' => null
-            ];
-            $response = $out->json($arrError);
-            header('Access-Control-Allow-Origin: *');
-            return $response;
-        }
-
-        $caught = false;
-
-        //добавляем запись
-        $em = $this->get('doctrine')->getManager();
-        $product = new Products();
-        $product->setNameProduct($data->dataClearStr($arrJSONIn['nameProduct']));
-        $product->setFrequency($data->dataClearStr($arrJSONIn['frequency']));
-        $product->setFlagSubscribe($arrJSONIn['flagSubscribe']);
-        $product->setFlagBuy($arrJSONIn['flagBuy']);
-        $product->setPostIndex($data->dataClearInt($arrJSONIn['postIndex']));
-        $product->setImage($data->dataClearStr($arrJSONIn['image']));
-
-        $em->persist($product);
-        try {
-            $em->flush();
-        }
-        catch (UniqueConstraintViolationException $e) {
-            //собираем JSON для вывода ошибки
-            $arrError = [
-                'status' => "error",
-                'description' => $e->getMessage(),
-                'sqlState' => $e->getSQLState(),
-                'errorCode' => $e->getErrorCode(),
-                'id' => null
-            ];
-            $response = $out->json($arrError);
-            $caught = true;
-        }
-
-
-
-        if (!$caught) {
-            //собираем JSON для вывода, если ошибок нет
-            $response = $out->json($product->getId());
-
-            //если указан(-ы) комплект(-ы) - добавляем издание в комплект(-ы)
-            if (is_array($arrJSONIn['kits']) && count($arrJSONIn['kits']) > 0) {
-                $kitsRep = new KitsRepository($em, $em->getClassMetadata(get_class(new Kits())));
-                foreach ($arrJSONIn['kits'] as $kitId) {
-                    if ((integer)$kitId > 0) {
-                        $kitsRep->addRelationToEntity($product->getId(), $kitId * 1, 'product', 'kit');
-                    }
-                }
-            }
-        }
-
-        header('Access-Control-Allow-Origin: *');
-        return $response;
+        return (new Out())->json((object) ['ask' => 'wait for a while, please.']);
     }
 
     public function editAction($id, Request $request)
     {
-        $data = new Data();
-        $out = new Outer();
-
-        $id = $data->dataClearInt($id);
-
-        $arrJSONIn = json_decode($request->getContent(), true, 10);
-
-        $em = $this->getDoctrine()->getManager();
-
-        $product = $em->getRepository('RgApiBundle:Products')->findOneBy(['id' => $id]);
-
-        $caught = false;
-
-        //если пользователь не найден
-        if (!$product) {
-            //собираем JSON для вывода ошибки
-            $arrError = [
-                'status' => "error",
-                'description' => 'Издание не найдено!',
-                'id' => null
-            ];
-            $caught = true;
-        }
-
-        //если пришел не JSON или не удалось его декодить
-        if (!is_array($arrJSONIn)) {
-            $arrError = [
-                'status' => "error",
-                'description' => "Некорректный запрос в PUT!",
-                'code' => 200,
-                'id' => null
-            ];
-            $caught = true;
-        }
-
-        //обновляем запись
-        $em = $this->getDoctrine()->getManager();
-
-        if (isset($arrJSONIn['nameProduct']))
-            $productsList['nameProduct'] = $product->setNameProduct($data->dataClearStr($arrJSONIn['nameProduct']));
-
-        if (isset($arrJSONIn['frequency']))
-            $productsList['frequency'] = $product->setFrequency($data->dataClearStr($arrJSONIn['frequency']));
-
-        if (isset($arrJSONIn['flagSubscribe']))
-            $productsList['flagSubscribe'] = $product->setFlagSubscribe($arrJSONIn['flagSubscribe']);
-
-        if (isset($arrJSONIn['flagBuy']))
-            $productsList['flagBuy'] = $product->setFlagBuy($arrJSONIn['flagBuy']);
-
-        if (isset($arrJSONIn['postIndex']))
-            $productsList['postIndex'] = $product->setPostIndex($data->dataClearInt($arrJSONIn['postIndex']));
-
-        if (isset($arrJSONIn['image']))
-            $productsList['image'] = $product->setImage($data->dataClearStr($arrJSONIn['image']));
-
-        try {
-            $em->flush();
-        }
-        catch (UniqueConstraintViolationException $e) {
-            //собираем JSON для вывода ошибки
-            $arrError = [
-                'status' => "error",
-                'description' => $e->getMessage(),
-                'sqlState' => $e->getSQLState(),
-                'errorCode' => $e->getErrorCode(),
-                'id' => null
-            ];
-            $caught = true;
-        }
-
-
-        //если какая-то ошибка - выводим ее
-        if ($caught) {
-            //собираем JSON для вывода, если ошибок нет
-            $response = $out->json($arrError);
-            return $response;
-        }
-
-        //если указан(-ы) комплект(-ы) - добавляем издание в комплект(-ы) [МАССИВ!!!]
-        if (is_array($arrJSONIn['kits']) && count($arrJSONIn['kits']) > 0) {
-            $kitsRep = new ProductsRepository($em, $em->getClassMetadata(get_class(new Kits())));
-            //сначала удаляем все связи изданиЕ-комплектЫ
-            $kitsRep->removeProductFromKit($id, 0, true);
-            //и создаем новые связи издания с комплектами
-            foreach ($arrJSONIn['kits'] as $kitId) {
-                if ($kitId * 1 > 0) {
-                    $kitsRep->addRelationToEntity($id, $kitId, 'product', 'kit');
-                }
-            }
-        }
-
-
-        $arr = [print_r($request->getContent(), true)];
-        $response = $out->json($arr);
-
-        header('Access-Control-Allow-Origin: *');
-        return $response;
-//        return $this->render('RgApiBundle:Default:index.html.twig');
+        return (new Out())->json((object) ['ask' => 'wait for a while, please.']);
     }
 
 }
