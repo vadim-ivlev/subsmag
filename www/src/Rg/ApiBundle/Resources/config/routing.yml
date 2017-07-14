@@ -2,7 +2,55 @@ rg_api_homepage:
     path:     /api/
     defaults: { _controller: RgApiBundle:Default:index }
 
+# продукты, они же товары, они же комплекты
+rg_api_product_index:
+    path:     /api/product/
+    defaults: { _controller: RgApiBundle:Product:index, _format:json }
+    methods:  [GET, HEAD]
 
+#### ####### ####### ####### ####### ####### ############# ######## ####### ####### ####### ####### ####### ###########
+## All these are old routes. They should be revised and refactored to new entity structure.
+#### ####### ####### ####### ####### ####### ############# ####### ####### ####### ####### ####### ####### ############
+
+rg_api_product_show:
+    path:     /api/product/{id}/
+    defaults: { _controller: RgApiBundle:Product:show, _format:json }
+#    requirements: { id: \d+ }
+    methods:  [GET, HEAD]
+
+rg_api_product_create:
+    path:     /api/product/
+    defaults: { _controller: RgApiBundle:Product:create, _format:json }
+    methods:  [POST]
+
+rg_api_product_edit:
+    path:     /api/product/{id}/
+    defaults: { _controller: RgApiBundle:Product:edit, _format:json }
+#    requirements: { id: \d+ }
+    methods:   [PUT]
+
+# издания
+rg_api_edition_index:
+    path:     /api/edition/
+    defaults: { _controller: RgApiBundle:Edition:index, _format:json }
+    methods:  [GET, HEAD]
+
+rg_api_edition_show:
+    path:     /api/edition/{id}/
+    defaults: { _controller: RgApiBundle:Edition:show, _format:json }
+    requirements: { id: \d+ }
+    methods:  [GET, HEAD]
+
+rg_api_edition_create:
+    path:     /api/edition/
+    defaults: { _controller: RgApiBundle:Edition:create, _format:json }
+    methods:  [POST]
+
+rg_api_edition_edit:
+    path:     /api/edition/{id}/
+    defaults: { _controller: RgApiBundle:Edition:edit, _format:json }
+    requirements: { id: \d+ }
+    methods:   [PUT]
 
 rg_api_users_index:
     path:     /api/users/
@@ -23,9 +71,6 @@ rg_api_users_edit:
     path:     /api/users/{id}/
     defaults: { _controller: RgApiBundle:Users:edit, _format:json }
     methods:  [PUT]
-
-
-
 
 
 rg_api_actions_index:
@@ -170,55 +215,11 @@ rg_api_areas_edit:
 
 
 
-rg_api_products_index:
-    path:     /api/products/
-    defaults: { _controller: RgApiBundle:Products:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_products_show:
-    path:     /api/products/{id}/
-    defaults: { _controller: RgApiBundle:Products:show, _format:json }
-#    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
-
-rg_api_products_create:
-    path:     /api/products/
-    defaults: { _controller: RgApiBundle:Products:create, _format:json }
-    methods:  [POST]
-
-rg_api_products_edit:
-    path:     /api/products/{id}/
-    defaults: { _controller: RgApiBundle:Products:edit, _format:json }
-#    requirements: { id: \d+ }
-    methods:   [PUT]
 
 
 
 
 
-
-
-rg_api_kits_index:
-    path:     /api/kits/
-    defaults: { _controller: RgApiBundle:Kits:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_kits_show:
-    path:     /api/kits/{id}/
-    defaults: { _controller: RgApiBundle:Kits:show, _format:json }
-#    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
-
-rg_api_kits_create:
-    path:     /api/kits/
-    defaults: { _controller: RgApiBundle:Kits:create, _format:json }
-    methods:  [POST]
-
-rg_api_kits_edit:
-    path:     /api/kits/{id}/
-    defaults: { _controller: RgApiBundle:Kits:edit, _format:json }
-#    requirements: { id: \d+ }
-    methods:   [PUT]
 
 
 

@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-class ProductsController extends Controller
+class EditionController extends Controller
 {
 
     //показать все
@@ -58,7 +58,6 @@ class ProductsController extends Controller
 
         $response = $out->json($productsList);
 
-        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 

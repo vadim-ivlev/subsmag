@@ -8,8 +8,6 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Rg\ApiBundle\Entity\Periods as Periods;
-use Rg\ApiBundle\Entity\Promocodes as Promocodes;
 use Rg\ApiBundle\Controller\DataProcessing as Data;
 use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -26,11 +24,10 @@ class PeriodsController extends Controller
         $out = new Out();
 
         //берем параметры из config.yml
-        $periodsList = $this->container->getParameter('periods');
+        $periodsList = $this->getParameter('periods');
 
         $response = $out->json($periodsList);
 
-        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 

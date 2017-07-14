@@ -31,8 +31,8 @@ class Outer
         //собираем JSON для вывода
         $response = new JsonResponse();
         $response
-            ->setData($out, JSON_UNESCAPED_UNICODE)
-            ->headers->set('Content-Type', 'application/json');
+            ->setData($out)
+            ->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         return $response;
     }
 

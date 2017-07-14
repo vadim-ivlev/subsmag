@@ -2,16 +2,15 @@
 
 namespace Rg\ApiBundle\Controller;
 
+use function PHPSTORM_META\map;
+use Rg\ApiBundle\Entity\Edition;
+use Rg\ApiBundle\Entity\Product;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Rg\ApiBundle\Entity\Kits as Kits;
-use Rg\ApiBundle\Repository\KitsRepository;
-use Rg\ApiBundle\Entity\Products as Products;
-use Rg\ApiBundle\Entity\RawDB as RawDB;
 use Rg\ApiBundle\Controller\DataProcessing as Data;
 use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -20,48 +19,51 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Tests\Fixtures\Entity;
 
-class KitsController extends Controller
+class ProductController extends Controller
 {
 
     //показать все
     public function indexAction(Request $request)
     {
-        $data = new Data();
         $out = new Out();
 
         $em = $this->getDoctrine()->getManager();
 
-        $kits = $em->getRepository('RgApiBundle:Kits')->findAll();
+        $products = $em->getRepository('RgApiBundle:Product')->findAll();
 
-        if (!$kits) {
+        if (!$products) {
             $arrError = [
                 'status' => "error",
                 'description' => 'Комплекты не найдены!',
                 'code' => 200,
                 'id' => null
             ];
-            header('Access-Control-Allow-Origin: *');
             return $out->json($arrError);
         }
 
-        //собираем издания в комплекте
-        $kitRep = new KitsRepository($em, $em->getClassMetadata(get_class(new Products())));
+        $prods = array_map(function(Product $product) {
+            $editions = array_map(function(Edition $edition) {
+                return [
+                    'id' => $edition->getId(),
+                    'name' => $edition->getName(),
+                    'keyword' => $edition->getKeyword(),
+                    'frequency' => $edition->getFrequency(),
+                    'image' => $edition->getImage(),
+                ];
+            }, iterator_to_array($product->getEditions()));
 
-        foreach ($kits as $key => $kit) {
-            $arrProducts = $kitRep->getRelationByEntityId($kit->getId(), 'product', 'kit');
-            $kitsList[$key]['id'] = $data->dataClearInt($kit->getId());
-            $kitsList[$key]['nameKit'] = $data->dataClearStr($kit->getNameKit());
-            $kitsList[$key]['flagSubscribe'] = $kit->getFlagSubscribe();
-            $kitsList[$key]['image'] = $kit->getImage();
-            $kitsList[$key]['products'] = $arrProducts;
-        }
+            return [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'description' => $product->getDescription(),
+                'postal_index' => $product->getPostalIndex(),
+                'sort' => $product->getSort(),
+                'editions' => $editions,
+            ];
+        }, $products);
 
-//        $customer = $em->getRepository( "QR1000MainBundle:Customer" )->findOneById( $customerID );
+        $response = $out->json((object) $prods);
 
-
-        $response = $out->json($kitsList);
-
-        header('Access-Control-Allow-Origin: *');
         return $response;
     }
 
