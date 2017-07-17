@@ -4,7 +4,7 @@ rg_api_homepage:
 
 # продукты, они же товары, они же комплекты
 rg_api_product_index:
-    path:     /api/product/
+    path:     /api/products/
     defaults: { _controller: RgApiBundle:Product:index, _format:json }
     methods:  [GET, HEAD]
 rg_api_product_show:
@@ -15,7 +15,7 @@ rg_api_product_show:
 
 # издания
 rg_api_edition_index:
-    path:     /api/edition/
+    path:     /api/editions/
     defaults: { _controller: RgApiBundle:Edition:index, _format:json }
     methods:  [GET, HEAD]
 
