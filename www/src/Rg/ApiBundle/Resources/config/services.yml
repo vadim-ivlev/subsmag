@@ -4,3 +4,6 @@ services:
         class: Rg\ApiBundle\Listeners\CorsAllowListener
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+# Services
+    rg_api.edition_normalizer:
+        class: Rg\ApiBundle\Service\EditionNormalizer

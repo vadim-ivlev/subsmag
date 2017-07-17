@@ -2,15 +2,12 @@
 
 namespace Rg\ApiBundle\Controller;
 
-use Rg\ApiBundle\Entity\Edition;
 use Rg\ApiBundle\Entity\Product;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-
 use Symfony\Component\HttpFoundation\Request;
-use Rg\ApiBundle\Controller\DataProcessing as Data;
 use Rg\ApiBundle\Controller\Outer as Out;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -27,8 +24,6 @@ class ProductController extends Controller
             $arrError = [
                 'status' => "error",
                 'description' => 'Комплекты не найдены!',
-                'code' => 200,
-                'id' => null
             ];
             return $out->json($arrError);
         }
@@ -52,8 +47,6 @@ class ProductController extends Controller
             $arrError = [
                 'status' => "error",
                 'description' => 'Комплект не найден!',
-                'code' => 200,
-                'id' => null
             ];
             return $out->json($arrError);
         }
@@ -66,15 +59,10 @@ class ProductController extends Controller
     }
 
     private function getEditionsAndConvertToArray(Product $product) {
-        $editions = array_map(function (Edition $edition) {
-            return [
-                'id' => $edition->getId(),
-                'name' => $edition->getName(),
-                'keyword' => $edition->getKeyword(),
-                'frequency' => $edition->getFrequency(),
-                'image' => $edition->getImage(),
-            ];
-        }, iterator_to_array($product->getEditions()));
+        $editions = array_map(
+            [$this->get('rg_api.edition_normalizer'), 'convertToArray'],
+            iterator_to_array($product->getEditions())
+        );
 
         return [
             'id' => $product->getId(),

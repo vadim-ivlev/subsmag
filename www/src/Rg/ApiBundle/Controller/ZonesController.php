@@ -2,20 +2,14 @@
 
 namespace Rg\ApiBundle\Controller;
 
+use Rg\ApiBundle\Entity\Zone;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Rg\ApiBundle\Entity\Zones as Zones;
-use Rg\ApiBundle\Entity\Promocodes as Promocodes;
 use Rg\ApiBundle\Controller\DataProcessing as Data;
 use Rg\ApiBundle\Controller\Outer as Out;
-use Symfony\Component\Validator\Constraints\DateTime;
-use Symfony\Component\HttpFoundation\Response;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Common\Persistence\ManagerRegistry;
 
 class ZonesController extends Controller
 {
@@ -23,12 +17,11 @@ class ZonesController extends Controller
     //показать все
     public function indexAction()
     {
-        $data = new Data();
         $out = new Out();
 
         $em = $this->getDoctrine()->getManager();
 
-        $zones = $em->getRepository('RgApiBundle:Zones')->findAll();
+        $zones = $em->getRepository('RgApiBundle:Zone')->findAll();
 
         if (!$zones) {
             $arrError = [
@@ -40,16 +33,54 @@ class ZonesController extends Controller
             return $out->json($arrError);
         }
 
-        foreach ($zones as $key => $zone) {
-            $zonesResp[$key]['id'] = $data->dataClearInt($zone->getId());
-            $zonesResp[$key]['zoneNumber'] = $data->dataClearInt($zone->getZoneNumber());
-            $zonesResp[$key]['tarifId'] = $data->dataClearInt($zone->getTarifId());
-        }
+        $zs = array_map(
+            function(Zone $zone) {
+                return [
+                    'id' => $zone->getId(),
+                    'name' => $zone->getName(),
+                ];
+            },
+            $zones
+        );
 
-        $response = $out->json($zonesResp);
+        $response = $out->json((object)$zs);
 
         return $response;
     }
+
+    public function showAction($id)
+    {
+        $data = new Data();
+        $out = new Out();
+
+        $id = $data->dataClearInt($id);
+
+        $em = $this->getDoctrine()->getManager();
+
+        $action = $em->getRepository('RgApiBundle:Zones')->findOneBy(['id' => $id]);
+
+        //если пользователь не найден
+        if (!$action) {
+            $arrError = [
+                'status' => "error",
+                'description' => 'Зона не найдена!',
+                'code' => 200,
+                'id' => null
+            ];
+            $response = $out->json($arrError);
+            return $response;
+        }
+
+        $zonesList['id'] = $data->dataClearInt($action->getId());
+        $zonesList['zoneNumber'] = $data->dataClearInt($action->getZoneNumber());
+        $zonesList['tarifId'] = $data->dataClearInt($action->getTarifId());
+
+        //собираем JSON для вывода
+        $response = $out->json($zonesList);
+
+        return $response;
+    }
+
 
     //получить зону для нужного региона
     public function zonebyregionAction($region)
@@ -152,40 +183,6 @@ class ZonesController extends Controller
 
         return $response;
     }
-
-    public function showAction($id)
-    {
-        $data = new Data();
-        $out = new Out();
-
-        $id = $data->dataClearInt($id);
-
-        $em = $this->getDoctrine()->getManager();
-
-        $action = $em->getRepository('RgApiBundle:Zones')->findOneBy(['id' => $id]);
-
-        //если пользователь не найден
-        if (!$action) {
-            $arrError = [
-                'status' => "error",
-                'description' => 'Зона не найдена!',
-                'code' => 200,
-                'id' => null
-            ];
-            $response = $out->json($arrError);
-            return $response;
-        }
-
-        $zonesList['id'] = $data->dataClearInt($action->getId());
-        $zonesList['zoneNumber'] = $data->dataClearInt($action->getZoneNumber());
-        $zonesList['tarifId'] = $data->dataClearInt($action->getTarifId());
-
-        //собираем JSON для вывода
-        $response = $out->json($zonesList);
-
-        return $response;
-    }
-
     public function createAction(Request $request)
     {
         $data = new Data();
