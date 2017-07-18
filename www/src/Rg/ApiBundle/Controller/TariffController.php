@@ -32,7 +32,7 @@ class TariffController extends Controller
         $prods = array_map([$this, 'convertToArray'], $tariffs);
 
         $response = $out->json((object) $prods)
-            ->setStatusCode(Response::HTTP_NOT_FOUND);
+            ->setStatusCode(Response::HTTP_OK);
 
         return $response;
     }
@@ -60,12 +60,39 @@ class TariffController extends Controller
     }
 
     private function convertToArray(Tariff $tariff) {
+        $product = $tariff->getProduct();
+        $period = $tariff->getPeriod();
+        $delivery = $tariff->getDelivery();
+        $zone = $tariff->getZone();
+        $media = $tariff->getMedia();
+
         return [
             'id' => $tariff->getId(),
-            'product_id' => $tariff->getProduct()->getId(),
-            'period_id' => $tariff->getPeriod()->getId(),
-            'delivery_id' => $tariff->getDelivery()->getId(),
-            'zone_id' => $tariff->getZone()->getId(),
+            'product' => [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'description' => $product->getDescription(),
+            ],
+            'period' => [
+                'id' => $period->getId(),
+                'month_start' => $period->getMonthStart(),
+                'year_start' => $period->getYearStart(),
+                'duration' => $period->getDuration(),
+            ],
+            'delivery' => [
+                'id' => $delivery->getId(),
+                'name' => $delivery->getName(),
+                'description' => $delivery->getDescription(),
+            ],
+            'zone' => [
+                'id' => $zone->getId(),
+                'name' => $zone->getName(),
+            ],
+            'media' => [
+                'id' => $media->getId(),
+                'name' => $media->getName(),
+                'alias' => $media->getAlias(),
+            ],
             'price' => $tariff->getPrice(),
         ];
     }
@@ -76,7 +103,7 @@ class TariffController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $tariffs = $em->getRepository('RgApiBundle:Tariff')->findBy(['product' => $product_id]);
+        $tariffs = $em->getRepository('RgApiBundle:Tariff')->filterByProductId($product_id);
 
         if (!$tariffs) {
             $arrError = [
@@ -87,10 +114,9 @@ class TariffController extends Controller
             return $out->json($arrError);
         }
 
-        $prods = array_map([$this, 'convertToArray'], $tariffs);
+        $normalized = array_map([$this, 'convertToArray'], $tariffs);
 
-        $response = $out->json((object) $prods)
-            ->setStatusCode(Response::HTTP_NOT_FOUND);
+        $response = $out->json((object) $normalized);
 
         return $response;
     }

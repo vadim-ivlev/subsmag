@@ -81,3 +81,4 @@ class Area
         return $this->zone;
     }
 }
+

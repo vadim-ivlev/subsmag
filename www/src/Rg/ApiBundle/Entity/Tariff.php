@@ -38,6 +38,11 @@ class Tariff
     private $zone;
 
     /**
+     * @var \Rg\ApiBundle\Entity\Media
+     */
+    private $media;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $orders;
@@ -181,6 +186,30 @@ class Tariff
     }
 
     /**
+     * Set media
+     *
+     * @param \Rg\ApiBundle\Entity\Media $media
+     *
+     * @return Tariff
+     */
+    public function setMedia(\Rg\ApiBundle\Entity\Media $media = null)
+    {
+        $this->media = $media;
+
+        return $this;
+    }
+
+    /**
+     * Get media
+     *
+     * @return \Rg\ApiBundle\Entity\Media
+     */
+    public function getMedia()
+    {
+        return $this->media;
+    }
+
+    /**
      * Add order
      *
      * @param \Rg\ApiBundle\Entity\Order $order
@@ -214,3 +243,4 @@ class Tariff
         return $this->orders;
     }
 }
+

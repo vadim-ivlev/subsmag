@@ -29,4 +29,7 @@ Rg\ApiBundle\Entity\Tariff:
         zone:
             targetEntity: Zone
             inversedBy: tariffs
+        media:
+            targetEntity: Media
+            inversedBy: tariffs
     lifecycleCallbacks: {  }
