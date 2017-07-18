@@ -10,4 +10,11 @@ namespace Rg\ApiBundle\Repository;
  */
 class TariffRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getListByProductId(int $product_id)
+    {
+        $meta = $this->getClassMetadata();
+        var_dump($meta);
+
+        return ;
+    }
 }

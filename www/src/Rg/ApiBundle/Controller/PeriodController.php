@@ -25,7 +25,7 @@ class PeriodController extends Controller
         if (!$periods) {
             $arrError = [
                 'status' => "error",
-                'description' => 'Комплекты не найдены!',
+                'description' => 'Периоды не найдены!',
             ];
             return $out->json($arrError);
         }
@@ -48,7 +48,7 @@ class PeriodController extends Controller
         if (!$period) {
             $arrError = [
                 'status' => "error",
-                'description' => 'Комплект не найден!',
+                'description' => 'Период не найден!',
             ];
             return $out->json($arrError);
         }

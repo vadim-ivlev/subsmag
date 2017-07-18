@@ -32,4 +32,5 @@ Rg\ApiBundle\Entity\Order:
     manyToMany:
         tariffs:
             targetEntity: Tariff
+            inversedBy: orders
     lifecycleCallbacks: {  }

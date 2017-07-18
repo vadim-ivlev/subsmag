@@ -34,8 +34,16 @@ rg_api_tariffs_index:
 rg_api_tariffs_show:
     path:     /api/tariffs/{id}/
     defaults: { _controller: RgApiBundle:Tariff:show, _format:json }
+    requirements: { id: \d+ }
     methods:  [GET, HEAD]
 
+rg_api_tariffs_filter_by_product:
+    path:     /api/tariffs/filter-by-product/{product_id}/
+    defaults: { _controller: RgApiBundle:Tariff:filterByProductId, _format:json }
+    requirements: { product_id: \d+ }
+    methods:  [GET, HEAD]
+
+# периоды подписок
 rg_api_periods_index:
     path:     /api/periods/
     defaults: { _controller: RgApiBundle:Period:index, _format:json }
@@ -44,7 +52,21 @@ rg_api_periods_index:
 rg_api_periods_show:
     path:     /api/periods/{id}/
     defaults: { _controller: RgApiBundle:Period:show, _format:json }
+    requirements: { id: \d+ }
     methods:  [GET, HEAD]
+
+# зоны
+rg_api_zones_index:
+    path:     /api/zones/
+    defaults: { _controller: RgApiBundle:Zones:index }
+    methods:  [GET, HEAD]
+
+rg_api_zones_show:
+    path:     /api/zones/{id}/
+    defaults: { _controller: RgApiBundle:Zones:show, _format:json }
+    requirements: { id: \d+ }
+    methods:  [GET, HEAD]
+
 #### ####### ####### ####### ####### ####### ############# ######## ####### ####### ####### ####### ####### ###########
 ## All the next are old routes. They should be revised and refactored to new entity structure.
 #### ####### ####### ####### ####### ####### ############# ####### ####### ####### ####### ####### ####### ############
@@ -163,16 +185,6 @@ rg_api_promocodes_edit:
 
 
 
-
-rg_api_zones_index:
-    path:     /api/zones/
-    defaults: { _controller: RgApiBundle:Zones:index }
-    methods:  [GET, HEAD]
-
-rg_api_zones_show:
-    path:     /api/zones/{id}/
-    defaults: { _controller: RgApiBundle:Zones:show, _format:json }
-    methods:  [GET, HEAD]
 
 rg_api_zones_zonebyregion:
     path:     /api/zones/by-area/{region}/

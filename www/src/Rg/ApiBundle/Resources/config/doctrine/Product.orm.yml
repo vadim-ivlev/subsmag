@@ -36,4 +36,5 @@ Rg\ApiBundle\Entity\Product:
     manyToMany:
         editions:
             targetEntity: Edition
+            inversedBy: products
     lifecycleCallbacks: {  }

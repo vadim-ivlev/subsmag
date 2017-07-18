@@ -63,9 +63,36 @@ class TariffController extends Controller
         return [
             'id' => $tariff->getId(),
             'product_id' => $tariff->getProduct()->getId(),
+            'period_id' => $tariff->getPeriod()->getId(),
             'delivery_id' => $tariff->getDelivery()->getId(),
             'zone_id' => $tariff->getZone()->getId(),
+            'price' => $tariff->getPrice(),
         ];
+    }
+
+    public function filterByProductIdAction($product_id)
+    {
+        $out = new Out();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $tariffs = $em->getRepository('RgApiBundle:Tariff')->findBy(['product' => $product_id]);
+
+        if (!$tariffs) {
+            $arrError = [
+                'status' => "error",
+                'description' => 'Тарифы не найдены!',
+                'code' => Response::HTTP_NOT_FOUND,
+            ];
+            return $out->json($arrError);
+        }
+
+        $prods = array_map([$this, 'convertToArray'], $tariffs);
+
+        $response = $out->json((object) $prods)
+            ->setStatusCode(Response::HTTP_NOT_FOUND);
+
+        return $response;
     }
 
     public function createAction(Request $request)
