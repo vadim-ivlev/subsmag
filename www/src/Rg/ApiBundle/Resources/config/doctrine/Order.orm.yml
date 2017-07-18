@@ -1,6 +1,6 @@
 Rg\ApiBundle\Entity\Order:
     type: entity
-    table: null
+    table: "`order`"
     repositoryClass: Rg\ApiBundle\Repository\OrderRepository
     id:
         id:

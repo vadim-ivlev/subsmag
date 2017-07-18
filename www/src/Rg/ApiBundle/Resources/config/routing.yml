@@ -25,8 +25,28 @@ rg_api_edition_show:
     requirements: { id: \d+ }
     methods:  [GET, HEAD]
 
+# тарифы на подписку
+rg_api_tariffs_index:
+    path:     /api/tariffs/
+    defaults: { _controller: RgApiBundle:Tariff:index }
+    methods:  [GET, HEAD]
+
+rg_api_tariffs_show:
+    path:     /api/tariffs/{id}/
+    defaults: { _controller: RgApiBundle:Tariff:show, _format:json }
+    methods:  [GET, HEAD]
+
+rg_api_periods_index:
+    path:     /api/periods/
+    defaults: { _controller: RgApiBundle:Period:index, _format:json }
+    methods:  [GET, HEAD]
+
+rg_api_periods_show:
+    path:     /api/periods/{id}/
+    defaults: { _controller: RgApiBundle:Period:show, _format:json }
+    methods:  [GET, HEAD]
 #### ####### ####### ####### ####### ####### ############# ######## ####### ####### ####### ####### ####### ###########
-## All these are old routes. They should be revised and refactored to new entity structure.
+## All the next are old routes. They should be revised and refactored to new entity structure.
 #### ####### ####### ####### ####### ####### ############# ####### ####### ####### ####### ####### ####### ############
 
 
@@ -128,15 +148,6 @@ rg_api_promocodes_edit:
 
 
 
-rg_api_periods_index:
-    path:     /api/periods/
-    defaults: { _controller: RgApiBundle:Periods:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_periods_show:
-    path:     /api/periods/{id}/
-    defaults: { _controller: RgApiBundle:Periods:show, _format:json }
-    methods:  [GET, HEAD]
 #
 #rg_api_periods_create:
 #    path:     /api/periods/

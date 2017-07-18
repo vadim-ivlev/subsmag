@@ -26,4 +26,3 @@ doctrine:
                 connection: default
                 mappings:
 #                    RgSubsmagBundle:  ~
-

@@ -1,6 +1,6 @@
 Rg\ApiBundle\Entity\Interval:
     type: entity
-    table: null
+    table: "`interval`"
     repositoryClass: Rg\ApiBundle\Repository\IntervalRepository
     id:
         id:

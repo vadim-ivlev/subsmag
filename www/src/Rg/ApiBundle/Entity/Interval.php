@@ -110,3 +110,4 @@ class Interval
         return $this->period;
     }
 }
+

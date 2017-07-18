@@ -38,6 +38,11 @@ class Order
     private $payment;
 
     /**
+     * @var \Rg\ApiBundle\Entity\User
+     */
+    private $user;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tariffs;
@@ -181,6 +186,30 @@ class Order
     }
 
     /**
+     * Set user
+     *
+     * @param \Rg\ApiBundle\Entity\User $user
+     *
+     * @return Order
+     */
+    public function setUser(\Rg\ApiBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Rg\ApiBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
      * Add tariff
      *
      * @param \Rg\ApiBundle\Entity\Tariff $tariff
@@ -213,33 +242,5 @@ class Order
     {
         return $this->tariffs;
     }
-    /**
-     * @var \Rg\ApiBundle\Entity\User
-     */
-    private $user;
-
-
-    /**
-     * Set user
-     *
-     * @param \Rg\ApiBundle\Entity\User $user
-     *
-     * @return Order
-     */
-    public function setUser(\Rg\ApiBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \Rg\ApiBundle\Entity\User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
 }
+

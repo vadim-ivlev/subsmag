@@ -50,40 +50,34 @@ class ZonesController extends Controller
 
     public function showAction($id)
     {
-        $data = new Data();
         $out = new Out();
-
-        $id = $data->dataClearInt($id);
 
         $em = $this->getDoctrine()->getManager();
 
-        $action = $em->getRepository('RgApiBundle:Zones')->findOneBy(['id' => $id]);
+        $zone = $em->getRepository('RgApiBundle:Zone')->find($id);
 
-        //если пользователь не найден
-        if (!$action) {
+        if (!$zone) {
             $arrError = [
                 'status' => "error",
                 'description' => 'Зона не найдена!',
                 'code' => 200,
                 'id' => null
             ];
-            $response = $out->json($arrError);
-            return $response;
+            return $out->json($arrError);
         }
 
-        $zonesList['id'] = $data->dataClearInt($action->getId());
-        $zonesList['zoneNumber'] = $data->dataClearInt($action->getZoneNumber());
-        $zonesList['tarifId'] = $data->dataClearInt($action->getTarifId());
+        $zs = [
+                'id' => $zone->getId(),
+                'name' => $zone->getName(),
+        ];
 
-        //собираем JSON для вывода
-        $response = $out->json($zonesList);
+        $response = $out->json((object)$zs);
 
         return $response;
     }
 
-
     //получить зону для нужного региона
-    public function zonebyregionAction($region)
+    public function zoneByAreaAction($region)
     {
         $data = new Data();
         $out = new Out();
@@ -98,8 +92,6 @@ class ZonesController extends Controller
             $area = $em->getRepository('RgApiBundle:Areas')->findOneBy(['nameArea' => $query]);
             //берем зону
             $zone = $em->getRepository('RgApiBundle:Zones')->findOneBy(['id' => $area->getId()]);
-//TODO: $tarifList = $em->getRepository('RgApiBundle:Tarif')->findBy(['id' => $zone->getId()]);
-
 
             $zoneId['zone'] = $data->dataClearInt($zone->getZoneNumber());
 
