@@ -282,5 +282,91 @@ class Product
     {
         return $this->editions;
     }
-}
+    /**
+     * @var boolean
+     */
+    private $is_kit;
 
+
+    /**
+     * Set isKit
+     *
+     * @param boolean $isKit
+     *
+     * @return Product
+     */
+    public function setIsKit($isKit)
+    {
+        $this->is_kit = $isKit;
+
+        return $this;
+    }
+
+    /**
+     * Get isKit
+     *
+     * @return boolean
+     */
+    public function getIsKit()
+    {
+        return $this->is_kit;
+    }
+    /**
+     * @var boolean
+     */
+    private $is_archive;
+
+    /**
+     * @var boolean
+     */
+    private $is_outer;
+
+
+    /**
+     * Set isArchive
+     *
+     * @param boolean $isArchive
+     *
+     * @return Product
+     */
+    public function setIsArchive($isArchive)
+    {
+        $this->is_archive = $isArchive;
+
+        return $this;
+    }
+
+    /**
+     * Get isArchive
+     *
+     * @return boolean
+     */
+    public function getIsArchive()
+    {
+        return $this->is_archive;
+    }
+
+    /**
+     * Set isOuter
+     *
+     * @param boolean $isOuter
+     *
+     * @return Product
+     */
+    public function setIsOuter($isOuter)
+    {
+        $this->is_outer = $isOuter;
+
+        return $this;
+    }
+
+    /**
+     * Get isOuter
+     *
+     * @return boolean
+     */
+    public function getIsOuter()
+    {
+        return $this->is_outer;
+    }
+}

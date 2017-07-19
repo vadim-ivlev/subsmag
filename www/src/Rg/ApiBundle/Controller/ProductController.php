@@ -69,6 +69,9 @@ class ProductController extends Controller
             'name' => $product->getName(),
             'description' => $product->getDescription(),
             'postal_index' => $product->getPostalIndex(),
+            'is_kit' => $product->getIsKit(),
+            'is_archive' => $product->getIsArchive(),
+            'is_outer' => $product->getIsOuter(),
             'sort' => $product->getSort(),
             'editions' => $editions,
         ];

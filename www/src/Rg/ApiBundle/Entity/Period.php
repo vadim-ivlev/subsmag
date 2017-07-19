@@ -196,4 +196,3 @@ class Period
         return $this->intervals;
     }
 }
-

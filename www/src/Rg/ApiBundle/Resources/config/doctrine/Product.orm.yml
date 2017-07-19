@@ -23,9 +23,15 @@ Rg\ApiBundle\Entity\Product:
         is_active:
             type: boolean
             column: is_active
-        is_subscribable:
+        is_archive:
             type: boolean
-            column: is_subscribable
+            column: is_archive
+        is_outer:
+            type: boolean
+            column: is_outer
+        is_kit:
+            type: boolean
+            column: is_kit
         sort:
             type: smallint
             column: sort

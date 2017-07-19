@@ -156,4 +156,3 @@ class Media
         return $this->tariffs;
     }
 }
-

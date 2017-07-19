@@ -19,7 +19,11 @@ class CorsAllowListener
 
         $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : NULL;
 
-        if(strpos($origin, 'rg.ru') !== false) {
+//        $check_origin = strpos($origin, 'rg.ru') !== false;
+        $check_origin = true;
+        //TODO: Sergei Barsuk
+
+        if($check_origin) {
             $responseHeaders->set('Access-Control-Allow-Headers', 'origin, content-type, accept');
             $responseHeaders->set('Access-Control-Allow-Credentials', 'true');
             $responseHeaders->set('Access-Control-Allow-Origin', $origin);

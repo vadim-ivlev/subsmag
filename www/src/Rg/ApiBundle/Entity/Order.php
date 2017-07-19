@@ -243,4 +243,3 @@ class Order
         return $this->tariffs;
     }
 }
-

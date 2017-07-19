@@ -98,4 +98,3 @@ class Payment
         return $this->orders;
     }
 }
-
