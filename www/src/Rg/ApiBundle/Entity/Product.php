@@ -35,7 +35,17 @@ class Product
     /**
      * @var boolean
      */
-    private $is_subscribable;
+    private $is_archive;
+
+    /**
+     * @var string
+     */
+    private $outer_link;
+
+    /**
+     * @var boolean
+     */
+    private $is_kit;
 
     /**
      * @var integer
@@ -168,27 +178,75 @@ class Product
     }
 
     /**
-     * Set isSubscribable
+     * Set isArchive
      *
-     * @param boolean $isSubscribable
+     * @param boolean $isArchive
      *
      * @return Product
      */
-    public function setIsSubscribable($isSubscribable)
+    public function setIsArchive($isArchive)
     {
-        $this->is_subscribable = $isSubscribable;
+        $this->is_archive = $isArchive;
 
         return $this;
     }
 
     /**
-     * Get isSubscribable
+     * Get isArchive
      *
      * @return boolean
      */
-    public function getIsSubscribable()
+    public function getIsArchive()
     {
-        return $this->is_subscribable;
+        return $this->is_archive;
+    }
+
+    /**
+     * Set outerLink
+     *
+     * @param string $outerLink
+     *
+     * @return Product
+     */
+    public function setOuterLink($outerLink)
+    {
+        $this->outer_link = $outerLink;
+
+        return $this;
+    }
+
+    /**
+     * Get outerLink
+     *
+     * @return string
+     */
+    public function getOuterLink()
+    {
+        return $this->outer_link;
+    }
+
+    /**
+     * Set isKit
+     *
+     * @param boolean $isKit
+     *
+     * @return Product
+     */
+    public function setIsKit($isKit)
+    {
+        $this->is_kit = $isKit;
+
+        return $this;
+    }
+
+    /**
+     * Get isKit
+     *
+     * @return boolean
+     */
+    public function getIsKit()
+    {
+        return $this->is_kit;
     }
 
     /**
@@ -282,91 +340,5 @@ class Product
     {
         return $this->editions;
     }
-    /**
-     * @var boolean
-     */
-    private $is_kit;
-
-
-    /**
-     * Set isKit
-     *
-     * @param boolean $isKit
-     *
-     * @return Product
-     */
-    public function setIsKit($isKit)
-    {
-        $this->is_kit = $isKit;
-
-        return $this;
-    }
-
-    /**
-     * Get isKit
-     *
-     * @return boolean
-     */
-    public function getIsKit()
-    {
-        return $this->is_kit;
-    }
-    /**
-     * @var boolean
-     */
-    private $is_archive;
-
-    /**
-     * @var boolean
-     */
-    private $is_outer;
-
-
-    /**
-     * Set isArchive
-     *
-     * @param boolean $isArchive
-     *
-     * @return Product
-     */
-    public function setIsArchive($isArchive)
-    {
-        $this->is_archive = $isArchive;
-
-        return $this;
-    }
-
-    /**
-     * Get isArchive
-     *
-     * @return boolean
-     */
-    public function getIsArchive()
-    {
-        return $this->is_archive;
-    }
-
-    /**
-     * Set isOuter
-     *
-     * @param boolean $isOuter
-     *
-     * @return Product
-     */
-    public function setIsOuter($isOuter)
-    {
-        $this->is_outer = $isOuter;
-
-        return $this;
-    }
-
-    /**
-     * Get isOuter
-     *
-     * @return boolean
-     */
-    public function getIsOuter()
-    {
-        return $this->is_outer;
-    }
 }
+

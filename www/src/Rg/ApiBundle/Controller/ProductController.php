@@ -71,7 +71,7 @@ class ProductController extends Controller
             'postal_index' => $product->getPostalIndex(),
             'is_kit' => $product->getIsKit(),
             'is_archive' => $product->getIsArchive(),
-            'is_outer' => $product->getIsOuter(),
+            'outer_link' => $product->getOuterLink(),
             'sort' => $product->getSort(),
             'editions' => $editions,
         ];

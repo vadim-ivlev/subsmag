@@ -26,9 +26,9 @@ Rg\ApiBundle\Entity\Product:
         is_archive:
             type: boolean
             column: is_archive
-        is_outer:
-            type: boolean
-            column: is_outer
+        outer_link:
+            type: text
+            column: outer_link
         is_kit:
             type: boolean
             column: is_kit
