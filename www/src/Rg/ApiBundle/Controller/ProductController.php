@@ -2,23 +2,22 @@
 
 namespace Rg\ApiBundle\Controller;
 
-use Rg\ApiBundle\Entity\Product;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
-use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
-
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $out = new Out();
 
         $em = $this->getDoctrine()->getManager();
 
-        $products = $em->getRepository('RgApiBundle:Product')->findAll();
+        $area_id = $request->query->get('area_id', 1);
+
+        $products = $em->getRepository('RgApiBundle:Product')->getProductsWithMinPricesByArea($area_id);
 
         if (!$products) {
             $arrError = [
@@ -28,11 +27,9 @@ class ProductController extends Controller
             return $out->json($arrError);
         }
 
-        $prods = array_map([$this, 'getEditionsAndConvertToArray'], $products);
+        $prods = array_map([$this, 'getEditions'], $products);
 
-        $response = $out->json((object) $prods);
-
-        return $response;
+        return  $out->json($prods);
     }
 
     public function showAction($id)
@@ -51,20 +48,12 @@ class ProductController extends Controller
             return $out->json($arrError);
         }
 
-        $prod = $this->getEditionsAndConvertToArray($product);
-
-        $response = $out->json((object) $prod);
-
-        return $response;
-    }
-
-    private function getEditionsAndConvertToArray(Product $product) {
         $editions = array_map(
             [$this->get('rg_api.edition_normalizer'), 'convertToArray'],
             iterator_to_array($product->getEditions())
         );
 
-        return [
+        $prod = [
             'id' => $product->getId(),
             'name' => $product->getName(),
             'description' => $product->getDescription(),
@@ -75,6 +64,28 @@ class ProductController extends Controller
             'sort' => $product->getSort(),
             'editions' => $editions,
         ];
+
+        $response = $out->json($prod);
+
+        return $response;
+    }
+
+    /**
+     * @param array $product
+     * @return array
+     */
+    private function getEditions(array $product) {
+
+        $editions = array_map(
+            [$this->get('rg_api.edition_normalizer'), 'convertToArray'],
+            iterator_to_array($product[0]->getEditions())
+        );
+
+        $product['editions'] = $editions;
+
+        unset($product[0]);
+
+        return $product;
     }
 
     public function createAction(Request $request)

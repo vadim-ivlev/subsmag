@@ -29,9 +29,9 @@ class TariffController extends Controller
             return $out->json($arrError);
         }
 
-        $prods = array_map([$this, 'convertToArray'], $tariffs);
+        $normalized = array_map([$this, 'convertToArray'], $tariffs);
 
-        $response = $out->json((object) $prods)
+        $response = $out->json($normalized)
             ->setStatusCode(Response::HTTP_OK);
 
         return $response;
@@ -54,7 +54,7 @@ class TariffController extends Controller
             return $out->json($arrError);
         }
 
-        $response = $out->json((object) $this->convertToArray($tariff));
+        $response = $out->json($this->convertToArray($tariff));
 
         return $response;
     }
@@ -116,19 +116,19 @@ class TariffController extends Controller
 
         $normalized = array_map([$this, 'convertToArray'], $tariffs);
 
-        $response = $out->json((object) $normalized);
+        $response = $out->json( $normalized);
 
         return $response;
     }
 
     public function createAction(Request $request)
     {
-        return (new Out())->json((object) ['ask' => 'wait for a while, please.']);
+        return (new Out())->json(['ask' => 'wait for a while, please.']);
     }
 
     public function editAction($id, Request $request)
     {
-        return (new Out())->json((object) ['ask' => 'wait for a while, please.']);
+        return (new Out())->json( ['ask' => 'wait for a while, please.']);
     }
 
 }
