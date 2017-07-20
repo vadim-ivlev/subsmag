@@ -17,6 +17,9 @@ Rg\ApiBundle\Entity\Edition:
             type: string
             length: '32'
             column: keyword
+        description:
+            type: text
+            column: description
         frequency:
             type: smallint
             column: frequency

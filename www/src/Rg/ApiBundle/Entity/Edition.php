@@ -23,6 +23,11 @@ class Edition
     private $keyword;
 
     /**
+     * @var string
+     */
+    private $description;
+
+    /**
      * @var integer
      */
     private $frequency;
@@ -101,6 +106,30 @@ class Edition
     public function getKeyword()
     {
         return $this->keyword;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Edition
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -185,3 +214,4 @@ class Edition
         return $this->products;
     }
 }
+
