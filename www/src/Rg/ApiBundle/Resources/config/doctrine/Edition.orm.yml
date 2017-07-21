@@ -20,6 +20,9 @@ Rg\ApiBundle\Entity\Edition:
         description:
             type: text
             column: description
+        text:
+            type: text
+            column: "`text`"
         frequency:
             type: smallint
             column: frequency

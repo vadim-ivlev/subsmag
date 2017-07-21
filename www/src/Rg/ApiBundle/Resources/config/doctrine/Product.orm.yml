@@ -16,6 +16,9 @@ Rg\ApiBundle\Entity\Product:
         description:
             type: text
             column: description
+        text:
+            type: text
+            column: "`text`"
         postal_index:
             type: string
             length: '10'

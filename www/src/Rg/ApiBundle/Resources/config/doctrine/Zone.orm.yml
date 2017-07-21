@@ -13,6 +13,9 @@ Rg\ApiBundle\Entity\Zone:
             type: string
             length: '30'
             column: name
+        from_front_id:
+            type: integer
+            column: from_front_id
     oneToMany:
         tariffs:
             targetEntity: Tariff

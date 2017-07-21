@@ -32,7 +32,9 @@ class Outer
         $response = new JsonResponse();
         $response
             ->setData($out)
-            ->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            ->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+            ->headers->set('Content-Type', 'application/json; charset=utf-8')
+        ;
         return $response;
     }
 

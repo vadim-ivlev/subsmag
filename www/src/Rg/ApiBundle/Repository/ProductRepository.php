@@ -10,7 +10,7 @@ namespace Rg\ApiBundle\Repository;
  */
 class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getProductsWithMinPricesByArea(int $area_id)
+    public function getProductsWithMinPricesByArea(int $from_front_id)
     {
         $dql = <<<DQL
 SELECT
@@ -18,24 +18,24 @@ SELECT
     p.id,
     p.name,
     p.description,
+    p.text,
     p.postal_index,
     p.is_kit,
     p.is_archive,
     p.outer_link,
     p.sort,
     min(t.price) AS min_price,
-    e AS editions
+    e,
+    t
 FROM RgApiBundle:Product p
-JOIN p.tariffs t
-JOIN t.zone z
-JOIN z.areas a 
+LEFT JOIN p.tariffs t
+LEFT JOIN t.zone z WITH z.from_front_id = :from_front_id
 JOIN p.editions e
-WHERE a.id = :area_id
-GROUP BY p.id, e.id
+GROUP BY p.id, e.id, t.id
 DQL;
 
         $query = $this->getEntityManager()->createQuery($dql)
-            ->setParameter('area_id', $area_id)
+            ->setParameter('from_front_id', $from_front_id)
         ;
         $result = $query->getResult();
 
