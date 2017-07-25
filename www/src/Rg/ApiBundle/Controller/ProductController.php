@@ -2,7 +2,9 @@
 
 namespace Rg\ApiBundle\Controller;
 
+use Rg\ApiBundle\Entity\Delivery;
 use Rg\ApiBundle\Entity\Edition;
+use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Tariff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -19,12 +21,12 @@ class ProductController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $from_front_id = $request->query->get('zone_id', $this::MOSCOW);
+        $from_front_id = $request->query->get('area_id', self::MOSCOW);
 
-        $products = $em->getRepository('RgApiBundle:Product')
-            ->getProductsWithMinPricesByArea($from_front_id);
+        $product_container = $em->getRepository('RgApiBundle:Product')
+            ->getMedia($from_front_id);
 
-        if (!$products) {
+        if (!$product_container) {
             $arrError = [
                 'status' => "error",
                 'description' => 'Комплекты не найдены!',
@@ -32,9 +34,130 @@ class ProductController extends Controller
             return $out->json($arrError);
         }
 
-        $prods = array_map([$this, 'getEditionsAndTariffs'], $products);
+        $prods_with_media = array_map(
+            function (array $item) {
+                $product = $item[0];
 
-        return  $out->json($prods);
+                ########################
+                //носители
+                ########################
+                $all_media_for_product = array_map(
+                    function (Tariff $tariff) {
+                        $medium = $tariff->getMedium();
+
+                        return serialize([
+                            'id' => $medium->getId(),
+                            'alias' => $medium->getAlias(),
+                            'description' => $medium->getDescription(),
+                            'name' => $medium->getName(),
+                        ]);
+                    },
+                    iterator_to_array($product->getTariffs())
+                );
+
+                $unique_media = array_map(
+                    function($item) { return unserialize($item); },
+                    array_unique($all_media_for_product)
+                );
+                ########################
+
+                ######
+                //доставка
+                ######
+                $unique_media_with_delivs = [];
+                foreach ($unique_media as $unique_medium) {
+                    //по медиум-ид
+                    $filtered_tariffs = array_filter(
+                        iterator_to_array($product->getTariffs()),
+                        function (Tariff $tariff) use ($unique_medium) {
+                            return $tariff->getMedium()->getId() == $unique_medium['id'];
+                        }
+                    );
+
+                    $all_deliveries = array_map(
+                        function (Tariff $tariff) {
+                            $delivery = $tariff->getDelivery();
+
+                            return serialize([
+                                'id' => $delivery->getId(),
+                                'alias' => $delivery->getAlias(),
+                                'description' => $delivery->getDescription(),
+                                'name' => $delivery->getName(),
+                            ]);
+                        },
+                        $filtered_tariffs
+                    );
+
+                    $unique_delivs = array_map(
+                        function($item) { return unserialize($item); },
+                        array_unique($all_deliveries)
+                    );
+
+                    ####
+                    //периоды
+                    ####
+                    $delivs_with_periods = array_map(
+                        function (array $delivery) use ($product, $unique_medium) {
+                            $filtered_tariffs = array_filter(
+                                iterator_to_array($product->getTariffs()),
+                                function (Tariff $tariff) use ($unique_medium, $delivery) {
+                                    $criterion = ($tariff->getMedium()->getId() == $unique_medium['id']) and
+                                        ($tariff->getDelivery()->getId() == $delivery['id']);
+
+                                    return $criterion;
+                                }
+                            );
+
+                            $all_periods = array_map(
+                                function (Tariff $tariff) {
+                                    $period = $tariff->getPeriod();
+
+                                    return serialize([
+                                        'id' => $period->getId(),
+                                        'name' => $period->getName(),
+                                        'price' => $tariff->getPrice(),
+                                    ]);
+                                },
+                                $filtered_tariffs
+                            );
+
+                            $unique_periods = array_map(
+                                function($item) { return unserialize($item); },
+                                array_unique($all_periods)
+                            );
+
+                            $delivery['periods'] = $unique_periods;
+
+                            return $delivery;
+                        },
+                        $unique_delivs
+                    );
+                    ####
+
+                    $unique_medium['deliveries'] = $delivs_with_periods;
+
+                    $unique_media_with_delivs[] = $unique_medium;
+                }
+                ######
+
+                ######
+                //минимальная цена
+                ######
+//                $min_price = '500';
+//                $item['min_price'] = $min_price;
+                ######
+
+                $item['media'] = $unique_media_with_delivs;
+
+
+                return $item;
+            },
+            $product_container
+        );
+
+//        dump($prods_with_media);die;
+
+        return  $out->json($prods_with_media);
     }
 
     public function showAction($id)
@@ -75,76 +198,56 @@ class ProductController extends Controller
         return $response;
     }
 
-    /**
-     * @param array $product_container
-     * @return array
-     */
-    private function getEditionsAndTariffs(array $product_container) {
-
-        $editions = array_map(
-            function (Edition $edition) {
-                return [
-                    'id' => $edition->getId(),
-                    'name' => $edition->getName(),
-                    'keyword' => $edition->getKeyword(),
-                    'description' => $edition->getDescription(),
-                    'text' => $edition->getText(),
-                    'frequency' => $edition->getFrequency(),
-                    'image' => $edition->getImage(),
-                ];
-            },
-            iterator_to_array($product_container[0]->getEditions())
-        );
-
-        $tariffs_arr = iterator_to_array($product_container[0]->getTariffs());
-
+    private function appendTariffs(array $product) {
         $tariffs = array_map(
             function (Tariff $tariff) {
                 $period = $tariff->getPeriod();
                 $delivery = $tariff->getDelivery();
-                $media = $tariff->getMedia();
+                $zone = $tariff->getZone();
+                $medium = $tariff->getMedium();
 
                 return [
                     'id' => $tariff->getId(),
-                    'period' => [
-                        'id' => $period->getId(),
-                        'month_start' => $period->getMonthStart(),
-                        'year_start' => $period->getYearStart(),
-                        'duration' => $period->getDuration(),
+                    'medium' => [
+                        'id' => $medium->getId(),
+                        'alias' => $medium->getAlias(),
+                        'description' => $medium->getDescription(),
+                        'name' => $medium->getName(),
                     ],
                     'delivery' => [
                         'id' => $delivery->getId(),
                         'name' => $delivery->getName(),
                         'description' => $delivery->getDescription(),
                     ],
-                    'media' => [
-                        'id' => $media->getId(),
-                        'name' => $media->getName(),
-                        'alias' => $media->getAlias(),
+                    'period' => [
+                        'id' => $period->getId(),
+                        'name' => $period->getName(),
+                    ],
+                    'zone' => [
+                        'id' => $zone->getId(),
+                        'name' => $zone->getName(),
+                        'from_front_id' => $zone->getFromFrontId(),
                     ],
                     'price' => $tariff->getPrice(),
                 ];
             },
-            $tariffs_arr
+            iterator_to_array($product[0]->getTariffs())
         );
 
-        $product_container['editions'] = $editions;
+        $product['tariffs'] = $tariffs;
 
-        $product_container['tariffs'] = $tariffs;
+        return $product;
 
-        unset($product_container[0]);
-
-        return $product_container;
     }
 
     public function createAction(Request $request)
     {
-        return (new Out())->json((object) ['ask' => 'wait for a while, please.']);
+        return (new Out())->json( ['ask' => 'wait for a while, please.']);
     }
 
     public function editAction($id, Request $request)
     {
-        return (new Out())->json((object) ['ask' => 'wait for a while, please.']);
+        return (new Out())->json( ['ask' => 'wait for a while, please.']);
     }
 
 }

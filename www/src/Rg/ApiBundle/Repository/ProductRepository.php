@@ -12,34 +12,67 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
     public function getProductsWithMinPricesByArea(int $from_front_id)
     {
-        $dql = <<<DQL
-SELECT
-    p,
-    p.id,
-    p.name,
-    p.description,
-    p.text,
-    p.postal_index,
-    p.is_kit,
-    p.is_archive,
-    p.outer_link,
-    p.sort,
-    min(t.price) AS min_price,
-    e,
-    t
-FROM RgApiBundle:Product p
-LEFT JOIN p.tariffs t
-LEFT JOIN t.zone z WITH z.from_front_id = :from_front_id
-JOIN p.editions e
-GROUP BY p.id, e.id, t.id
-DQL;
-
-        $query = $this->getEntityManager()->createQuery($dql)
+        $result = $this->createQueryBuilder('p')
+            ->select('
+                p,
+                p.id,
+                p.name,
+                p.description,
+                p.text,
+                p.postal_index,
+                p.is_kit,
+                p.is_archive,
+                p.outer_link,
+                p.sort,
+                min(t.price) AS min_price
+            ')
+            ->addSelect('t, z, e')
+            ->andWhere('a.from_front_id = :from_front_id OR a.from_front_id IS NULL')
+            ->leftJoin('p.tariffs', 't')
+            ->leftJoin('t.zone', 'z')
+            ->leftJoin('z.areas', 'a')
+            ->leftJoin('t.delivery', 'd')
+            ->leftJoin('t.medium', 'm')
+            ->join('p.editions', 'e')
+            ->groupBy('p,t,z,e,d,m')
             ->setParameter('from_front_id', $from_front_id)
+            ->getQuery()
+            ->getResult()
         ;
-        $result = $query->getResult();
-
         return $result;
     }
 
+    public function getMedia(int $from_front_id)
+    {
+        $result = $this->createQueryBuilder('p')
+            ->select('
+                p,
+                p.id,
+                p.name,
+                p.description,
+                p.text,
+                p.postal_index,
+                p.is_kit,
+                p.is_archive,
+                p.outer_link,
+                p.sort,
+                
+                min(t.price) AS min_price
+            ')
+            ->addSelect('t,d,m,z,a,e')
+            ->andWhere('a.from_front_id = :from_front_id OR a.from_front_id IS NULL')
+            ->leftJoin('p.tariffs', 't')
+            ->leftJoin('t.delivery', 'd')
+            ->leftJoin('t.medium', 'm')
+            ->leftJoin('t.zone', 'z')
+            ->leftJoin('z.areas', 'a')
+            ->join('p.editions', 'e')
+            ->groupBy('p,t,d,m,z,a,e')
+            ->setParameter('from_front_id', $from_front_id)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $result;
+    }
 }

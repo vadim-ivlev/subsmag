@@ -23,6 +23,16 @@ class Order
     private $address;
 
     /**
+     * @var integer
+     */
+    private $start_month;
+
+    /**
+     * @var integer
+     */
+    private $duration;
+
+    /**
      * @var float
      */
     private $sum;
@@ -111,6 +121,54 @@ class Order
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Set startMonth
+     *
+     * @param integer $startMonth
+     *
+     * @return Order
+     */
+    public function setStartMonth($startMonth)
+    {
+        $this->start_month = $startMonth;
+
+        return $this;
+    }
+
+    /**
+     * Get startMonth
+     *
+     * @return integer
+     */
+    public function getStartMonth()
+    {
+        return $this->start_month;
+    }
+
+    /**
+     * Set duration
+     *
+     * @param integer $duration
+     *
+     * @return Order
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return integer
+     */
+    public function getDuration()
+    {
+        return $this->duration;
     }
 
     /**

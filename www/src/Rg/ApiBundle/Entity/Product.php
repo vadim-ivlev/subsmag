@@ -25,6 +25,11 @@ class Product
     /**
      * @var string
      */
+    private $text;
+
+    /**
+     * @var string
+     */
     private $postal_index;
 
     /**
@@ -127,6 +132,30 @@ class Product
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set text
+     *
+     * @param string $text
+     *
+     * @return Product
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+
+        return $this;
+    }
+
+    /**
+     * Get text
+     *
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
     }
 
     /**
@@ -339,34 +368,5 @@ class Product
     public function getEditions()
     {
         return $this->editions;
-    }
-    /**
-     * @var string
-     */
-    private $text;
-
-
-    /**
-     * Set text
-     *
-     * @param string $text
-     *
-     * @return Product
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-
-        return $this;
-    }
-
-    /**
-     * Get text
-     *
-     * @return string
-     */
-    public function getText()
-    {
-        return $this->text;
     }
 }

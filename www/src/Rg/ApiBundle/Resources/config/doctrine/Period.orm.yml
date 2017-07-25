@@ -9,15 +9,13 @@ Rg\ApiBundle\Entity\Period:
             generator:
                 strategy: AUTO
     fields:
-        month_start:
+        name:
+            type: string
+            length: '255'
+            column: name
+        year:
             type: smallint
-            column: month_start
-        year_start:
-            type: smallint
-            column: year_start
-        duration:
-            type: smallint
-            column: duration
+            column: year
     oneToMany:
         tariffs:
             targetEntity: Tariff

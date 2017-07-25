@@ -80,4 +80,33 @@ class Area
     {
         return $this->zone;
     }
+    /**
+     * @var integer
+     */
+    private $from_front_id;
+
+
+    /**
+     * Set fromFrontId
+     *
+     * @param integer $fromFrontId
+     *
+     * @return Area
+     */
+    public function setFromFrontId($fromFrontId)
+    {
+        $this->from_front_id = $fromFrontId;
+
+        return $this;
+    }
+
+    /**
+     * Get fromFrontId
+     *
+     * @return integer
+     */
+    public function getFromFrontId()
+    {
+        return $this->from_front_id;
+    }
 }

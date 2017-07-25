@@ -13,6 +13,9 @@ Rg\ApiBundle\Entity\Area:
             type: string
             length: '50'
             column: name
+        from_front_id:
+            type: integer
+            column: from_front_id
     manyToOne:
         zone:
             targetEntity: Zone

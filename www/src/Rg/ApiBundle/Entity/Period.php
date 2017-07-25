@@ -13,19 +13,14 @@ class Period
     private $id;
 
     /**
-     * @var integer
+     * @var string
      */
-    private $month_start;
+    private $name;
 
     /**
      * @var integer
      */
-    private $year_start;
-
-    /**
-     * @var integer
-     */
-    private $duration;
+    private $year;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -57,75 +52,51 @@ class Period
     }
 
     /**
-     * Set monthStart
+     * Set name
      *
-     * @param integer $monthStart
+     * @param string $name
      *
      * @return Period
      */
-    public function setMonthStart($monthStart)
+    public function setName($name)
     {
-        $this->month_start = $monthStart;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get monthStart
+     * Get name
      *
-     * @return integer
+     * @return string
      */
-    public function getMonthStart()
+    public function getName()
     {
-        return $this->month_start;
+        return $this->name;
     }
 
     /**
-     * Set yearStart
+     * Set year
      *
-     * @param integer $yearStart
+     * @param integer $year
      *
      * @return Period
      */
-    public function setYearStart($yearStart)
+    public function setYear($year)
     {
-        $this->year_start = $yearStart;
+        $this->year = $year;
 
         return $this;
     }
 
     /**
-     * Get yearStart
+     * Get year
      *
      * @return integer
      */
-    public function getYearStart()
+    public function getYear()
     {
-        return $this->year_start;
-    }
-
-    /**
-     * Set duration
-     *
-     * @param integer $duration
-     *
-     * @return Period
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    /**
-     * Get duration
-     *
-     * @return integer
-     */
-    public function getDuration()
-    {
-        return $this->duration;
+        return $this->year;
     }
 
     /**

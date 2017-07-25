@@ -15,6 +15,9 @@ Rg\ApiBundle\Entity\Interval:
         end:
             type: date
             column: end
+        is_moscow:
+            type: boolean
+            column: is_moscow
     manyToOne:
         period:
             targetEntity: Period

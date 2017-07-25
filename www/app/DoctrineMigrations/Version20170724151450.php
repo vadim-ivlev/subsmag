@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20170719110837 extends AbstractMigration
+class Version20170724151450 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -18,7 +18,8 @@ class Version20170719110837 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE product ADD is_outer TINYINT(1) NOT NULL, CHANGE is_subscribable is_archive TINYINT(1) NOT NULL');
+        $this->addSql('ALTER TABLE zone DROP from_front_id');
+        $this->addSql('ALTER TABLE area ADD from_front_id INT NOT NULL');
     }
 
     /**
@@ -29,6 +30,7 @@ class Version20170719110837 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE product ADD is_subscribable TINYINT(1) NOT NULL, DROP is_archive, DROP is_outer');
+        $this->addSql('ALTER TABLE area DROP from_front_id');
+        $this->addSql('ALTER TABLE zone ADD from_front_id INT NOT NULL');
     }
 }

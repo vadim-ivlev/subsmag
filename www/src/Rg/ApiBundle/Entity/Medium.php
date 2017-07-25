@@ -3,9 +3,9 @@
 namespace Rg\ApiBundle\Entity;
 
 /**
- * Media
+ * Medium
  */
-class Media
+class Medium
 {
     /**
      * @var integer
@@ -55,7 +55,7 @@ class Media
      *
      * @param string $name
      *
-     * @return Media
+     * @return Medium
      */
     public function setName($name)
     {
@@ -79,7 +79,7 @@ class Media
      *
      * @param string $alias
      *
-     * @return Media
+     * @return Medium
      */
     public function setAlias($alias)
     {
@@ -103,7 +103,7 @@ class Media
      *
      * @param string $description
      *
-     * @return Media
+     * @return Medium
      */
     public function setDescription($description)
     {
@@ -127,7 +127,7 @@ class Media
      *
      * @param \Rg\ApiBundle\Entity\Tariff $tariff
      *
-     * @return Media
+     * @return Medium
      */
     public function addTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
     {

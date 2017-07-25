@@ -20,4 +20,5 @@ class TariffRepository extends \Doctrine\ORM\EntityRepository
 
         return $tariffs;
     }
+
 }

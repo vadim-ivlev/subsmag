@@ -23,6 +23,11 @@ class Interval
     private $end;
 
     /**
+     * @var boolean
+     */
+    private $is_moscow;
+
+    /**
      * @var \Rg\ApiBundle\Entity\Period
      */
     private $period;
@@ -84,6 +89,30 @@ class Interval
     public function getEnd()
     {
         return $this->end;
+    }
+
+    /**
+     * Set isMoscow
+     *
+     * @param boolean $isMoscow
+     *
+     * @return Interval
+     */
+    public function setIsMoscow($isMoscow)
+    {
+        $this->is_moscow = $isMoscow;
+
+        return $this;
+    }
+
+    /**
+     * Get isMoscow
+     *
+     * @return boolean
+     */
+    public function getIsMoscow()
+    {
+        return $this->is_moscow;
     }
 
     /**

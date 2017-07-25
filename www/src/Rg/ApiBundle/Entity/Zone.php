@@ -18,6 +18,11 @@ class Zone
     private $name;
 
     /**
+     * @var integer
+     */
+    private $from_front_id;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tariffs;
@@ -68,6 +73,30 @@ class Zone
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set fromFrontId
+     *
+     * @param integer $fromFrontId
+     *
+     * @return Zone
+     */
+    public function setFromFrontId($fromFrontId)
+    {
+        $this->from_front_id = $fromFrontId;
+
+        return $this;
+    }
+
+    /**
+     * Get fromFrontId
+     *
+     * @return integer
+     */
+    public function getFromFrontId()
+    {
+        return $this->from_front_id;
     }
 
     /**
@@ -136,34 +165,5 @@ class Zone
     public function getAreas()
     {
         return $this->areas;
-    }
-    /**
-     * @var integer
-     */
-    private $from_front_id;
-
-
-    /**
-     * Set fromFrontId
-     *
-     * @param integer $fromFrontId
-     *
-     * @return Zone
-     */
-    public function setFromFrontId($fromFrontId)
-    {
-        $this->from_front_id = $fromFrontId;
-
-        return $this;
-    }
-
-    /**
-     * Get fromFrontId
-     *
-     * @return integer
-     */
-    public function getFromFrontId()
-    {
-        return $this->from_front_id;
     }
 }

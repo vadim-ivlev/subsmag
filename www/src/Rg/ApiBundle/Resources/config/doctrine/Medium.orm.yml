@@ -1,7 +1,7 @@
-Rg\ApiBundle\Entity\Media:
+Rg\ApiBundle\Entity\Medium:
     type: entity
     table: null
-    repositoryClass: Rg\ApiBundle\Repository\MediaRepository
+    repositoryClass: Rg\ApiBundle\Repository\MediumRepository
     id:
         id:
             type: integer
@@ -24,5 +24,5 @@ Rg\ApiBundle\Entity\Media:
     oneToMany:
         tariffs:
             targetEntity: Tariff
-            mappedBy: media
+            mappedBy: medium
     lifecycleCallbacks: {  }

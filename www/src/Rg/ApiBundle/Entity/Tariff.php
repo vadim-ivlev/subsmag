@@ -38,9 +38,9 @@ class Tariff
     private $zone;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Media
+     * @var \Rg\ApiBundle\Entity\Medium
      */
-    private $media;
+    private $medium;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -186,27 +186,27 @@ class Tariff
     }
 
     /**
-     * Set media
+     * Set medium
      *
-     * @param \Rg\ApiBundle\Entity\Media $media
+     * @param \Rg\ApiBundle\Entity\Medium $medium
      *
      * @return Tariff
      */
-    public function setMedia(\Rg\ApiBundle\Entity\Media $media = null)
+    public function setMedium(\Rg\ApiBundle\Entity\Medium $medium = null)
     {
-        $this->media = $media;
+        $this->medium = $medium;
 
         return $this;
     }
 
     /**
-     * Get media
+     * Get medium
      *
-     * @return \Rg\ApiBundle\Entity\Media
+     * @return \Rg\ApiBundle\Entity\Medium
      */
-    public function getMedia()
+    public function getMedium()
     {
-        return $this->media;
+        return $this->medium;
     }
 
     /**

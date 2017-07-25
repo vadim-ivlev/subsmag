@@ -64,7 +64,7 @@ class TariffController extends Controller
         $period = $tariff->getPeriod();
         $delivery = $tariff->getDelivery();
         $zone = $tariff->getZone();
-        $media = $tariff->getMedia();
+        $media = $tariff->getMedium();
 
         return [
             'id' => $tariff->getId(),
