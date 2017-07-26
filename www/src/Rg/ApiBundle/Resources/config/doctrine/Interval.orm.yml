@@ -15,11 +15,14 @@ Rg\ApiBundle\Entity\Interval:
         end:
             type: date
             column: end
-        is_moscow:
+        is_regional:
             type: boolean
-            column: is_moscow
+            column: is_regional
     manyToOne:
-        period:
-            targetEntity: Period
+        timeblock:
+            targetEntity: Timeblock
+            inversedBy: intervals
+        area:
+            targetEntity: Area
             inversedBy: intervals
     lifecycleCallbacks: {  }

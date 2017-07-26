@@ -13,8 +13,8 @@ Rg\ApiBundle\Entity\Tariff:
             type: float
             column: price
     manyToMany:
-        orders:
-            targetEntity: Order
+        timeblocks:
+            targetEntity: Timeblock
             mappedBy: tariffs
     manyToOne:
         product:

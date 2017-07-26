@@ -109,4 +109,50 @@ class Area
     {
         return $this->from_front_id;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $intervals;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->intervals = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add interval
+     *
+     * @param \Rg\ApiBundle\Entity\Interval $interval
+     *
+     * @return Area
+     */
+    public function addInterval(\Rg\ApiBundle\Entity\Interval $interval)
+    {
+        $this->intervals[] = $interval;
+
+        return $this;
+    }
+
+    /**
+     * Remove interval
+     *
+     * @param \Rg\ApiBundle\Entity\Interval $interval
+     */
+    public function removeInterval(\Rg\ApiBundle\Entity\Interval $interval)
+    {
+        $this->intervals->removeElement($interval);
+    }
+
+    /**
+     * Get intervals
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getIntervals()
+    {
+        return $this->intervals;
+    }
 }

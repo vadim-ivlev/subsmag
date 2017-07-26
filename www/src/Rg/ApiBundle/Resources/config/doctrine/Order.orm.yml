@@ -36,7 +36,7 @@ Rg\ApiBundle\Entity\Order:
             targetEntity: User
             inversedBy: orders
     manyToMany:
-        tariffs:
-            targetEntity: Tariff
+        timeblocks:
+            targetEntity: Timeblock
             inversedBy: orders
     lifecycleCallbacks: {  }

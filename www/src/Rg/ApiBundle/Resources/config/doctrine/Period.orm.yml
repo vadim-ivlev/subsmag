@@ -20,7 +20,4 @@ Rg\ApiBundle\Entity\Period:
         tariffs:
             targetEntity: Tariff
             mappedBy: period
-        intervals:
-            targetEntity: Interval
-            mappedBy: period
     lifecycleCallbacks: {  }

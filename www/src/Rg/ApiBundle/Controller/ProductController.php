@@ -13,7 +13,7 @@ use Rg\ApiBundle\Controller\Outer as Out;
 
 class ProductController extends Controller
 {
-    const MOSCOW = 1;
+    const MOSCOW = 4;
 
     public function indexAction(Request $request)
     {
@@ -23,8 +23,18 @@ class ProductController extends Controller
 
         $from_front_id = $request->query->get('area_id', self::MOSCOW);
 
+        $area = $em->getRepository('RgApiBundle:Area')->findOneBy(['id' => $from_front_id]);
+
+        if (!$area) {
+            $arrError = [
+                'status' => "error",
+                'description' => 'Регион не найден.',
+            ];
+            return $out->json($arrError);
+        }
+
         $product_container = $em->getRepository('RgApiBundle:Product')
-            ->getMedia($from_front_id);
+            ->getProductsWithMinPricesByArea($from_front_id);
 
         if (!$product_container) {
             $arrError = [
@@ -140,22 +150,22 @@ class ProductController extends Controller
                 }
                 ######
 
-                ######
-                //минимальная цена
-                ######
-//                $min_price = '500';
-//                $item['min_price'] = $min_price;
-                ######
 
+                $editions = array_map(
+                    [$this->get('rg_api.edition_normalizer'), 'convertToArray'],
+                    iterator_to_array($product->getEditions())
+                );
+
+                $item['editions'] = $editions;
                 $item['media'] = $unique_media_with_delivs;
-
 
                 return $item;
             },
             $product_container
         );
 
-//        dump($prods_with_media);die;
+
+        dump($prods_with_media);die;
 
         return  $out->json($prods_with_media);
     }

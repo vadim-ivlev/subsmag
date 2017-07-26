@@ -24,38 +24,6 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
                 p.is_archive,
                 p.outer_link,
                 p.sort,
-                min(t.price) AS min_price
-            ')
-            ->addSelect('t, z, e')
-            ->andWhere('a.from_front_id = :from_front_id OR a.from_front_id IS NULL')
-            ->leftJoin('p.tariffs', 't')
-            ->leftJoin('t.zone', 'z')
-            ->leftJoin('z.areas', 'a')
-            ->leftJoin('t.delivery', 'd')
-            ->leftJoin('t.medium', 'm')
-            ->join('p.editions', 'e')
-            ->groupBy('p,t,z,e,d,m')
-            ->setParameter('from_front_id', $from_front_id)
-            ->getQuery()
-            ->getResult()
-        ;
-        return $result;
-    }
-
-    public function getMedia(int $from_front_id)
-    {
-        $result = $this->createQueryBuilder('p')
-            ->select('
-                p,
-                p.id,
-                p.name,
-                p.description,
-                p.text,
-                p.postal_index,
-                p.is_kit,
-                p.is_archive,
-                p.outer_link,
-                p.sort,
                 
                 min(t.price) AS min_price
             ')

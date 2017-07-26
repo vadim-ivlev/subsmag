@@ -1,0 +1,29 @@
+Rg\ApiBundle\Entity\Timeblock:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\TimeblockRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        decimal_view:
+            type: smallint
+            column: decimal_view
+        year:
+            type: smallint
+            column: year
+    oneToMany:
+        intervals:
+            targetEntity: Interval
+            mappedBy: timeblock
+    manyToMany:
+        tariffs:
+            targetEntity: Tariff
+            inversedBy: timeblocks
+        orders:
+            targetEntity: Order
+            mappedBy: timeblocks
+    lifecycleCallbacks: {  }

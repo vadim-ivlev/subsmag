@@ -242,4 +242,43 @@ class Tariff
     {
         return $this->orders;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $timeblocks;
+
+
+    /**
+     * Add timeblock
+     *
+     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
+     *
+     * @return Tariff
+     */
+    public function addTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock)
+    {
+        $this->timeblocks[] = $timeblock;
+
+        return $this;
+    }
+
+    /**
+     * Remove timeblock
+     *
+     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
+     */
+    public function removeTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock)
+    {
+        $this->timeblocks->removeElement($timeblock);
+    }
+
+    /**
+     * Get timeblocks
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTimeblocks()
+    {
+        return $this->timeblocks;
+    }
 }

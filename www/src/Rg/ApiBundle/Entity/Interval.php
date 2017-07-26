@@ -138,4 +138,91 @@ class Interval
     {
         return $this->period;
     }
+    /**
+     * @var boolean
+     */
+    private $is_regional;
+
+    /**
+     * @var \Rg\ApiBundle\Entity\Timeblock
+     */
+    private $timeblock;
+
+    /**
+     * @var \Rg\ApiBundle\Entity\Area
+     */
+    private $area;
+
+
+    /**
+     * Set isRegional
+     *
+     * @param boolean $isRegional
+     *
+     * @return Interval
+     */
+    public function setIsRegional($isRegional)
+    {
+        $this->is_regional = $isRegional;
+
+        return $this;
+    }
+
+    /**
+     * Get isRegional
+     *
+     * @return boolean
+     */
+    public function getIsRegional()
+    {
+        return $this->is_regional;
+    }
+
+    /**
+     * Set timeblock
+     *
+     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
+     *
+     * @return Interval
+     */
+    public function setTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock = null)
+    {
+        $this->timeblock = $timeblock;
+
+        return $this;
+    }
+
+    /**
+     * Get timeblock
+     *
+     * @return \Rg\ApiBundle\Entity\Timeblock
+     */
+    public function getTimeblock()
+    {
+        return $this->timeblock;
+    }
+
+    /**
+     * Set area
+     *
+     * @param \Rg\ApiBundle\Entity\Area $area
+     *
+     * @return Interval
+     */
+    public function setArea(\Rg\ApiBundle\Entity\Area $area = null)
+    {
+        $this->area = $area;
+
+        return $this;
+    }
+
+    /**
+     * Get area
+     *
+     * @return \Rg\ApiBundle\Entity\Area
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
 }
