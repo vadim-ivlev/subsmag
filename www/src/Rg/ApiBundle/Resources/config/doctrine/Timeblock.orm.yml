@@ -9,9 +9,12 @@ Rg\ApiBundle\Entity\Timeblock:
             generator:
                 strategy: AUTO
     fields:
-        decimal_view:
+        first_month:
             type: smallint
-            column: decimal_view
+            column: first_month
+        duration:
+            type: smallint
+            column: duration
         year:
             type: smallint
             column: year

@@ -205,4 +205,62 @@ class Timeblock
     {
         return $this->intervals;
     }
+    /**
+     * @var integer
+     */
+    private $first_month;
+
+    /**
+     * @var integer
+     */
+    private $duration;
+
+
+    /**
+     * Set firstMonth
+     *
+     * @param integer $firstMonth
+     *
+     * @return Timeblock
+     */
+    public function setFirstMonth($firstMonth)
+    {
+        $this->first_month = $firstMonth;
+
+        return $this;
+    }
+
+    /**
+     * Get firstMonth
+     *
+     * @return integer
+     */
+    public function getFirstMonth()
+    {
+        return $this->first_month;
+    }
+
+    /**
+     * Set duration
+     *
+     * @param integer $duration
+     *
+     * @return Timeblock
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return integer
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
 }
