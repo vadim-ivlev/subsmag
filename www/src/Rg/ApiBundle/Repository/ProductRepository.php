@@ -23,19 +23,19 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
                 p.is_kit,
                 p.is_archive,
                 p.outer_link,
-                p.sort,
-                
-                min(t.price) AS min_price
+                p.sort
             ')
-            ->addSelect('t,d,m,z,a,e')
+            ->addSelect('g,t,d,m,z,a,e')
             ->andWhere('a.from_front_id = :from_front_id OR a.from_front_id IS NULL')
+            ->leftJoin('p.goods', 'g')
             ->leftJoin('p.tariffs', 't')
             ->leftJoin('t.delivery', 'd')
             ->leftJoin('t.medium', 'm')
             ->leftJoin('t.zone', 'z')
             ->leftJoin('z.areas', 'a')
             ->join('p.editions', 'e')
-            ->groupBy('p,t,d,m,z,a,e')
+//            ->groupBy('p,t,d,m,z,a,e')
+            ->orderBy('p.sort')
             ->setParameter('from_front_id', $from_front_id)
             ->getQuery()
             ->getResult()

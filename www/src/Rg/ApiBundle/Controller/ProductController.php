@@ -14,9 +14,152 @@ use Rg\ApiBundle\Controller\Outer as Out;
 
 class ProductController extends Controller
 {
-    const MOSCOW = 4;
+    const MOSCOW = 3;
 
     public function indexAction(Request $request)
+    {
+        $out = new Out();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $from_front_id = $request->query->get('area_id', self::MOSCOW);
+
+        $area = $em->getRepository('RgApiBundle:Area')->findOneBy(['id' => $from_front_id]);
+
+        if (!$area) {
+            $arrError = [
+                'status' => "error",
+                'description' => 'Регион не найден.',
+            ];
+            return $out->json($arrError);
+        }
+
+        $product_container = $em->getRepository('RgApiBundle:Product')
+            ->getProductsWithMinPricesByArea($from_front_id);
+
+        if (!$product_container) {
+            $arrError = [
+                'status' => "error",
+                'description' => 'Комплекты не найдены!',
+            ];
+            return $out->json($arrError);
+        }
+
+        ### attach editions
+        $container_with_editions = array_map(
+            function (array $item) {
+                $product = $item[0];
+
+                $editions = array_map(
+                    [$this, 'normalizeEditions'],
+                    iterator_to_array($product->getEditions())
+                );
+
+                $item['editions'] = $editions;
+
+                return $item;
+            },
+            $product_container
+        );
+
+        ### attach available media for a product
+        $container_with_media = array_map(
+            function (array $item) {
+                /** @var Product $product */
+                $product = $item[0];
+
+                $all_media_for_product = array_map(
+                    function (Tariff $tariff) {
+                        $medium = $tariff->getMedium();
+
+                        return serialize([
+                            'id' => $medium->getId(),
+                            'alias' => $medium->getAlias(),
+                            'description' => $medium->getDescription(),
+                            'name' => $medium->getName(),
+                        ]);
+                    },
+                    iterator_to_array($product->getTariffs())
+                );
+
+                $unique_media = array_map(
+                    function($item) { return unserialize($item); },
+                    array_values(array_unique($all_media_for_product))
+                );
+
+                $item['media'] = $unique_media;
+
+                return $item;
+            },
+            $container_with_editions
+        );
+
+        ### attach available deliveries for a product with specified media
+        $container_with_deliveries = array_map(
+            function (array $item) {
+                /** @var Product $product */
+                $product = $item[0];
+
+                $item['media'] = array_map(
+                    function (array $unique_medium) use ($product) {
+                        //по медиум-ид
+                        $filtered_tariffs = array_filter(
+                            iterator_to_array($product->getTariffs()),
+                            function (Tariff $tariff) use ($unique_medium) {
+                                return $tariff->getMedium()->getId() == $unique_medium['id'];
+                            }
+                        );
+
+                        $all_deliveries = array_map(
+                            function (Tariff $tariff) {
+                                $delivery = $tariff->getDelivery();
+
+                                return serialize([
+                                    'id' => $delivery->getId(),
+                                    'alias' => $delivery->getAlias(),
+                                    'description' => $delivery->getDescription(),
+                                    'name' => $delivery->getName(),
+                                ]);
+                            },
+                            $filtered_tariffs
+                        );
+
+                        $unique_delivs = array_map(
+                            function($item) { return unserialize($item); },
+                            array_values(array_unique($all_deliveries))
+                        );
+
+                        $unique_medium['deliveries'] = $unique_delivs;
+
+                        return $unique_medium;
+                    },
+                    $item['media']
+                );
+
+                return $item;
+            },
+            $container_with_media
+        );
+
+        $show = $container_with_deliveries;
+
+//        dump($show);die;
+
+        return  $out->json($show);
+    }
+
+    private function normalizeEditions(Edition $edition) {
+        return [
+            'id' => $edition->getId(),
+            'name' => $edition->getName(),
+            'keyword' => $edition->getKeyword(),
+            'description' => $edition->getDescription(),
+            'frequency' => $edition->getFrequency(),
+            'image' => $edition->getImage(),
+        ];
+    }
+
+    public function ormV3IndexAction(Request $request)
     {
         $out = new Out();
 
