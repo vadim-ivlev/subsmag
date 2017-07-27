@@ -1,7 +1,7 @@
-Rg\ApiBundle\Entity\Interval:
+Rg\ApiBundle\Entity\Good:
     type: entity
-    table: "`interval`"
-    repositoryClass: Rg\ApiBundle\Repository\IntervalRepository
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\GoodRepository
     id:
         id:
             type: integer
@@ -18,11 +18,18 @@ Rg\ApiBundle\Entity\Interval:
         is_regional:
             type: boolean
             column: is_regional
+    oneToMany:
+        items:
+            targetEntity: Item
+            mappedBy: good
     manyToOne:
-        timeblock:
-            targetEntity: Timeblock
-            inversedBy: intervals
+        product:
+            targetEntity: Product
+            inversedBy: goods
+        period:
+            targetEntity: Period
+            inversedBy: goods
         area:
             targetEntity: Area
-            inversedBy: intervals
+            inversedBy: goods
     lifecycleCallbacks: {  }

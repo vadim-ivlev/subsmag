@@ -166,4 +166,101 @@ class Period
     {
         return $this->intervals;
     }
+    /**
+     * @var integer
+     */
+    private $first_month;
+
+    /**
+     * @var integer
+     */
+    private $duration;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $goods;
+
+
+    /**
+     * Set firstMonth
+     *
+     * @param integer $firstMonth
+     *
+     * @return Period
+     */
+    public function setFirstMonth($firstMonth)
+    {
+        $this->first_month = $firstMonth;
+
+        return $this;
+    }
+
+    /**
+     * Get firstMonth
+     *
+     * @return integer
+     */
+    public function getFirstMonth()
+    {
+        return $this->first_month;
+    }
+
+    /**
+     * Set duration
+     *
+     * @param integer $duration
+     *
+     * @return Period
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return integer
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * Add good
+     *
+     * @param \Rg\ApiBundle\Entity\Good $good
+     *
+     * @return Period
+     */
+    public function addGood(\Rg\ApiBundle\Entity\Good $good)
+    {
+        $this->goods[] = $good;
+
+        return $this;
+    }
+
+    /**
+     * Remove good
+     *
+     * @param \Rg\ApiBundle\Entity\Good $good
+     */
+    public function removeGood(\Rg\ApiBundle\Entity\Good $good)
+    {
+        $this->goods->removeElement($good);
+    }
+
+    /**
+     * Get goods
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGoods()
+    {
+        return $this->goods;
+    }
 }

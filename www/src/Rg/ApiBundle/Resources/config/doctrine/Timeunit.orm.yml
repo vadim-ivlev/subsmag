@@ -1,0 +1,26 @@
+Rg\ApiBundle\Entity\Timeunit:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\TimeunitRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '255'
+            column: name
+        bitmask:
+            type: smallint
+            column: bitmask
+        year:
+            type: smallint
+            column: year
+    oneToMany:
+        tariffs:
+            targetEntity: Tariff
+            mappedBy: timeunit
+    lifecycleCallbacks: {  }

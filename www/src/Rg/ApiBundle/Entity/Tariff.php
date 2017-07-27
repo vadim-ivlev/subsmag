@@ -281,4 +281,72 @@ class Tariff
     {
         return $this->timeblocks;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $items;
+
+    /**
+     * @var \Rg\ApiBundle\Entity\Timeunit
+     */
+    private $timeunit;
+
+
+    /**
+     * Add item
+     *
+     * @param \Rg\ApiBundle\Entity\Item $item
+     *
+     * @return Tariff
+     */
+    public function addItem(\Rg\ApiBundle\Entity\Item $item)
+    {
+        $this->items[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Remove item
+     *
+     * @param \Rg\ApiBundle\Entity\Item $item
+     */
+    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
+    {
+        $this->items->removeElement($item);
+    }
+
+    /**
+     * Get items
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
+     * Set timeunit
+     *
+     * @param \Rg\ApiBundle\Entity\Timeunit $timeunit
+     *
+     * @return Tariff
+     */
+    public function setTimeunit(\Rg\ApiBundle\Entity\Timeunit $timeunit = null)
+    {
+        $this->timeunit = $timeunit;
+
+        return $this;
+    }
+
+    /**
+     * Get timeunit
+     *
+     * @return \Rg\ApiBundle\Entity\Timeunit
+     */
+    public function getTimeunit()
+    {
+        return $this->timeunit;
+    }
 }

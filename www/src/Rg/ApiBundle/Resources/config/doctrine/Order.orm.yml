@@ -16,12 +16,6 @@ Rg\ApiBundle\Entity\Order:
             type: text
             length: '1000'
             column: address
-        start_month:
-            type: smallint
-            column: start_month
-        duration:
-            type: smallint
-            column: duration
         sum:
             type: float
             column: sum
@@ -35,8 +29,8 @@ Rg\ApiBundle\Entity\Order:
         user:
             targetEntity: User
             inversedBy: orders
-    manyToMany:
-        timeblocks:
-            targetEntity: Timeblock
-            inversedBy: orders
+    oneToMany:
+        items:
+            targetEntity: Item
+            mappedBy: order
     lifecycleCallbacks: {  }

@@ -21,7 +21,7 @@ Rg\ApiBundle\Entity\Area:
             targetEntity: Zone
             inversedBy: areas
     oneToMany:
-        intervals:
-            targetEntity: Interval
+        goods:
+            targetEntity: Good
             mappedBy: area
     lifecycleCallbacks: {  }

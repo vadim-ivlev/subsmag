@@ -12,16 +12,16 @@ Rg\ApiBundle\Entity\Tariff:
         price:
             type: float
             column: price
-    manyToMany:
-        timeblocks:
-            targetEntity: Timeblock
-            mappedBy: tariffs
+    oneToMany:
+        items:
+            targetEntity: Item
+            mappedBy: tariff
     manyToOne:
         product:
             targetEntity: Product
             inversedBy: tariffs
-        period:
-            targetEntity: Period
+        timeunit:
+            targetEntity: Timeunit
             inversedBy: tariffs
         delivery:
             targetEntity: Delivery

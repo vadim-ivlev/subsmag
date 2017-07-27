@@ -369,4 +369,43 @@ class Product
     {
         return $this->editions;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $goods;
+
+
+    /**
+     * Add good
+     *
+     * @param \Rg\ApiBundle\Entity\Good $good
+     *
+     * @return Product
+     */
+    public function addGood(\Rg\ApiBundle\Entity\Good $good)
+    {
+        $this->goods[] = $good;
+
+        return $this;
+    }
+
+    /**
+     * Remove good
+     *
+     * @param \Rg\ApiBundle\Entity\Good $good
+     */
+    public function removeGood(\Rg\ApiBundle\Entity\Good $good)
+    {
+        $this->goods->removeElement($good);
+    }
+
+    /**
+     * Get goods
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGoods()
+    {
+        return $this->goods;
+    }
 }

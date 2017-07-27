@@ -1,0 +1,158 @@
+<?php
+
+namespace Rg\ApiBundle\Entity;
+
+/**
+ * Timeunit
+ */
+class Timeunit
+{
+    /**
+     * @var integer
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var integer
+     */
+    private $bitmask;
+
+    /**
+     * @var integer
+     */
+    private $year;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tariffs;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Timeunit
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set bitmask
+     *
+     * @param integer $bitmask
+     *
+     * @return Timeunit
+     */
+    public function setBitmask($bitmask)
+    {
+        $this->bitmask = $bitmask;
+
+        return $this;
+    }
+
+    /**
+     * Get bitmask
+     *
+     * @return integer
+     */
+    public function getBitmask()
+    {
+        return $this->bitmask;
+    }
+
+    /**
+     * Set year
+     *
+     * @param integer $year
+     *
+     * @return Timeunit
+     */
+    public function setYear($year)
+    {
+        $this->year = $year;
+
+        return $this;
+    }
+
+    /**
+     * Get year
+     *
+     * @return integer
+     */
+    public function getYear()
+    {
+        return $this->year;
+    }
+
+    /**
+     * Add tariff
+     *
+     * @param \Rg\ApiBundle\Entity\Tariff $tariff
+     *
+     * @return Timeunit
+     */
+    public function addTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
+    {
+        $this->tariffs[] = $tariff;
+
+        return $this;
+    }
+
+    /**
+     * Remove tariff
+     *
+     * @param \Rg\ApiBundle\Entity\Tariff $tariff
+     */
+    public function removeTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
+    {
+        $this->tariffs->removeElement($tariff);
+    }
+
+    /**
+     * Get tariffs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTariffs()
+    {
+        return $this->tariffs;
+    }
+}

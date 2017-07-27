@@ -1,0 +1,28 @@
+Rg\ApiBundle\Entity\Item:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\ItemRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        quantity:
+            type: integer
+            column: quantity
+        cost:
+            type: float
+            column: cost
+    manyToOne:
+        order:
+            targetEntity: Order
+            inversedBy: items
+        good:
+            targetEntity: Good
+            inversedBy: items
+        tariff:
+            targetEntity: Tariff
+            inversedBy: items
+    lifecycleCallbacks: {  }

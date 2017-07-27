@@ -6,6 +6,7 @@ use Rg\ApiBundle\Entity\Delivery;
 use Rg\ApiBundle\Entity\Edition;
 use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Tariff;
+use Rg\ApiBundle\Entity\Timeblock;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -67,7 +68,7 @@ class ProductController extends Controller
 
                 $unique_media = array_map(
                     function($item) { return unserialize($item); },
-                    array_unique($all_media_for_product)
+                    array_values(array_unique($all_media_for_product))
                 );
                 ########################
 
@@ -100,15 +101,15 @@ class ProductController extends Controller
 
                     $unique_delivs = array_map(
                         function($item) { return unserialize($item); },
-                        array_unique($all_deliveries)
+                        array_values(array_unique($all_deliveries))
                     );
 
                     ####
-                    //периоды
+                    //таймблоки
                     ####
-                    $delivs_with_periods = array_map(
+                    $delivs_with_timeblocks = array_map(
                         function (array $delivery) use ($product, $unique_medium) {
-                            $filtered_tariffs = array_filter(
+                            $filtered_by_medium_and_delivs_tariffs = array_filter(
                                 iterator_to_array($product->getTariffs()),
                                 function (Tariff $tariff) use ($unique_medium, $delivery) {
                                     $criterion = ($tariff->getMedium()->getId() == $unique_medium['id']) and
@@ -118,25 +119,47 @@ class ProductController extends Controller
                                 }
                             );
 
-                            $all_periods = array_map(
+                            $all_timeblocks_for_tariff = array_map(
                                 function (Tariff $tariff) {
-                                    $period = $tariff->getPeriod();
+                                    $timeblocks = $tariff->getTimeblocks();
 
-                                    return serialize([
-                                        'id' => $period->getId(),
-                                        'name' => $period->getName(),
-                                        'price' => $tariff->getPrice(),
-                                    ]);
+
+                                    if ($timeblocks->isEmpty()) return null;
+                                    return 'bb';
+
+                                    $normalized_timeblocks = array_map(
+                                        function (Timeblock $timeblock) use ($tariff) {
+
+                                            $duration = $timeblock->getDuration();
+
+                                            $item_price = $tariff->getPrice();
+
+                                            $price = ($duration < 6) ? $item_price * $duration : $item_price;
+
+                                            return [
+                                                'id' => $timeblock->getId(),
+                                                'first_month' => $timeblock->getFirstMonth(),
+                                                'duration' => $duration,
+                                                'year' => $timeblock->getYear(),
+                                                'price' => $price,
+                                            ];
+                                        },
+                                        iterator_to_array($timeblocks)
+                                    );
+
+                                    return $normalized_timeblocks;
                                 },
-                                $filtered_tariffs
+                                $filtered_by_medium_and_delivs_tariffs
                             );
 
-                            $unique_periods = array_map(
-                                function($item) { return unserialize($item); },
-                                array_unique($all_periods)
+                            $cleared_from_empty_timeblocks = array_filter(
+                                $all_timeblocks_for_tariff,
+                                function ($tb) {
+                                    return $tb !== null;
+                                }
                             );
 
-                            $delivery['periods'] = $unique_periods;
+                            $delivery['periods'] = array_values($cleared_from_empty_timeblocks);
 
                             return $delivery;
                         },
@@ -144,7 +167,7 @@ class ProductController extends Controller
                     );
                     ####
 
-                    $unique_medium['deliveries'] = $delivs_with_periods;
+                    $unique_medium['deliveries'] = $delivs_with_timeblocks;
 
                     $unique_media_with_delivs[] = $unique_medium;
                 }
@@ -165,7 +188,7 @@ class ProductController extends Controller
         );
 
 
-        dump($prods_with_media);die;
+//        dump($prods_with_media);die;
 
         return  $out->json($prods_with_media);
     }
