@@ -105,7 +105,6 @@ class ProductController extends Controller
         );
 
         ### attach available deliveries for a product with specified media
-        //TODO: use Doctrine ArrayCollection here
         $container_with_deliveries = array_map(
             function (array $item) {
                 /** @var Product $product */
@@ -162,7 +161,7 @@ class ProductController extends Controller
                         if (empty($medium['deliveries'])) return $medium;
 
                         $medium['deliveries'] = array_map(
-                            function (array $delivery) use ($product, $from_front_id) {
+                            function (array $delivery) use ($product, $from_front_id, $medium) {
                                 $goods = $product->getGoods();
 
                                 ############
@@ -220,28 +219,56 @@ class ProductController extends Controller
                                     function (Good $good) {
                                         $period = $good->getPeriod();
 
-                                        #######
-                                        /**
-                                         * cost for goods-tariffs
-                                         */
-                                        #######
-                                        $cost = 'comin  sooooon';
-                                        #######
-                                        #######
-
                                         return [
                                             'id' => $period->getId(),
                                             'first_month' => $period->getFirstMonth(),
                                             'duration' => $period->getDuration(),
                                             'year' => $period->getYear(),
-
-                                            'cost' => $cost,
                                         ];
                                     }
                                 );
 
+                                #######
+                                /**
+                                 * cost for goods-tariffs
+                                 */
+                                #######
+                                $tariffied_periods = $normalized_periods->map(
+                                    function (array $period) use ($product, $medium, $delivery, $from_front_id) {
 
-                                $periods = $normalized_periods->toArray();
+
+                                        $timeunit = $this->get('rg_api.edition_normalizer')
+                                            ->convertPeriodStartDurationToTimeunitMask(
+                                                $period['first_month'],
+                                                $period['duration']
+                                            );
+
+                                        $tariff_rep = $this->getDoctrine()->getRepository('RgApiBundle:Tariff');
+
+                                        $price = $tariff_rep->getPriceByProductMediumDeliveryPeriodAreaTimeunit(
+                                            $product->getId(),
+                                            $medium['id'],
+                                            $delivery['id'],
+                                            $period['id'],
+                                            $area = $from_front_id,
+                                            $timeunit = 1
+                                        );
+
+
+                                        if ($period['duration'] == 6 or $period['duration'] ==12)
+                                            $cost = $price;
+                                        else
+                                            $cost = $price * $period['duration'];
+
+                                        $period['cost'] = (float) $cost;
+
+                                        return $period;
+                                    }
+                                );
+                                #######
+                                #######
+
+                                $periods = array_values($tariffied_periods->toArray());
 
                                 $delivery['periods'] = $periods;
 

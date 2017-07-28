@@ -24,4 +24,14 @@ class EditionNormalizer
         ];
     }
 
+    public function convertPeriodStartDurationToTimeunitMask(int $start, int $duration) {
+        $mask = 2048;
+//2048
+//32
+//4032
+//63
+//4095
+
+        return $mask;
+    }
 }

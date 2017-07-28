@@ -1,6 +1,10 @@
 <?php
 
 namespace Rg\ApiBundle\Repository;
+use Rg\ApiBundle\Entity\Area;
+use Rg\ApiBundle\Entity\Delivery;
+use Rg\ApiBundle\Entity\Medium;
+use Rg\ApiBundle\Entity\Period;
 
 /**
  * ProductRepository
@@ -43,4 +47,5 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
 }

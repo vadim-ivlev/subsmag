@@ -1,6 +1,12 @@
 <?php
 
 namespace Rg\ApiBundle\Repository;
+use Rg\ApiBundle\Entity\Area;
+use Rg\ApiBundle\Entity\Delivery;
+use Rg\ApiBundle\Entity\Medium;
+use Rg\ApiBundle\Entity\Period;
+use Rg\ApiBundle\Entity\Product;
+use Rg\ApiBundle\Entity\Timeunit;
 
 /**
  * TariffRepository
@@ -21,4 +27,56 @@ class TariffRepository extends \Doctrine\ORM\EntityRepository
         return $tariffs;
     }
 
+    public function getPriceByProductMediumDeliveryPeriodAreaTimeunit(
+//        Product $product,
+//        Medium $medium,
+//        Delivery $delivery,
+//        Period $period,
+//        Area $area,
+//        Timeunit $timeunit
+        $product,
+        $medium,
+        $delivery,
+        $period,
+        $area,
+        $timeunit
+    )
+    {
+        $sql = 'SELECT t.price
+            FROM tariff t
+            JOIN good g ON g.product_id = t.product_id AND g.area_id = :area_id
+            WHERE 
+                g.period_id = :period_id  
+                AND t.medium_id = :medium_id
+                AND t.delivery_id = :delivery_id
+                AND t.product_id = :product_id
+                AND t.zone_id = (
+                    SELECT zone_id FROM area WHERE from_front_id = :area_id
+                )
+                AND t.timeunit_id = :timeunit_id
+            ';
+
+        $stmt = $this->getEntityManager()->getConnection()
+            ->prepare($sql)
+        ;
+//        $stmt->bindValue('area_id', $area->getId());
+//        $stmt->bindValue('period_id', $period->getId());
+//        $stmt->bindValue('medium_id', $medium->getId());
+//        $stmt->bindValue('delivery_id', $delivery->getId());
+//        $stmt->bindValue('product_id', $product->getId());
+//        $stmt->bindValue('timeunit_id', $timeunit->getId());
+
+        $stmt->bindValue('area_id', $area);
+        $stmt->bindValue('period_id', $period);
+        $stmt->bindValue('medium_id', $medium);
+        $stmt->bindValue('delivery_id', $delivery);
+        $stmt->bindValue('product_id', $product);
+        $stmt->bindValue('timeunit_id', $timeunit);
+
+        $stmt->execute();
+
+        $price = $stmt->fetchColumn();
+
+        return $price;
+    }
 }
