@@ -2,8 +2,10 @@
 
 namespace Rg\ApiBundle\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Rg\ApiBundle\Entity\Delivery;
 use Rg\ApiBundle\Entity\Edition;
+use Rg\ApiBundle\Entity\Good;
 use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Tariff;
 use Rg\ApiBundle\Entity\Timeblock;
@@ -48,14 +50,23 @@ class ProductController extends Controller
         ### attach editions
         $container_with_editions = array_map(
             function (array $item) {
+                /** @var Product $product */
                 $product = $item[0];
 
-                $editions = array_map(
-                    [$this, 'normalizeEditions'],
-                    iterator_to_array($product->getEditions())
+                $editions = $product->getEditions()->map(
+                    function (Edition $edition) {
+                        return [
+                            'id' => $edition->getId(),
+                            'name' => $edition->getName(),
+                            'keyword' => $edition->getKeyword(),
+                            'description' => $edition->getDescription(),
+                            'frequency' => $edition->getFrequency(),
+                            'image' => $edition->getImage(),
+                        ];
+                    }
                 );
 
-                $item['editions'] = $editions;
+                $item['editions'] = $editions->toArray();
 
                 return $item;
             },
@@ -68,7 +79,7 @@ class ProductController extends Controller
                 /** @var Product $product */
                 $product = $item[0];
 
-                $all_media_for_product = array_map(
+                $all_media_for_product = $product->getTariffs()->map(
                     function (Tariff $tariff) {
                         $medium = $tariff->getMedium();
 
@@ -78,13 +89,12 @@ class ProductController extends Controller
                             'description' => $medium->getDescription(),
                             'name' => $medium->getName(),
                         ]);
-                    },
-                    iterator_to_array($product->getTariffs())
+                    }
                 );
 
                 $unique_media = array_map(
                     function($item) { return unserialize($item); },
-                    array_values(array_unique($all_media_for_product))
+                    array_values(array_unique($all_media_for_product->toArray()))
                 );
 
                 $item['media'] = $unique_media;
@@ -95,6 +105,7 @@ class ProductController extends Controller
         );
 
         ### attach available deliveries for a product with specified media
+        //TODO: use Doctrine ArrayCollection here
         $container_with_deliveries = array_map(
             function (array $item) {
                 /** @var Product $product */
@@ -103,14 +114,13 @@ class ProductController extends Controller
                 $item['media'] = array_map(
                     function (array $unique_medium) use ($product) {
                         //по медиум-ид
-                        $filtered_tariffs = array_filter(
-                            iterator_to_array($product->getTariffs()),
+                        $filtered_tariffs = $product->getTariffs()->filter(
                             function (Tariff $tariff) use ($unique_medium) {
                                 return $tariff->getMedium()->getId() == $unique_medium['id'];
                             }
                         );
 
-                        $all_deliveries = array_map(
+                        $all_deliveries = $filtered_tariffs->map(
                             function (Tariff $tariff) {
                                 $delivery = $tariff->getDelivery();
 
@@ -120,13 +130,12 @@ class ProductController extends Controller
                                     'description' => $delivery->getDescription(),
                                     'name' => $delivery->getName(),
                                 ]);
-                            },
-                            $filtered_tariffs
+                            }
                         );
 
                         $unique_delivs = array_map(
                             function($item) { return unserialize($item); },
-                            array_values(array_unique($all_deliveries))
+                            array_values(array_unique($all_deliveries->toArray()))
                         );
 
                         $unique_medium['deliveries'] = $unique_delivs;
@@ -141,7 +150,118 @@ class ProductController extends Controller
             $container_with_media
         );
 
-        $show = $container_with_deliveries;
+        ### attach available periods for a product with specified media and deliveries
+        $container_with_periods = array_map(
+            function (array $item) use ($from_front_id) {
+                /** @var Product $product */
+                $product = $item[0];
+
+                $item['media'] = array_map(
+                    function (array $medium) use ($product, $from_front_id) {
+
+                        if (empty($medium['deliveries'])) return $medium;
+
+                        $medium['deliveries'] = array_map(
+                            function (array $delivery) use ($product, $from_front_id) {
+                                $goods = $product->getGoods();
+
+                                ############
+                                /**
+                                 * есть регионализированные периоды, есть общие.
+                                 * если есть period-area для этого региона, взять его вместо общего.
+                                 */
+                                ############
+                                $partitioned = $goods->partition(
+                                    function ($key, Good $good) {
+                                        return !($good->getIsRegional());
+                                    }
+                                );
+
+                                /** @var ArrayCollection $for_all_regions_goods */
+                                $for_all_regions_goods = $partitioned[0];
+                                /** @var ArrayCollection $region_specific_goods */
+                                $region_specific_goods = $partitioned[1];
+
+                                $area_checked = $region_specific_goods->filter(
+                                    function (Good $good) use ($from_front_id) {
+                                        $area_criterion = $good->getArea()->getFromFrontId() == $from_front_id;
+
+                                        return $area_criterion;
+                                    }
+                                );
+
+                                $filtered_by_area_goods = $for_all_regions_goods->map(
+                                    function (Good $good) use ($area_checked) {
+
+                                        foreach ($area_checked->getIterator() as $replacer) {
+                                            if ($good->getPeriod()->getId() == $replacer->getPeriod()->getId()) {
+                                                return $replacer;
+                                            }
+                                        }
+
+                                        return $good;
+                                    }
+                                );
+                                ############
+                                ############
+
+                                $filtered_by_date_and_area_goods = $filtered_by_area_goods->filter(
+                                    function (Good $good) use ($from_front_id) {
+                                        $start = $good->getStart();
+                                        $end = $good->getEnd();
+
+                                        $criterion = ((new \DateTime()) > $start) and ((new \DateTime()) < $end);
+
+                                        return $criterion;
+                                    }
+                                );
+
+                                $normalized_periods = $filtered_by_date_and_area_goods->map(
+                                    function (Good $good) {
+                                        $period = $good->getPeriod();
+
+                                        #######
+                                        /**
+                                         * cost for goods-tariffs
+                                         */
+                                        #######
+                                        $cost = 'comin  sooooon';
+                                        #######
+                                        #######
+
+                                        return [
+                                            'id' => $period->getId(),
+                                            'first_month' => $period->getFirstMonth(),
+                                            'duration' => $period->getDuration(),
+                                            'year' => $period->getYear(),
+
+                                            'cost' => $cost,
+                                        ];
+                                    }
+                                );
+
+
+                                $periods = $normalized_periods->toArray();
+
+                                $delivery['periods'] = $periods;
+
+                                return $delivery;
+                            },
+                            $medium['deliveries']
+                        );
+
+                        return $medium;
+                    },
+                    $item['media']
+                );
+
+                return $item;
+            },
+            $container_with_deliveries
+        );
+
+
+        $show = $container_with_periods;
 
 //        dump($show);die;
 

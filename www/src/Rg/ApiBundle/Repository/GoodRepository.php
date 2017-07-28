@@ -10,4 +10,7 @@ namespace Rg\ApiBundle\Repository;
  */
 class GoodRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getActualPeriod() {
+        return 'ok';
+    }
 }
