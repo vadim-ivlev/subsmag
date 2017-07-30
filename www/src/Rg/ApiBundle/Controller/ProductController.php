@@ -151,17 +151,17 @@ class ProductController extends Controller
 
         ### attach available periods for a product with specified media and deliveries
         $container_with_periods = array_map(
-            function (array $item) use ($from_front_id) {
+            function (array $item) use ($area) {
                 /** @var Product $product */
                 $product = $item[0];
 
                 $item['media'] = array_map(
-                    function (array $medium) use ($product, $from_front_id) {
+                    function (array $medium) use ($product, $area) {
 
                         if (empty($medium['deliveries'])) return $medium;
 
                         $medium['deliveries'] = array_map(
-                            function (array $delivery) use ($product, $from_front_id, $medium) {
+                            function (array $delivery) use ($product, $area, $medium) {
                                 $goods = $product->getGoods();
 
                                 ############
@@ -182,8 +182,8 @@ class ProductController extends Controller
                                 $region_specific_goods = $partitioned[1];
 
                                 $area_checked = $region_specific_goods->filter(
-                                    function (Good $good) use ($from_front_id) {
-                                        $area_criterion = $good->getArea()->getFromFrontId() == $from_front_id;
+                                    function (Good $good) use ($area) {
+                                        $area_criterion = $good->getArea()->getFromFrontId() == $area->getFromFrontId();
 
                                         return $area_criterion;
                                     }
@@ -205,7 +205,7 @@ class ProductController extends Controller
                                 ############
 
                                 $filtered_by_date_and_area_goods = $filtered_by_area_goods->filter(
-                                    function (Good $good) use ($from_front_id) {
+                                    function (Good $good) {
                                         $start = $good->getStart();
                                         $end = $good->getEnd();
 
@@ -234,10 +234,10 @@ class ProductController extends Controller
                                  */
                                 #######
                                 $tariffied_periods = $normalized_periods->map(
-                                    function (array $period) use ($product, $medium, $delivery, $from_front_id) {
+                                    function (array $period) use ($product, $medium, $delivery, $area) {
 
 
-                                        $timeunit = $this->get('rg_api.edition_normalizer')
+                                        $bitmask = $this->get('rg_api.period_timeunit_converter')
                                             ->convertPeriodStartDurationToTimeunitMask(
                                                 $period['first_month'],
                                                 $period['duration']
@@ -246,16 +246,15 @@ class ProductController extends Controller
                                         $tariff_rep = $this->getDoctrine()->getRepository('RgApiBundle:Tariff');
 
                                         $price = $tariff_rep->getPriceByProductMediumDeliveryPeriodAreaTimeunit(
-                                            $product->getId(),
+                                            $product,
                                             $medium['id'],
                                             $delivery['id'],
-                                            $period['id'],
-                                            $area = $from_front_id,
-                                            $timeunit = 1
+                                            $area,
+                                            $bitmask
                                         );
 
 
-                                        if ($period['duration'] == 6 or $period['duration'] ==12)
+                                        if ($period['duration'] == 6 or $period['duration'] == 12)
                                             $cost = $price;
                                         else
                                             $cost = $price * $period['duration'];

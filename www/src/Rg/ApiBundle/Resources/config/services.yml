@@ -7,3 +7,5 @@ services:
 # Services
     rg_api.edition_normalizer:
         class: Rg\ApiBundle\Service\EditionNormalizer
+    rg_api.period_timeunit_converter:
+        class: Rg\ApiBundle\Service\PeriodTimeunitConverter
