@@ -1,0 +1,22 @@
+Rg\ApiBundle\Entity\Month:
+    type: entity
+    table: "`month`"
+    repositoryClass: Rg\ApiBundle\Repository\MonthRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        number:
+            type: smallint
+            column: "`number`"
+        year:
+            type: smallint
+            column: year
+    oneToMany:
+        sales:
+            targetEntity: Sale
+            mappedBy: month
+    lifecycleCallbacks: {  }

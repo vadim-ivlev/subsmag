@@ -1,10 +1,8 @@
 <?php
 
 namespace Rg\ApiBundle\Repository;
-use Rg\ApiBundle\Entity\Area;
-use Rg\ApiBundle\Entity\Delivery;
-use Rg\ApiBundle\Entity\Medium;
-use Rg\ApiBundle\Entity\Period;
+
+use Doctrine\ORM\Query\Expr;
 
 /**
  * ProductRepository
@@ -16,7 +14,8 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
     public function getProductsWithMinPricesByArea(int $from_front_id)
     {
-        $result = $this->createQueryBuilder('p')
+        $qb = $this->createQueryBuilder('p');
+        $result = $qb
             ->select('
                 p,
                 p.id,
@@ -29,9 +28,9 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
                 p.outer_link,
                 p.sort
             ')
-            ->addSelect('g,t,d,m,z,a,e')
+            ->addSelect('s,t,d,m,z,a,e')
             ->andWhere('a.from_front_id = :from_front_id OR a.from_front_id IS NULL')
-            ->leftJoin('p.goods', 'g')
+            ->leftJoin('p.sales', 's')
             ->leftJoin('p.tariffs', 't')
             ->leftJoin('t.delivery', 'd')
             ->leftJoin('t.medium', 'm')

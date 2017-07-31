@@ -12,6 +12,9 @@ Rg\ApiBundle\Entity\Item:
         quantity:
             type: integer
             column: quantity
+        timeunit_amount:
+            type: integer
+            column: timeunit_amount
         cost:
             type: float
             column: cost
@@ -19,8 +22,8 @@ Rg\ApiBundle\Entity\Item:
         order:
             targetEntity: Order
             inversedBy: items
-        good:
-            targetEntity: Good
+        sale:
+            targetEntity: Sale
             inversedBy: items
         tariff:
             targetEntity: Tariff

@@ -1,12 +1,7 @@
 <?php
 
 namespace Rg\ApiBundle\Repository;
-use Rg\ApiBundle\Entity\Area;
-use Rg\ApiBundle\Entity\Delivery;
-use Rg\ApiBundle\Entity\Medium;
-use Rg\ApiBundle\Entity\Period;
-use Rg\ApiBundle\Entity\Product;
-use Rg\ApiBundle\Entity\Timeunit;
+
 
 /**
  * TariffRepository
@@ -27,40 +22,4 @@ class TariffRepository extends \Doctrine\ORM\EntityRepository
         return $tariffs;
     }
 
-    public function getPriceByProductMediumDeliveryPeriodAreaTimeunit(
-        Product $product,
-        $medium_id,
-        $delivery_id,
-        Area $area,
-        int $bitmask
-    )
-    {
-        $sql = 'SELECT t.price
-            FROM tariff t
-            WHERE 
-                t.medium_id = :medium_id
-                AND t.delivery_id = :delivery_id
-                AND t.product_id = :product_id
-                AND t.zone_id = :zone_id
-                AND t.timeunit_id = (
-                  SELECT id FROM timeunit WHERE bitmask = :bitmask
-                )
-            ';
-
-        $stmt = $this->getEntityManager()->getConnection()
-            ->prepare($sql)
-        ;
-
-        $stmt->bindValue('medium_id', $medium_id);
-        $stmt->bindValue('delivery_id', $delivery_id);
-        $stmt->bindValue('product_id', $product->getId());
-        $stmt->bindValue('zone_id', $area->getZone()->getId());
-        $stmt->bindValue('bitmask', $bitmask);
-
-        $stmt->execute();
-
-        $price = $stmt->fetchColumn();
-
-        return $price;
-    }
 }

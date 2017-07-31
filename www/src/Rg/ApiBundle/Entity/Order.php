@@ -23,16 +23,6 @@ class Order
     private $address;
 
     /**
-     * @var integer
-     */
-    private $start_month;
-
-    /**
-     * @var integer
-     */
-    private $duration;
-
-    /**
      * @var float
      */
     private $sum;
@@ -41,6 +31,11 @@ class Order
      * @var boolean
      */
     private $is_paid;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $items;
 
     /**
      * @var \Rg\ApiBundle\Entity\Payment
@@ -53,16 +48,11 @@ class Order
     private $user;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $tariffs;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->items = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -124,54 +114,6 @@ class Order
     }
 
     /**
-     * Set startMonth
-     *
-     * @param integer $startMonth
-     *
-     * @return Order
-     */
-    public function setStartMonth($startMonth)
-    {
-        $this->start_month = $startMonth;
-
-        return $this;
-    }
-
-    /**
-     * Get startMonth
-     *
-     * @return integer
-     */
-    public function getStartMonth()
-    {
-        return $this->start_month;
-    }
-
-    /**
-     * Set duration
-     *
-     * @param integer $duration
-     *
-     * @return Order
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    /**
-     * Get duration
-     *
-     * @return integer
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
      * Set sum
      *
      * @param float $sum
@@ -220,6 +162,40 @@ class Order
     }
 
     /**
+     * Add item
+     *
+     * @param \Rg\ApiBundle\Entity\Item $item
+     *
+     * @return Order
+     */
+    public function addItem(\Rg\ApiBundle\Entity\Item $item)
+    {
+        $this->items[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Remove item
+     *
+     * @param \Rg\ApiBundle\Entity\Item $item
+     */
+    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
+    {
+        $this->items->removeElement($item);
+    }
+
+    /**
+     * Get items
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
      * Set payment
      *
      * @param \Rg\ApiBundle\Entity\Payment $payment
@@ -265,117 +241,5 @@ class Order
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * Add tariff
-     *
-     * @param \Rg\ApiBundle\Entity\Tariff $tariff
-     *
-     * @return Order
-     */
-    public function addTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
-    {
-        $this->tariffs[] = $tariff;
-
-        return $this;
-    }
-
-    /**
-     * Remove tariff
-     *
-     * @param \Rg\ApiBundle\Entity\Tariff $tariff
-     */
-    public function removeTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
-    {
-        $this->tariffs->removeElement($tariff);
-    }
-
-    /**
-     * Get tariffs
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTariffs()
-    {
-        return $this->tariffs;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $timeblocks;
-
-
-    /**
-     * Add timeblock
-     *
-     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
-     *
-     * @return Order
-     */
-    public function addTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock)
-    {
-        $this->timeblocks[] = $timeblock;
-
-        return $this;
-    }
-
-    /**
-     * Remove timeblock
-     *
-     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
-     */
-    public function removeTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock)
-    {
-        $this->timeblocks->removeElement($timeblock);
-    }
-
-    /**
-     * Get timeblocks
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTimeblocks()
-    {
-        return $this->timeblocks;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $items;
-
-
-    /**
-     * Add item
-     *
-     * @param \Rg\ApiBundle\Entity\Item $item
-     *
-     * @return Order
-     */
-    public function addItem(\Rg\ApiBundle\Entity\Item $item)
-    {
-        $this->items[] = $item;
-
-        return $this;
-    }
-
-    /**
-     * Remove item
-     *
-     * @param \Rg\ApiBundle\Entity\Item $item
-     */
-    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
-    {
-        $this->items->removeElement($item);
-    }
-
-    /**
-     * Get items
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getItems()
-    {
-        return $this->items;
     }
 }

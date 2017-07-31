@@ -7,6 +7,7 @@ use Rg\ApiBundle\Entity\Delivery;
 use Rg\ApiBundle\Entity\Edition;
 use Rg\ApiBundle\Entity\Good;
 use Rg\ApiBundle\Entity\Product;
+use Rg\ApiBundle\Entity\Sale;
 use Rg\ApiBundle\Entity\Tariff;
 use Rg\ApiBundle\Entity\Timeblock;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -149,7 +150,7 @@ class ProductController extends Controller
             $container_with_media
         );
 
-        ### attach available periods for a product with specified media and deliveries
+        ### attach available sales for a product with specified media and deliveries
         $container_with_periods = array_map(
             function (array $item) use ($area) {
                 /** @var Product $product */
@@ -162,52 +163,52 @@ class ProductController extends Controller
 
                         $medium['deliveries'] = array_map(
                             function (array $delivery) use ($product, $area, $medium) {
-                                $goods = $product->getGoods();
+                                $sales = $product->getSales();
 
                                 ############
                                 /**
-                                 * есть регионализированные периоды, есть общие.
-                                 * если есть period-area для этого региона, взять его вместо общего.
+                                 * есть регионализированные продажи, есть общие.
+                                 * если есть month-area для этого региона, взять его вместо общего.
                                  */
                                 ############
-                                $partitioned = $goods->partition(
-                                    function ($key, Good $good) {
-                                        return !($good->getIsRegional());
+                                $partitioned = $sales->partition(
+                                    function ($key, Sale $sale) {
+                                        return !($sale->getIsRegional());
                                     }
                                 );
 
-                                /** @var ArrayCollection $for_all_regions_goods */
-                                $for_all_regions_goods = $partitioned[0];
-                                /** @var ArrayCollection $region_specific_goods */
-                                $region_specific_goods = $partitioned[1];
+                                /** @var ArrayCollection $for_all_regions_sales */
+                                $for_all_regions_sales = $partitioned[0];
+                                /** @var ArrayCollection $region_specific_sales */
+                                $region_specific_sales = $partitioned[1];
 
-                                $area_checked = $region_specific_goods->filter(
-                                    function (Good $good) use ($area) {
-                                        $area_criterion = $good->getArea()->getFromFrontId() == $area->getFromFrontId();
+                                $area_checked = $region_specific_sales->filter(
+                                    function (Sale $sale) use ($area) {
+                                        $area_criterion = $sale->getArea()->getFromFrontId() == $area->getFromFrontId();
 
                                         return $area_criterion;
                                     }
                                 );
 
-                                $filtered_by_area_goods = $for_all_regions_goods->map(
-                                    function (Good $good) use ($area_checked) {
+                                $filtered_by_area_sales = $for_all_regions_sales->map(
+                                    function (Sale $sale) use ($area_checked) {
 
                                         foreach ($area_checked->getIterator() as $replacer) {
-                                            if ($good->getPeriod()->getId() == $replacer->getPeriod()->getId()) {
+                                            if ($sale->getMonth()->getId() == $replacer->getMonth()->getId()) {
                                                 return $replacer;
                                             }
                                         }
 
-                                        return $good;
+                                        return $sale;
                                     }
                                 );
                                 ############
                                 ############
 
-                                $filtered_by_date_and_area_goods = $filtered_by_area_goods->filter(
-                                    function (Good $good) {
-                                        $start = $good->getStart();
-                                        $end = $good->getEnd();
+                                $filtered_by_date_and_area_sales = $filtered_by_area_sales->filter(
+                                    function (Sale $sale) {
+                                        $start = $sale->getStart();
+                                        $end = $sale->getEnd();
 
                                         $criterion = ((new \DateTime()) > $start) and ((new \DateTime()) < $end);
 
@@ -215,61 +216,59 @@ class ProductController extends Controller
                                     }
                                 );
 
-                                $normalized_periods = $filtered_by_date_and_area_goods->map(
-                                    function (Good $good) {
-                                        $period = $good->getPeriod();
+                                $normalized_sales = $filtered_by_date_and_area_sales->map(
+                                    function (Sale $sale) {
+                                        $month = $sale->getMonth();
 
                                         return [
-                                            'id' => $period->getId(),
-                                            'first_month' => $period->getFirstMonth(),
-                                            'duration' => $period->getDuration(),
-                                            'year' => $period->getYear(),
+                                            'id' => $month->getId(),
+                                            'number' => $month->getNumber(),
+                                            'year' => $month->getYear(),
                                         ];
                                     }
                                 );
 
+                                $delivery['sales'] = array_values($normalized_sales->toArray());
+
                                 #######
                                 /**
-                                 * cost for goods-tariffs
+                                 * tariffs
                                  */
                                 #######
-                                $tariffied_periods = $normalized_periods->map(
-                                    function (array $period) use ($product, $medium, $delivery, $area) {
+                                $tariffs = $product->getTariffs();
 
+                                $filtered_tariffs = $tariffs->filter(
+                                    function (Tariff $tariff) use ($product, $medium, $delivery, $area) {
+                                        $criterion = ($tariff->getMedium()->getId() == $medium['id']);
+                                        $criterion = $criterion && ($tariff->getDelivery()->getId() == $delivery['id']);
+                                        $criterion = $criterion && ($tariff->getZone()->getId() == $area->getZone()->getId());
 
-                                        $bitmask = $this->get('rg_api.period_timeunit_converter')
-                                            ->convertPeriodStartDurationToTimeunitMask(
-                                                $period['first_month'],
-                                                $period['duration']
-                                            );
-
-                                        $tariff_rep = $this->getDoctrine()->getRepository('RgApiBundle:Tariff');
-
-                                        $price = $tariff_rep->getPriceByProductMediumDeliveryPeriodAreaTimeunit(
-                                            $product,
-                                            $medium['id'],
-                                            $delivery['id'],
-                                            $area,
-                                            $bitmask
-                                        );
-
-
-                                        if ($period['duration'] == 6 or $period['duration'] == 12)
-                                            $cost = $price;
-                                        else
-                                            $cost = $price * $period['duration'];
-
-                                        $period['cost'] = (float) $cost;
-
-                                        return $period;
+                                        return $criterion;
                                     }
                                 );
+
+                                $normalized_tariffs = $filtered_tariffs->map(
+                                    function (Tariff $tariff) {
+                                        $timeunit = $tariff->getTimeunit();
+                                        $price = $tariff->getPrice();
+
+                                        $norm = [
+                                            'timeunit' => [
+                                                'id' => $timeunit->getId(),
+                                                'name' => $timeunit->getName(),
+                                                'mask' => $timeunit->getBitmask(),
+                                                'year' => $timeunit->getYear(),
+                                            ],
+                                            'price' => $price,
+                                        ];
+                                        return $norm;
+                                    }
+                                );
+
                                 #######
                                 #######
 
-                                $periods = array_values($tariffied_periods->toArray());
-
-                                $delivery['periods'] = $periods;
+                                $delivery['tariffs'] = array_values($normalized_tariffs->toArray());
 
                                 return $delivery;
                             },
@@ -292,17 +291,6 @@ class ProductController extends Controller
 //        dump($show);die;
 
         return  $out->json($show);
-    }
-
-    private function normalizeEditions(Edition $edition) {
-        return [
-            'id' => $edition->getId(),
-            'name' => $edition->getName(),
-            'keyword' => $edition->getKeyword(),
-            'description' => $edition->getDescription(),
-            'frequency' => $edition->getFrequency(),
-            'image' => $edition->getImage(),
-        ];
     }
 
     public function showAction($id)

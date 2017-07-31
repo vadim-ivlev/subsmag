@@ -42,8 +42,8 @@ Rg\ApiBundle\Entity\Product:
         tariffs:
             targetEntity: Tariff
             mappedBy: product
-        goods:
-            targetEntity: Good
+        sales:
+            targetEntity: Sale
             mappedBy: product
     manyToMany:
         editions:

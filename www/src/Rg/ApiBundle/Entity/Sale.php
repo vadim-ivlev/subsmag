@@ -3,9 +3,9 @@
 namespace Rg\ApiBundle\Entity;
 
 /**
- * Good
+ * Sale
  */
-class Good
+class Sale
 {
     /**
      * @var integer
@@ -38,9 +38,9 @@ class Good
     private $product;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Period
+     * @var \Rg\ApiBundle\Entity\Month
      */
-    private $period;
+    private $month;
 
     /**
      * @var \Rg\ApiBundle\Entity\Area
@@ -70,7 +70,7 @@ class Good
      *
      * @param \DateTime $start
      *
-     * @return Good
+     * @return Sale
      */
     public function setStart($start)
     {
@@ -94,7 +94,7 @@ class Good
      *
      * @param \DateTime $end
      *
-     * @return Good
+     * @return Sale
      */
     public function setEnd($end)
     {
@@ -118,7 +118,7 @@ class Good
      *
      * @param boolean $isRegional
      *
-     * @return Good
+     * @return Sale
      */
     public function setIsRegional($isRegional)
     {
@@ -142,7 +142,7 @@ class Good
      *
      * @param \Rg\ApiBundle\Entity\Item $item
      *
-     * @return Good
+     * @return Sale
      */
     public function addItem(\Rg\ApiBundle\Entity\Item $item)
     {
@@ -176,7 +176,7 @@ class Good
      *
      * @param \Rg\ApiBundle\Entity\Product $product
      *
-     * @return Good
+     * @return Sale
      */
     public function setProduct(\Rg\ApiBundle\Entity\Product $product = null)
     {
@@ -196,27 +196,27 @@ class Good
     }
 
     /**
-     * Set period
+     * Set month
      *
-     * @param \Rg\ApiBundle\Entity\Period $period
+     * @param \Rg\ApiBundle\Entity\Month $month
      *
-     * @return Good
+     * @return Sale
      */
-    public function setPeriod(\Rg\ApiBundle\Entity\Period $period = null)
+    public function setMonth(\Rg\ApiBundle\Entity\Month $month = null)
     {
-        $this->period = $period;
+        $this->month = $month;
 
         return $this;
     }
 
     /**
-     * Get period
+     * Get month
      *
-     * @return \Rg\ApiBundle\Entity\Period
+     * @return \Rg\ApiBundle\Entity\Month
      */
-    public function getPeriod()
+    public function getMonth()
     {
-        return $this->period;
+        return $this->month;
     }
 
     /**
@@ -224,7 +224,7 @@ class Good
      *
      * @param \Rg\ApiBundle\Entity\Area $area
      *
-     * @return Good
+     * @return Sale
      */
     public function setArea(\Rg\ApiBundle\Entity\Area $area = null)
     {

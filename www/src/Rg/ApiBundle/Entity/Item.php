@@ -18,6 +18,11 @@ class Item
     private $quantity;
 
     /**
+     * @var integer
+     */
+    private $timeunit_amount;
+
+    /**
      * @var float
      */
     private $cost;
@@ -28,9 +33,9 @@ class Item
     private $order;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Good
+     * @var \Rg\ApiBundle\Entity\Sale
      */
-    private $good;
+    private $sale;
 
     /**
      * @var \Rg\ApiBundle\Entity\Tariff
@@ -70,6 +75,30 @@ class Item
     public function getQuantity()
     {
         return $this->quantity;
+    }
+
+    /**
+     * Set timeunitAmount
+     *
+     * @param integer $timeunitAmount
+     *
+     * @return Item
+     */
+    public function setTimeunitAmount($timeunitAmount)
+    {
+        $this->timeunit_amount = $timeunitAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get timeunitAmount
+     *
+     * @return integer
+     */
+    public function getTimeunitAmount()
+    {
+        return $this->timeunit_amount;
     }
 
     /**
@@ -121,27 +150,27 @@ class Item
     }
 
     /**
-     * Set good
+     * Set sale
      *
-     * @param \Rg\ApiBundle\Entity\Good $good
+     * @param \Rg\ApiBundle\Entity\Sale $sale
      *
      * @return Item
      */
-    public function setGood(\Rg\ApiBundle\Entity\Good $good = null)
+    public function setSale(\Rg\ApiBundle\Entity\Sale $sale = null)
     {
-        $this->good = $good;
+        $this->sale = $sale;
 
         return $this;
     }
 
     /**
-     * Get good
+     * Get sale
      *
-     * @return \Rg\ApiBundle\Entity\Good
+     * @return \Rg\ApiBundle\Entity\Sale
      */
-    public function getGood()
+    public function getSale()
     {
-        return $this->good;
+        return $this->sale;
     }
 
     /**

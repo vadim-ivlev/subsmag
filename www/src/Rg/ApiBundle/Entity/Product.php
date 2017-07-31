@@ -65,6 +65,11 @@ class Product
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $goods;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $editions;
 
     /**
@@ -73,6 +78,7 @@ class Product
     public function __construct()
     {
         $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->goods = new \Doctrine\Common\Collections\ArrayCollection();
         $this->editions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -337,6 +343,40 @@ class Product
     }
 
     /**
+     * Add good
+     *
+     * @param \Rg\ApiBundle\Entity\Good $good
+     *
+     * @return Product
+     */
+    public function addGood(\Rg\ApiBundle\Entity\Good $good)
+    {
+        $this->goods[] = $good;
+
+        return $this;
+    }
+
+    /**
+     * Remove good
+     *
+     * @param \Rg\ApiBundle\Entity\Good $good
+     */
+    public function removeGood(\Rg\ApiBundle\Entity\Good $good)
+    {
+        $this->goods->removeElement($good);
+    }
+
+    /**
+     * Get goods
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGoods()
+    {
+        return $this->goods;
+    }
+
+    /**
      * Add edition
      *
      * @param \Rg\ApiBundle\Entity\Edition $edition
@@ -372,40 +412,40 @@ class Product
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $goods;
+    private $sales;
 
 
     /**
-     * Add good
+     * Add sale
      *
-     * @param \Rg\ApiBundle\Entity\Good $good
+     * @param \Rg\ApiBundle\Entity\Sale $sale
      *
      * @return Product
      */
-    public function addGood(\Rg\ApiBundle\Entity\Good $good)
+    public function addSale(\Rg\ApiBundle\Entity\Sale $sale)
     {
-        $this->goods[] = $good;
+        $this->sales[] = $sale;
 
         return $this;
     }
 
     /**
-     * Remove good
+     * Remove sale
      *
-     * @param \Rg\ApiBundle\Entity\Good $good
+     * @param \Rg\ApiBundle\Entity\Sale $sale
      */
-    public function removeGood(\Rg\ApiBundle\Entity\Good $good)
+    public function removeSale(\Rg\ApiBundle\Entity\Sale $sale)
     {
-        $this->goods->removeElement($good);
+        $this->sales->removeElement($sale);
     }
 
     /**
-     * Get goods
+     * Get sales
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getGoods()
+    public function getSales()
     {
-        return $this->goods;
+        return $this->sales;
     }
 }

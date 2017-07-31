@@ -18,10 +18,27 @@ class Area
     private $name;
 
     /**
+     * @var integer
+     */
+    private $from_front_id;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $goods;
+
+    /**
      * @var \Rg\ApiBundle\Entity\Zone
      */
     private $zone;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->goods = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -58,35 +75,6 @@ class Area
     }
 
     /**
-     * Set zone
-     *
-     * @param \Rg\ApiBundle\Entity\Zone $zone
-     *
-     * @return Area
-     */
-    public function setZone(\Rg\ApiBundle\Entity\Zone $zone = null)
-    {
-        $this->zone = $zone;
-
-        return $this;
-    }
-
-    /**
-     * Get zone
-     *
-     * @return \Rg\ApiBundle\Entity\Zone
-     */
-    public function getZone()
-    {
-        return $this->zone;
-    }
-    /**
-     * @var integer
-     */
-    private $from_front_id;
-
-
-    /**
      * Set fromFrontId
      *
      * @param integer $fromFrontId
@@ -109,57 +97,6 @@ class Area
     {
         return $this->from_front_id;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $intervals;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->intervals = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add interval
-     *
-     * @param \Rg\ApiBundle\Entity\Interval $interval
-     *
-     * @return Area
-     */
-    public function addInterval(\Rg\ApiBundle\Entity\Interval $interval)
-    {
-        $this->intervals[] = $interval;
-
-        return $this;
-    }
-
-    /**
-     * Remove interval
-     *
-     * @param \Rg\ApiBundle\Entity\Interval $interval
-     */
-    public function removeInterval(\Rg\ApiBundle\Entity\Interval $interval)
-    {
-        $this->intervals->removeElement($interval);
-    }
-
-    /**
-     * Get intervals
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getIntervals()
-    {
-        return $this->intervals;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $goods;
-
 
     /**
      * Add good
@@ -193,5 +130,68 @@ class Area
     public function getGoods()
     {
         return $this->goods;
+    }
+
+    /**
+     * Set zone
+     *
+     * @param \Rg\ApiBundle\Entity\Zone $zone
+     *
+     * @return Area
+     */
+    public function setZone(\Rg\ApiBundle\Entity\Zone $zone = null)
+    {
+        $this->zone = $zone;
+
+        return $this;
+    }
+
+    /**
+     * Get zone
+     *
+     * @return \Rg\ApiBundle\Entity\Zone
+     */
+    public function getZone()
+    {
+        return $this->zone;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $sales;
+
+
+    /**
+     * Add sale
+     *
+     * @param \Rg\ApiBundle\Entity\Sale $sale
+     *
+     * @return Area
+     */
+    public function addSale(\Rg\ApiBundle\Entity\Sale $sale)
+    {
+        $this->sales[] = $sale;
+
+        return $this;
+    }
+
+    /**
+     * Remove sale
+     *
+     * @param \Rg\ApiBundle\Entity\Sale $sale
+     */
+    public function removeSale(\Rg\ApiBundle\Entity\Sale $sale)
+    {
+        $this->sales->removeElement($sale);
+    }
+
+    /**
+     * Get sales
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSales()
+    {
+        return $this->sales;
     }
 }

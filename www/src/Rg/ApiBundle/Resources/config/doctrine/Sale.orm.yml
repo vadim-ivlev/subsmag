@@ -1,7 +1,7 @@
-Rg\ApiBundle\Entity\Good:
+Rg\ApiBundle\Entity\Sale:
     type: entity
     table: null
-    repositoryClass: Rg\ApiBundle\Repository\GoodRepository
+    repositoryClass: Rg\ApiBundle\Repository\SaleRepository
     id:
         id:
             type: integer
@@ -21,15 +21,15 @@ Rg\ApiBundle\Entity\Good:
     oneToMany:
         items:
             targetEntity: Item
-            mappedBy: good
+            mappedBy: sale
     manyToOne:
         product:
             targetEntity: Product
-            inversedBy: goods
-        period:
-            targetEntity: Period
-            inversedBy: goods
+            inversedBy: sales
+        month:
+            targetEntity: Month
+            inversedBy: sales
         area:
             targetEntity: Area
-            inversedBy: goods
+            inversedBy: sales
     lifecycleCallbacks: {  }

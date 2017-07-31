@@ -18,14 +18,19 @@ class Tariff
     private $price;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $items;
+
+    /**
      * @var \Rg\ApiBundle\Entity\Product
      */
     private $product;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Period
+     * @var \Rg\ApiBundle\Entity\Timeunit
      */
-    private $period;
+    private $timeunit;
 
     /**
      * @var \Rg\ApiBundle\Entity\Delivery
@@ -43,16 +48,11 @@ class Tariff
     private $medium;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $orders;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->orders = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->items = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -90,6 +90,40 @@ class Tariff
     }
 
     /**
+     * Add item
+     *
+     * @param \Rg\ApiBundle\Entity\Item $item
+     *
+     * @return Tariff
+     */
+    public function addItem(\Rg\ApiBundle\Entity\Item $item)
+    {
+        $this->items[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Remove item
+     *
+     * @param \Rg\ApiBundle\Entity\Item $item
+     */
+    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
+    {
+        $this->items->removeElement($item);
+    }
+
+    /**
+     * Get items
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
      * Set product
      *
      * @param \Rg\ApiBundle\Entity\Product $product
@@ -114,27 +148,27 @@ class Tariff
     }
 
     /**
-     * Set period
+     * Set timeunit
      *
-     * @param \Rg\ApiBundle\Entity\Period $period
+     * @param \Rg\ApiBundle\Entity\Timeunit $timeunit
      *
      * @return Tariff
      */
-    public function setPeriod(\Rg\ApiBundle\Entity\Period $period = null)
+    public function setTimeunit(\Rg\ApiBundle\Entity\Timeunit $timeunit = null)
     {
-        $this->period = $period;
+        $this->timeunit = $timeunit;
 
         return $this;
     }
 
     /**
-     * Get period
+     * Get timeunit
      *
-     * @return \Rg\ApiBundle\Entity\Period
+     * @return \Rg\ApiBundle\Entity\Timeunit
      */
-    public function getPeriod()
+    public function getTimeunit()
     {
-        return $this->period;
+        return $this->timeunit;
     }
 
     /**
@@ -207,146 +241,5 @@ class Tariff
     public function getMedium()
     {
         return $this->medium;
-    }
-
-    /**
-     * Add order
-     *
-     * @param \Rg\ApiBundle\Entity\Order $order
-     *
-     * @return Tariff
-     */
-    public function addOrder(\Rg\ApiBundle\Entity\Order $order)
-    {
-        $this->orders[] = $order;
-
-        return $this;
-    }
-
-    /**
-     * Remove order
-     *
-     * @param \Rg\ApiBundle\Entity\Order $order
-     */
-    public function removeOrder(\Rg\ApiBundle\Entity\Order $order)
-    {
-        $this->orders->removeElement($order);
-    }
-
-    /**
-     * Get orders
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOrders()
-    {
-        return $this->orders;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $timeblocks;
-
-
-    /**
-     * Add timeblock
-     *
-     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
-     *
-     * @return Tariff
-     */
-    public function addTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock)
-    {
-        $this->timeblocks[] = $timeblock;
-
-        return $this;
-    }
-
-    /**
-     * Remove timeblock
-     *
-     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
-     */
-    public function removeTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock)
-    {
-        $this->timeblocks->removeElement($timeblock);
-    }
-
-    /**
-     * Get timeblocks
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTimeblocks()
-    {
-        return $this->timeblocks;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $items;
-
-    /**
-     * @var \Rg\ApiBundle\Entity\Timeunit
-     */
-    private $timeunit;
-
-
-    /**
-     * Add item
-     *
-     * @param \Rg\ApiBundle\Entity\Item $item
-     *
-     * @return Tariff
-     */
-    public function addItem(\Rg\ApiBundle\Entity\Item $item)
-    {
-        $this->items[] = $item;
-
-        return $this;
-    }
-
-    /**
-     * Remove item
-     *
-     * @param \Rg\ApiBundle\Entity\Item $item
-     */
-    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
-    {
-        $this->items->removeElement($item);
-    }
-
-    /**
-     * Get items
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getItems()
-    {
-        return $this->items;
-    }
-
-    /**
-     * Set timeunit
-     *
-     * @param \Rg\ApiBundle\Entity\Timeunit $timeunit
-     *
-     * @return Tariff
-     */
-    public function setTimeunit(\Rg\ApiBundle\Entity\Timeunit $timeunit = null)
-    {
-        $this->timeunit = $timeunit;
-
-        return $this;
-    }
-
-    /**
-     * Get timeunit
-     *
-     * @return \Rg\ApiBundle\Entity\Timeunit
-     */
-    public function getTimeunit()
-    {
-        return $this->timeunit;
     }
 }
