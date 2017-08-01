@@ -230,7 +230,7 @@ class ProductController extends Controller
 
                                 #######
                                 /**
-                                 * tariffs
+                                 * timeunits and prices
                                  */
                                 #######
                                 $tariffs = $product->getTariffs();
@@ -245,30 +245,32 @@ class ProductController extends Controller
                                     }
                                 );
 
-                                $normalized_tariffs = $filtered_tariffs->map(
+                                $timeunits_with_prices = $filtered_tariffs->map(
                                     function (Tariff $tariff) {
                                         $timeunit = $tariff->getTimeunit();
                                         $price = $tariff->getPrice();
+
+                                        $fake_discount = $timeunit->getDuration() == 1 ? 0 : 5.5;
 
                                         $norm = [
                                             'timeunit' => [
                                                 'id' => $timeunit->getId(),
                                                 'name' => $timeunit->getName(),
-//                                                'mask' => $timeunit->getBitmask(),
                                                 'first_month' => $timeunit->getFirstMonth(),
                                                 'duration' => $timeunit->getDuration(),
                                                 'year' => $timeunit->getYear(),
                                             ],
                                             'price' => $price,
+
+                                            'discount' => $fake_discount,
                                         ];
                                         return $norm;
                                     }
                                 );
 
+                                $delivery['tariffs'] = array_values($timeunits_with_prices->toArray());
                                 #######
                                 #######
-
-                                $delivery['tariffs'] = array_values($normalized_tariffs->toArray());
 
                                 return $delivery;
                             },

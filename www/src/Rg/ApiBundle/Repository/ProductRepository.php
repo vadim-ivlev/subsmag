@@ -28,9 +28,10 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
                 p.outer_link,
                 p.sort
             ')
-            ->addSelect('s,t,d,m,z,a,e')
+            ->addSelect('s,t,d,m,z,a,e,month')
             ->andWhere('a.from_front_id = :from_front_id OR a.from_front_id IS NULL')
             ->leftJoin('p.sales', 's')
+            ->leftJoin('s.month', 'month')
             ->leftJoin('p.tariffs', 't')
             ->leftJoin('t.delivery', 'd')
             ->leftJoin('t.medium', 'm')
@@ -39,6 +40,8 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
             ->join('p.editions', 'e')
 //            ->groupBy('p,t,d,m,z,a,e')
             ->orderBy('p.sort')
+            ->addOrderBy('month.year')
+            ->addOrderBy('month.number')
             ->setParameter('from_front_id', $from_front_id)
             ->getQuery()
             ->getResult()
