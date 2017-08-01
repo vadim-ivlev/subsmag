@@ -16,6 +16,12 @@ Rg\ApiBundle\Entity\Timeunit:
         bitmask:
             type: smallint
             column: bitmask
+        first_month:
+            type: smallint
+            column: first_month
+        duration:
+            type: smallint
+            column: duration
         year:
             type: smallint
             column: year

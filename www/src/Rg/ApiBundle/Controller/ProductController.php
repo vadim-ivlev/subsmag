@@ -5,11 +5,9 @@ namespace Rg\ApiBundle\Controller;
 use Doctrine\Common\Collections\ArrayCollection;
 use Rg\ApiBundle\Entity\Delivery;
 use Rg\ApiBundle\Entity\Edition;
-use Rg\ApiBundle\Entity\Good;
 use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Sale;
 use Rg\ApiBundle\Entity\Tariff;
-use Rg\ApiBundle\Entity\Timeblock;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -256,7 +254,9 @@ class ProductController extends Controller
                                             'timeunit' => [
                                                 'id' => $timeunit->getId(),
                                                 'name' => $timeunit->getName(),
-                                                'mask' => $timeunit->getBitmask(),
+//                                                'mask' => $timeunit->getBitmask(),
+                                                'first_month' => $timeunit->getFirstMonth(),
+                                                'duration' => $timeunit->getDuration(),
                                                 'year' => $timeunit->getYear(),
                                             ],
                                             'price' => $price,
