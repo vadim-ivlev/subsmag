@@ -25,7 +25,7 @@ class Order
     /**
      * @var float
      */
-    private $sum;
+    private $total;
 
     /**
      * @var boolean
@@ -36,6 +36,11 @@ class Order
      * @var \Doctrine\Common\Collections\Collection
      */
     private $items;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $patritems;
 
     /**
      * @var \Rg\ApiBundle\Entity\Payment
@@ -53,6 +58,7 @@ class Order
     public function __construct()
     {
         $this->items = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->patritems = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -114,27 +120,27 @@ class Order
     }
 
     /**
-     * Set sum
+     * Set total
      *
-     * @param float $sum
+     * @param float $total
      *
      * @return Order
      */
-    public function setSum($sum)
+    public function setTotal($total)
     {
-        $this->sum = $sum;
+        $this->total = $total;
 
         return $this;
     }
 
     /**
-     * Get sum
+     * Get total
      *
      * @return float
      */
-    public function getSum()
+    public function getTotal()
     {
-        return $this->sum;
+        return $this->total;
     }
 
     /**
@@ -196,6 +202,40 @@ class Order
     }
 
     /**
+     * Add patritem
+     *
+     * @param \Rg\ApiBundle\Entity\Patritem $patritem
+     *
+     * @return Order
+     */
+    public function addPatritem(\Rg\ApiBundle\Entity\Patritem $patritem)
+    {
+        $this->patritems[] = $patritem;
+
+        return $this;
+    }
+
+    /**
+     * Remove patritem
+     *
+     * @param \Rg\ApiBundle\Entity\Patritem $patritem
+     */
+    public function removePatritem(\Rg\ApiBundle\Entity\Patritem $patritem)
+    {
+        $this->patritems->removeElement($patritem);
+    }
+
+    /**
+     * Get patritems
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatritems()
+    {
+        return $this->patritems;
+    }
+
+    /**
      * Set payment
      *
      * @param \Rg\ApiBundle\Entity\Payment $payment
@@ -243,3 +283,4 @@ class Order
         return $this->user;
     }
 }
+

@@ -127,3 +127,4 @@ class Month
         return $this->sales;
     }
 }
+

@@ -25,7 +25,7 @@ class Area
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $goods;
+    private $sales;
 
     /**
      * @var \Rg\ApiBundle\Entity\Zone
@@ -37,7 +37,7 @@ class Area
      */
     public function __construct()
     {
-        $this->goods = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->sales = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -99,69 +99,6 @@ class Area
     }
 
     /**
-     * Add good
-     *
-     * @param \Rg\ApiBundle\Entity\Good $good
-     *
-     * @return Area
-     */
-    public function addGood(\Rg\ApiBundle\Entity\Good $good)
-    {
-        $this->goods[] = $good;
-
-        return $this;
-    }
-
-    /**
-     * Remove good
-     *
-     * @param \Rg\ApiBundle\Entity\Good $good
-     */
-    public function removeGood(\Rg\ApiBundle\Entity\Good $good)
-    {
-        $this->goods->removeElement($good);
-    }
-
-    /**
-     * Get goods
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getGoods()
-    {
-        return $this->goods;
-    }
-
-    /**
-     * Set zone
-     *
-     * @param \Rg\ApiBundle\Entity\Zone $zone
-     *
-     * @return Area
-     */
-    public function setZone(\Rg\ApiBundle\Entity\Zone $zone = null)
-    {
-        $this->zone = $zone;
-
-        return $this;
-    }
-
-    /**
-     * Get zone
-     *
-     * @return \Rg\ApiBundle\Entity\Zone
-     */
-    public function getZone()
-    {
-        return $this->zone;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $sales;
-
-
-    /**
      * Add sale
      *
      * @param \Rg\ApiBundle\Entity\Sale $sale
@@ -194,4 +131,29 @@ class Area
     {
         return $this->sales;
     }
+
+    /**
+     * Set zone
+     *
+     * @param \Rg\ApiBundle\Entity\Zone $zone
+     *
+     * @return Area
+     */
+    public function setZone(\Rg\ApiBundle\Entity\Zone $zone = null)
+    {
+        $this->zone = $zone;
+
+        return $this;
+    }
+
+    /**
+     * Get zone
+     *
+     * @return \Rg\ApiBundle\Entity\Zone
+     */
+    public function getZone()
+    {
+        return $this->zone;
+    }
 }
+

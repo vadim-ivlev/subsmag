@@ -3,9 +3,9 @@
 namespace Rg\ApiBundle\Entity;
 
 /**
- * Tariff
+ * Patriff
  */
-class Tariff
+class Patriff
 {
     /**
      * @var integer
@@ -20,17 +20,17 @@ class Tariff
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $items;
+    private $patritems;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Product
+     * @var \Rg\ApiBundle\Entity\Issue
      */
-    private $product;
+    private $issue;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Timeunit
+     * @var \Rg\ApiBundle\Entity\Medium
      */
-    private $timeunit;
+    private $medium;
 
     /**
      * @var \Rg\ApiBundle\Entity\Delivery
@@ -43,16 +43,11 @@ class Tariff
     private $zone;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Medium
-     */
-    private $medium;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->items = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->patritems = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -70,7 +65,7 @@ class Tariff
      *
      * @param float $price
      *
-     * @return Tariff
+     * @return Patriff
      */
     public function setPrice($price)
     {
@@ -90,85 +85,85 @@ class Tariff
     }
 
     /**
-     * Add item
+     * Add patritem
      *
-     * @param \Rg\ApiBundle\Entity\Item $item
+     * @param \Rg\ApiBundle\Entity\Patritem $patritem
      *
-     * @return Tariff
+     * @return Patriff
      */
-    public function addItem(\Rg\ApiBundle\Entity\Item $item)
+    public function addPatritem(\Rg\ApiBundle\Entity\Patritem $patritem)
     {
-        $this->items[] = $item;
+        $this->patritems[] = $patritem;
 
         return $this;
     }
 
     /**
-     * Remove item
+     * Remove patritem
      *
-     * @param \Rg\ApiBundle\Entity\Item $item
+     * @param \Rg\ApiBundle\Entity\Patritem $patritem
      */
-    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
+    public function removePatritem(\Rg\ApiBundle\Entity\Patritem $patritem)
     {
-        $this->items->removeElement($item);
+        $this->patritems->removeElement($patritem);
     }
 
     /**
-     * Get items
+     * Get patritems
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getItems()
+    public function getPatritems()
     {
-        return $this->items;
+        return $this->patritems;
     }
 
     /**
-     * Set product
+     * Set issue
      *
-     * @param \Rg\ApiBundle\Entity\Product $product
+     * @param \Rg\ApiBundle\Entity\Issue $issue
      *
-     * @return Tariff
+     * @return Patriff
      */
-    public function setProduct(\Rg\ApiBundle\Entity\Product $product = null)
+    public function setIssue(\Rg\ApiBundle\Entity\Issue $issue = null)
     {
-        $this->product = $product;
+        $this->issue = $issue;
 
         return $this;
     }
 
     /**
-     * Get product
+     * Get issue
      *
-     * @return \Rg\ApiBundle\Entity\Product
+     * @return \Rg\ApiBundle\Entity\Issue
      */
-    public function getProduct()
+    public function getIssue()
     {
-        return $this->product;
+        return $this->issue;
     }
 
     /**
-     * Set timeunit
+     * Set medium
      *
-     * @param \Rg\ApiBundle\Entity\Timeunit $timeunit
+     * @param \Rg\ApiBundle\Entity\Medium $medium
      *
-     * @return Tariff
+     * @return Patriff
      */
-    public function setTimeunit(\Rg\ApiBundle\Entity\Timeunit $timeunit = null)
+    public function setMedium(\Rg\ApiBundle\Entity\Medium $medium = null)
     {
-        $this->timeunit = $timeunit;
+        $this->medium = $medium;
 
         return $this;
     }
 
     /**
-     * Get timeunit
+     * Get medium
      *
-     * @return \Rg\ApiBundle\Entity\Timeunit
+     * @return \Rg\ApiBundle\Entity\Medium
      */
-    public function getTimeunit()
+    public function getMedium()
     {
-        return $this->timeunit;
+        return $this->medium;
     }
 
     /**
@@ -176,7 +171,7 @@ class Tariff
      *
      * @param \Rg\ApiBundle\Entity\Delivery $delivery
      *
-     * @return Tariff
+     * @return Patriff
      */
     public function setDelivery(\Rg\ApiBundle\Entity\Delivery $delivery = null)
     {
@@ -200,7 +195,7 @@ class Tariff
      *
      * @param \Rg\ApiBundle\Entity\Zone $zone
      *
-     * @return Tariff
+     * @return Patriff
      */
     public function setZone(\Rg\ApiBundle\Entity\Zone $zone = null)
     {
@@ -217,30 +212,6 @@ class Tariff
     public function getZone()
     {
         return $this->zone;
-    }
-
-    /**
-     * Set medium
-     *
-     * @param \Rg\ApiBundle\Entity\Medium $medium
-     *
-     * @return Tariff
-     */
-    public function setMedium(\Rg\ApiBundle\Entity\Medium $medium = null)
-    {
-        $this->medium = $medium;
-
-        return $this;
-    }
-
-    /**
-     * Get medium
-     *
-     * @return \Rg\ApiBundle\Entity\Medium
-     */
-    public function getMedium()
-    {
-        return $this->medium;
     }
 }
 

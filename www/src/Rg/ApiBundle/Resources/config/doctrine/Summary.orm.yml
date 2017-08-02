@@ -1,0 +1,25 @@
+Rg\ApiBundle\Entity\Summary:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\SummaryRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        title:
+            type: text
+            column: title
+        text:
+            type: text
+            column: "`text`"
+        page:
+            type: smallint
+            column: page
+    manyToOne:
+        issue:
+            targetEntity: Issue
+            inversedBy: summaries
+    lifecycleCallbacks: {  }

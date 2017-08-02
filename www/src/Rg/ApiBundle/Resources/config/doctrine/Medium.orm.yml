@@ -25,4 +25,7 @@ Rg\ApiBundle\Entity\Medium:
         tariffs:
             targetEntity: Tariff
             mappedBy: medium
+        patriffs:
+            targetEntity: Patriff
+            mappedBy: medium
     lifecycleCallbacks: {  }

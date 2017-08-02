@@ -1,0 +1,32 @@
+Rg\ApiBundle\Entity\Patriff:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\PatriffRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        price:
+            type: float
+            column: price
+    oneToMany:
+        patritems:
+            targetEntity: Patritem
+            mappedBy: patriff
+    manyToOne:
+        issue:
+            targetEntity: Issue
+            inversedBy: patriffs
+        medium:
+            targetEntity: Medium
+            inversedBy: patriffs
+        delivery:
+            targetEntity: Delivery
+            inversedBy: patriffs
+        zone:
+            targetEntity: Zone
+            inversedBy: patriffs
+    lifecycleCallbacks: {  }

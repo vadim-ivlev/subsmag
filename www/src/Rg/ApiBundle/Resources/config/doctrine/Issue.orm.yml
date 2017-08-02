@@ -1,0 +1,35 @@
+Rg\ApiBundle\Entity\Issue:
+## the issue of "Rodina" magazine
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\IssueRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        month:
+            type: smallint
+            column: "`month`"
+        year:
+            type: smallint
+            column: "`year`"
+        description:
+            type: text
+            column: description
+        text:
+            type: text
+            column: "`text`"
+        image:
+            type: string
+            column: image
+    oneToMany:
+        summaries:
+            targetEntity: Summary
+            mappedBy: issue
+        patriffs:
+            targetEntity: Patriff
+            mappedBy: issue
+    lifecycleCallbacks: {  }

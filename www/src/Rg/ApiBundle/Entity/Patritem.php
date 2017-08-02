@@ -3,9 +3,9 @@
 namespace Rg\ApiBundle\Entity;
 
 /**
- * Item
+ * Patritem
  */
-class Item
+class Patritem
 {
     /**
      * @var integer
@@ -18,11 +18,6 @@ class Item
     private $quantity;
 
     /**
-     * @var integer
-     */
-    private $timeunit_amount;
-
-    /**
      * @var float
      */
     private $cost;
@@ -33,14 +28,9 @@ class Item
     private $order;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Sale
+     * @var \Rg\ApiBundle\Entity\Patriff
      */
-    private $sale;
-
-    /**
-     * @var \Rg\ApiBundle\Entity\Tariff
-     */
-    private $tariff;
+    private $patriff;
 
 
     /**
@@ -58,7 +48,7 @@ class Item
      *
      * @param integer $quantity
      *
-     * @return Item
+     * @return Patritem
      */
     public function setQuantity($quantity)
     {
@@ -78,35 +68,11 @@ class Item
     }
 
     /**
-     * Set timeunitAmount
-     *
-     * @param integer $timeunitAmount
-     *
-     * @return Item
-     */
-    public function setTimeunitAmount($timeunitAmount)
-    {
-        $this->timeunit_amount = $timeunitAmount;
-
-        return $this;
-    }
-
-    /**
-     * Get timeunitAmount
-     *
-     * @return integer
-     */
-    public function getTimeunitAmount()
-    {
-        return $this->timeunit_amount;
-    }
-
-    /**
      * Set cost
      *
      * @param float $cost
      *
-     * @return Item
+     * @return Patritem
      */
     public function setCost($cost)
     {
@@ -130,7 +96,7 @@ class Item
      *
      * @param \Rg\ApiBundle\Entity\Order $order
      *
-     * @return Item
+     * @return Patritem
      */
     public function setOrder(\Rg\ApiBundle\Entity\Order $order = null)
     {
@@ -150,51 +116,27 @@ class Item
     }
 
     /**
-     * Set sale
+     * Set patriff
      *
-     * @param \Rg\ApiBundle\Entity\Sale $sale
+     * @param \Rg\ApiBundle\Entity\Patriff $patriff
      *
-     * @return Item
+     * @return Patritem
      */
-    public function setSale(\Rg\ApiBundle\Entity\Sale $sale = null)
+    public function setPatriff(\Rg\ApiBundle\Entity\Patriff $patriff = null)
     {
-        $this->sale = $sale;
+        $this->patriff = $patriff;
 
         return $this;
     }
 
     /**
-     * Get sale
+     * Get patriff
      *
-     * @return \Rg\ApiBundle\Entity\Sale
+     * @return \Rg\ApiBundle\Entity\Patriff
      */
-    public function getSale()
+    public function getPatriff()
     {
-        return $this->sale;
-    }
-
-    /**
-     * Set tariff
-     *
-     * @param \Rg\ApiBundle\Entity\Tariff $tariff
-     *
-     * @return Item
-     */
-    public function setTariff(\Rg\ApiBundle\Entity\Tariff $tariff = null)
-    {
-        $this->tariff = $tariff;
-
-        return $this;
-    }
-
-    /**
-     * Get tariff
-     *
-     * @return \Rg\ApiBundle\Entity\Tariff
-     */
-    public function getTariff()
-    {
-        return $this->tariff;
+        return $this->patriff;
     }
 }
 

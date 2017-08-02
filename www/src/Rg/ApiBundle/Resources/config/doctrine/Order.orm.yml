@@ -16,9 +16,9 @@ Rg\ApiBundle\Entity\Order:
             type: text
             length: '1000'
             column: address
-        sum:
+        total:
             type: float
-            column: sum
+            column: total
         is_paid:
             type: boolean
             column: is_paid
@@ -32,5 +32,8 @@ Rg\ApiBundle\Entity\Order:
     oneToMany:
         items:
             targetEntity: Item
+            mappedBy: order
+        patritems:
+            targetEntity: Patritem
             mappedBy: order
     lifecycleCallbacks: {  }

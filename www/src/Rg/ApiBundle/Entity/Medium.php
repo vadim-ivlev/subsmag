@@ -33,11 +33,17 @@ class Medium
     private $tariffs;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $patriffs;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->patriffs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -155,4 +161,39 @@ class Medium
     {
         return $this->tariffs;
     }
+
+    /**
+     * Add patriff
+     *
+     * @param \Rg\ApiBundle\Entity\Patriff $patriff
+     *
+     * @return Medium
+     */
+    public function addPatriff(\Rg\ApiBundle\Entity\Patriff $patriff)
+    {
+        $this->patriffs[] = $patriff;
+
+        return $this;
+    }
+
+    /**
+     * Remove patriff
+     *
+     * @param \Rg\ApiBundle\Entity\Patriff $patriff
+     */
+    public function removePatriff(\Rg\ApiBundle\Entity\Patriff $patriff)
+    {
+        $this->patriffs->removeElement($patriff);
+    }
+
+    /**
+     * Get patriffs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatriffs()
+    {
+        return $this->patriffs;
+    }
 }
+

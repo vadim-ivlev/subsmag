@@ -25,4 +25,7 @@ Rg\ApiBundle\Entity\Delivery:
         tariffs:
             targetEntity: Tariff
             mappedBy: delivery
+        patriffs:
+            targetEntity: Patriff
+            mappedBy: delivery
     lifecycleCallbacks: {  }

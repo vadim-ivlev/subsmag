@@ -3,9 +3,9 @@
 namespace Rg\ApiBundle\Entity;
 
 /**
- * Delivery
+ * Issue
  */
-class Delivery
+class Issue
 {
     /**
      * @var integer
@@ -13,14 +13,14 @@ class Delivery
     private $id;
 
     /**
-     * @var string
+     * @var integer
      */
-    private $name;
+    private $month;
 
     /**
-     * @var string
+     * @var integer
      */
-    private $alias;
+    private $year;
 
     /**
      * @var string
@@ -28,9 +28,19 @@ class Delivery
     private $description;
 
     /**
+     * @var string
+     */
+    private $text;
+
+    /**
+     * @var string
+     */
+    private $image;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $tariffs;
+    private $summaries;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -42,7 +52,7 @@ class Delivery
      */
     public function __construct()
     {
-        $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->summaries = new \Doctrine\Common\Collections\ArrayCollection();
         $this->patriffs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -57,51 +67,51 @@ class Delivery
     }
 
     /**
-     * Set name
+     * Set month
      *
-     * @param string $name
+     * @param integer $month
      *
-     * @return Delivery
+     * @return Issue
      */
-    public function setName($name)
+    public function setMonth($month)
     {
-        $this->name = $name;
+        $this->month = $month;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get month
      *
-     * @return string
+     * @return integer
      */
-    public function getName()
+    public function getMonth()
     {
-        return $this->name;
+        return $this->month;
     }
 
     /**
-     * Set alias
+     * Set year
      *
-     * @param string $alias
+     * @param integer $year
      *
-     * @return Delivery
+     * @return Issue
      */
-    public function setAlias($alias)
+    public function setYear($year)
     {
-        $this->alias = $alias;
+        $this->year = $year;
 
         return $this;
     }
 
     /**
-     * Get alias
+     * Get year
      *
-     * @return string
+     * @return integer
      */
-    public function getAlias()
+    public function getYear()
     {
-        return $this->alias;
+        return $this->year;
     }
 
     /**
@@ -109,7 +119,7 @@ class Delivery
      *
      * @param string $description
      *
-     * @return Delivery
+     * @return Issue
      */
     public function setDescription($description)
     {
@@ -129,37 +139,85 @@ class Delivery
     }
 
     /**
-     * Add tariff
+     * Set text
      *
-     * @param \Rg\ApiBundle\Entity\Tariff $tariff
+     * @param string $text
      *
-     * @return Delivery
+     * @return Issue
      */
-    public function addTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
+    public function setText($text)
     {
-        $this->tariffs[] = $tariff;
+        $this->text = $text;
 
         return $this;
     }
 
     /**
-     * Remove tariff
+     * Get text
      *
-     * @param \Rg\ApiBundle\Entity\Tariff $tariff
+     * @return string
      */
-    public function removeTariff(\Rg\ApiBundle\Entity\Tariff $tariff)
+    public function getText()
     {
-        $this->tariffs->removeElement($tariff);
+        return $this->text;
     }
 
     /**
-     * Get tariffs
+     * Set image
+     *
+     * @param string $image
+     *
+     * @return Issue
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * Add summary
+     *
+     * @param \Rg\ApiBundle\Entity\Summary $summary
+     *
+     * @return Issue
+     */
+    public function addSummary(\Rg\ApiBundle\Entity\Summary $summary)
+    {
+        $this->summaries[] = $summary;
+
+        return $this;
+    }
+
+    /**
+     * Remove summary
+     *
+     * @param \Rg\ApiBundle\Entity\Summary $summary
+     */
+    public function removeSummary(\Rg\ApiBundle\Entity\Summary $summary)
+    {
+        $this->summaries->removeElement($summary);
+    }
+
+    /**
+     * Get summaries
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getTariffs()
+    public function getSummaries()
     {
-        return $this->tariffs;
+        return $this->summaries;
     }
 
     /**
@@ -167,7 +225,7 @@ class Delivery
      *
      * @param \Rg\ApiBundle\Entity\Patriff $patriff
      *
-     * @return Delivery
+     * @return Issue
      */
     public function addPatriff(\Rg\ApiBundle\Entity\Patriff $patriff)
     {

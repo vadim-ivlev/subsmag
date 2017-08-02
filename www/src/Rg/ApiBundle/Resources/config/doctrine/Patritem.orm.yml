@@ -1,0 +1,25 @@
+Rg\ApiBundle\Entity\Patritem:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\PatritemRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        quantity:
+            type: integer
+            column: quantity
+        cost:
+            type: float
+            column: cost
+    manyToOne:
+        order:
+            targetEntity: Order
+            inversedBy: patritems
+        patriff:
+            targetEntity: Patriff
+            inversedBy: patritems
+    lifecycleCallbacks: {  }

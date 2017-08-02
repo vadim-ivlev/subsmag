@@ -28,12 +28,18 @@ class Zone
     private $areas;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $patriffs;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->patriffs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -137,4 +143,39 @@ class Zone
     {
         return $this->areas;
     }
+
+    /**
+     * Add patriff
+     *
+     * @param \Rg\ApiBundle\Entity\Patriff $patriff
+     *
+     * @return Zone
+     */
+    public function addPatriff(\Rg\ApiBundle\Entity\Patriff $patriff)
+    {
+        $this->patriffs[] = $patriff;
+
+        return $this;
+    }
+
+    /**
+     * Remove patriff
+     *
+     * @param \Rg\ApiBundle\Entity\Patriff $patriff
+     */
+    public function removePatriff(\Rg\ApiBundle\Entity\Patriff $patriff)
+    {
+        $this->patriffs->removeElement($patriff);
+    }
+
+    /**
+     * Get patriffs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatriffs()
+    {
+        return $this->patriffs;
+    }
 }
+
