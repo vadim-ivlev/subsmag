@@ -15,7 +15,6 @@ use Rg\ApiBundle\Controller\Outer as Out;
 
 class ProductController extends Controller
 {
-    const MOSCOW = 3;
 
     public function indexAction(Request $request)
     {
@@ -23,7 +22,7 @@ class ProductController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $from_front_id = $request->query->get('area_id', self::MOSCOW);
+        $from_front_id = $request->query->get('area_id', $this->getParameter('area'));
 
         $area = $em->getRepository('RgApiBundle:Area')->findOneBy(['id' => $from_front_id]);
 
@@ -282,17 +281,19 @@ class ProductController extends Controller
                     $item['media']
                 );
 
+                ### clean luggage
+                unset($item[0]);
+
                 return $item;
             },
             $container_with_deliveries
         );
 
 
-        $show = $container_with_periods;
 
 //        dump($show);die;
 
-        return  $out->json($show);
+        return  $out->json($container_with_periods);
     }
 
     public function showAction($id)

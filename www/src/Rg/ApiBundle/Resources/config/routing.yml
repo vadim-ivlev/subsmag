@@ -2,174 +2,258 @@ rg_api_homepage:
     path:     /api/
     defaults: { _controller: RgApiBundle:Default:index }
 
-# продукты, они же товары, они же комплекты
+# подписки
 rg_api_product_index:
     path:     /api/products/
     defaults: { _controller: RgApiBundle:Product:index, _format:json }
     methods:  [GET, HEAD]
-rg_api_product_show:
-    path:     /api/products/{id}/
-    defaults: { _controller: RgApiBundle:Product:show, _format:json }
-    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
 
-# издания
-rg_api_edition_index:
-    path:     /api/editions/
-    defaults: { _controller: RgApiBundle:Edition:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_edition_show:
-    path:     /api/editions/{id}/
-    defaults: { _controller: RgApiBundle:Edition:show, _format:json }
-    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
-
-# тарифы на подписку
-rg_api_tariffs_index:
-    path:     /api/tariffs/
-    defaults: { _controller: RgApiBundle:Tariff:index }
-    methods:  [GET, HEAD]
-
-rg_api_tariffs_show:
-    path:     /api/tariffs/{id}/
-    defaults: { _controller: RgApiBundle:Tariff:show, _format:json }
-    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
-
-rg_api_tariffs_filter_by_product:
-    path:     /api/tariffs/filter-by-product/{product_id}/
-    defaults: { _controller: RgApiBundle:Tariff:filterByProductId, _format:json }
-    requirements: { product_id: \d+ }
-    methods:  [GET, HEAD]
-
-# периоды подписок
-rg_api_periods_index:
-    path:     /api/periods/
-    defaults: { _controller: RgApiBundle:Period:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_periods_show:
-    path:     /api/periods/{id}/
-    defaults: { _controller: RgApiBundle:Period:show, _format:json }
-    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
-
-# зоны
-rg_api_zones_index:
-    path:     /api/zones/
-    defaults: { _controller: RgApiBundle:Zones:index }
-    methods:  [GET, HEAD]
-
-rg_api_zones_show:
-    path:     /api/zones/{id}/
-    defaults: { _controller: RgApiBundle:Zones:show, _format:json }
-    requirements: { id: \d+ }
+# архивы Родины
+rg_api_patria_index:
+    path:     /api/patria/
+    defaults: { _controller: RgApiBundle:Patria:index, _format:json }
     methods:  [GET, HEAD]
 
 #### ####### ####### ####### ####### ####### ############# ######## ####### ####### ####### ####### ####### ###########
 ## All the next are old routes. They should be revised and refactored to new entity structure.
 #### ####### ####### ####### ####### ####### ############# ####### ####### ####### ####### ####### ####### ############
 
-
-rg_api_product_create:
-    path:     /api/products/
-    defaults: { _controller: RgApiBundle:Product:create, _format:json }
-    methods:  [POST]
-
-rg_api_product_edit:
-    path:     /api/products/{id}/
-    defaults: { _controller: RgApiBundle:Product:edit, _format:json }
-    requirements: { id: \d+ }
-    methods:   [PUT]
-
-
-rg_api_edition_create:
-    path:     /api/editions/
-    defaults: { _controller: RgApiBundle:Edition:create, _format:json }
-    methods:  [POST]
-
-rg_api_edition_edit:
-    path:     /api/editions/{id}/
-    defaults: { _controller: RgApiBundle:Edition:edit, _format:json }
-    requirements: { id: \d+ }
-    methods:   [PUT]
-
-rg_api_users_index:
-    path:     /api/users/
-    defaults: { _controller: RgApiBundle:Users:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_users_show:
-    path:     /api/users/{id}/
-    defaults: { _controller: RgApiBundle:Users:show, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_users_create:
-    path:     /api/users/
-    defaults: { _controller: RgApiBundle:Users:create, _format:json }
-    methods:  [POST]
-
-rg_api_users_edit:
-    path:     /api/users/{id}/
-    defaults: { _controller: RgApiBundle:Users:edit, _format:json }
-    methods:  [PUT]
-
-
-rg_api_actions_index:
-    path:     /api/actions/
-    defaults: { _controller: RgApiBundle:Actions:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_actions_show:
-    path:     /api/actions/{id}/
-    defaults: { _controller: RgApiBundle:Actions:show, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_actions_create:
-    path:     /api/actions/
-    defaults: { _controller: RgApiBundle:Actions:create, _format:json }
-    methods:  [POST]
-
-rg_api_actions_edit:
-    path:     /api/actions/{id}/
-    defaults: { _controller: RgApiBundle:Actions:edit, _format:json }
-    methods:  [PUT]
-
-
-
-
-
-rg_api_promocodes_index:
-    path:     /api/promocodes/
-    defaults: { _controller: RgApiBundle:Promocodes:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_promocodes_show:
-    path:     /api/promocodes/{id}/
-    defaults: { _controller: RgApiBundle:Promocodes:show, _format:json }
-    methods:  [GET, HEAD]
-
-#rg_api_promocodesbyaction_show:
-#    path:     /api/promocodes/?action={actionId}
+#rg_api_product_show:
+#    path:     /api/products/{id}/
+#    defaults: { _controller: RgApiBundle:Product:show, _format:json }
+#    requirements: { id: \d+ }
+#    methods:  [GET, HEAD]
+#
+## издания
+#rg_api_edition_index:
+#    path:     /api/editions/
+#    defaults: { _controller: RgApiBundle:Edition:index, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_edition_show:
+#    path:     /api/editions/{id}/
+#    defaults: { _controller: RgApiBundle:Edition:show, _format:json }
+#    requirements: { id: \d+ }
+#    methods:  [GET, HEAD]
+#
+## тарифы на подписку
+#rg_api_tariffs_index:
+#    path:     /api/tariffs/
+#    defaults: { _controller: RgApiBundle:Tariff:index }
+#    methods:  [GET, HEAD]
+#
+#rg_api_tariffs_show:
+#    path:     /api/tariffs/{id}/
+#    defaults: { _controller: RgApiBundle:Tariff:show, _format:json }
+#    requirements: { id: \d+ }
+#    methods:  [GET, HEAD]
+#
+#rg_api_tariffs_filter_by_product:
+#    path:     /api/tariffs/filter-by-product/{product_id}/
+#    defaults: { _controller: RgApiBundle:Tariff:filterByProductId, _format:json }
+#    requirements: { product_id: \d+ }
+#    methods:  [GET, HEAD]
+#
+#rg_api_product_create:
+#    path:     /api/products/
+#    defaults: { _controller: RgApiBundle:Product:create, _format:json }
+#    methods:  [POST]
+#
+#rg_api_product_edit:
+#    path:     /api/products/{id}/
+#    defaults: { _controller: RgApiBundle:Product:edit, _format:json }
+#    requirements: { id: \d+ }
+#    methods:   [PUT]
+#
+#
+#rg_api_edition_create:
+#    path:     /api/editions/
+#    defaults: { _controller: RgApiBundle:Edition:create, _format:json }
+#    methods:  [POST]
+#
+#rg_api_edition_edit:
+#    path:     /api/editions/{id}/
+#    defaults: { _controller: RgApiBundle:Edition:edit, _format:json }
+#    requirements: { id: \d+ }
+#    methods:   [PUT]
+#
+#rg_api_users_index:
+#    path:     /api/users/
+#    defaults: { _controller: RgApiBundle:Users:index, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_users_show:
+#    path:     /api/users/{id}/
+#    defaults: { _controller: RgApiBundle:Users:show, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_users_create:
+#    path:     /api/users/
+#    defaults: { _controller: RgApiBundle:Users:create, _format:json }
+#    methods:  [POST]
+#
+#rg_api_users_edit:
+#    path:     /api/users/{id}/
+#    defaults: { _controller: RgApiBundle:Users:edit, _format:json }
+#    methods:  [PUT]
+#
+#
+#rg_api_actions_index:
+#    path:     /api/actions/
+#    defaults: { _controller: RgApiBundle:Actions:index, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_actions_show:
+#    path:     /api/actions/{id}/
+#    defaults: { _controller: RgApiBundle:Actions:show, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_actions_create:
+#    path:     /api/actions/
+#    defaults: { _controller: RgApiBundle:Actions:create, _format:json }
+#    methods:  [POST]
+#
+#rg_api_actions_edit:
+#    path:     /api/actions/{id}/
+#    defaults: { _controller: RgApiBundle:Actions:edit, _format:json }
+#    methods:  [PUT]
+#
+#
+#
+#
+#
+#rg_api_promocodes_index:
+#    path:     /api/promocodes/
+#    defaults: { _controller: RgApiBundle:Promocodes:index, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_promocodes_show:
+#    path:     /api/promocodes/{id}/
 #    defaults: { _controller: RgApiBundle:Promocodes:show, _format:json }
 #    methods:  [GET, HEAD]
-
-#rg_api_promocodes_create:
-#    path:     /api/promocodes/
-#    defaults: { _controller: RgApiBundle:Promocodes:create, _format:json }
+#
+##rg_api_promocodesbyaction_show:
+##    path:     /api/promocodes/?action={actionId}
+##    defaults: { _controller: RgApiBundle:Promocodes:show, _format:json }
+##    methods:  [GET, HEAD]
+#
+##rg_api_promocodes_create:
+##    path:     /api/promocodes/
+##    defaults: { _controller: RgApiBundle:Promocodes:create, _format:json }
+##    methods:  [POST]
+#
+#rg_api_promocodes_edit:
+#    path:     /api/promocodes/{id}/
+#    defaults: { _controller: RgApiBundle:Promocodes:edit, _format:json }
+#    methods:  [PUT]
+#
+#
+#
+#
+#
+#
+##
+##rg_api_periods_create:
+##    path:     /api/periods/
+##    defaults: { _controller: RgApiBundle:Periods:create, _format:json }
+##    methods:  [POST]
+##
+##rg_api_periods_edit:
+##    path:     /api/periods/{id}/
+##    defaults: { _controller: RgApiBundle:Periods:edit, _format:json }
+##    methods:  [PUT]
+#
+#
+#
+#
+#
+#
+#rg_api_zones_zonebyregion:
+#    path:     /api/zones/by-area/{region}/
+#    defaults: { _controller: RgApiBundle:Zones:zonebyregion, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_zones_regionsbyzone:
+#    path:     /api/areas/by-zone/{zoneNumber}/
+#    defaults: { _controller: RgApiBundle:Zones:regionsbyzone, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_zones_create:
+#    path:     /api/zones/
+#    defaults: { _controller: RgApiBundle:Zones:create, _format:json }
 #    methods:  [POST]
-
-rg_api_promocodes_edit:
-    path:     /api/promocodes/{id}/
-    defaults: { _controller: RgApiBundle:Promocodes:edit, _format:json }
-    methods:  [PUT]
-
-
-
-
-
-
+#
+#rg_api_zones_edit:
+#    path:     /api/zones/{id}/
+#    defaults: { _controller: RgApiBundle:Zones:edit, _format:json }
+#    methods:  [PUT]
+#
+#
+#
+#
+#
+#
+#rg_api_areas_index:
+#    path:     /api/areas/
+#    defaults: { _controller: RgApiBundle:Areas:index, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_areas_show:
+#    path:     /api/areas/{id}/
+#    defaults: { _controller: RgApiBundle:Areas:show, _format:json }
+##    requirements: { id: \d+ }
+#    methods:  [GET, HEAD]
+#
+#rg_api_areas_create:
+#    path:     /api/areas/
+#    defaults: { _controller: RgApiBundle:Areas:create, _format:json }
+#    methods:  [POST]
+#
+#rg_api_areas_edit:
+#    path:     /api/areas/{id}/
+#    defaults: { _controller: RgApiBundle:Areas:edit, _format:json }
+##    requirements: { id: \d+ }
+#    methods:   [PUT]
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#rg_api_subscribes_index:
+#    path:     /api/subscribes/
+#    defaults: { _controller: RgApiBundle:Subscribes:index, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_subscribes_show:
+#    path:     /api/subscribes/{id}/
+#    defaults: { _controller: RgApiBundle:Subscribes:show, _format:json }
+##    requirements: { id: \d+ }
+#    methods:  [GET, HEAD]
+#
+#rg_api_subscribes_create:
+#    path:     /api/subscribes/
+#    defaults: { _controller: RgApiBundle:Subscribes:create, _format:json }
+#    methods:  [POST]
+#
+#rg_api_subscribes_edit:
+#    path:     /api/subscribes/{id}/
+#    defaults: { _controller: RgApiBundle:Subscribes:edit, _format:json }
+##    requirements: { id: \d+ }
+#    methods:   [PUT]
 #
 #rg_api_periods_create:
 #    path:     /api/periods/
@@ -179,135 +263,57 @@ rg_api_promocodes_edit:
 #rg_api_periods_edit:
 #    path:     /api/periods/{id}/
 #    defaults: { _controller: RgApiBundle:Periods:edit, _format:json }
-#    methods:  [PUT]
-
-
-
-
-
-
-rg_api_zones_zonebyregion:
-    path:     /api/zones/by-area/{region}/
-    defaults: { _controller: RgApiBundle:Zones:zonebyregion, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_zones_regionsbyzone:
-    path:     /api/areas/by-zone/{zoneNumber}/
-    defaults: { _controller: RgApiBundle:Zones:regionsbyzone, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_zones_create:
-    path:     /api/zones/
-    defaults: { _controller: RgApiBundle:Zones:create, _format:json }
-    methods:  [POST]
-
-rg_api_zones_edit:
-    path:     /api/zones/{id}/
-    defaults: { _controller: RgApiBundle:Zones:edit, _format:json }
-    methods:  [PUT]
-
-
-
-
-
-
-rg_api_areas_index:
-    path:     /api/areas/
-    defaults: { _controller: RgApiBundle:Areas:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_areas_show:
-    path:     /api/areas/{id}/
-    defaults: { _controller: RgApiBundle:Areas:show, _format:json }
+##    requirements: { id: \d+ }
+#    methods:   [PUT]
+#
+#
+## периоды подписок
+#rg_api_periods_index:
+#    path:     /api/periods/
+#    defaults: { _controller: RgApiBundle:Period:index, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_periods_show:
+#    path:     /api/periods/{id}/
+#    defaults: { _controller: RgApiBundle:Period:show, _format:json }
 #    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
-
-rg_api_areas_create:
-    path:     /api/areas/
-    defaults: { _controller: RgApiBundle:Areas:create, _format:json }
-    methods:  [POST]
-
-rg_api_areas_edit:
-    path:     /api/areas/{id}/
-    defaults: { _controller: RgApiBundle:Areas:edit, _format:json }
+#    methods:  [GET, HEAD]
+#
+## зоны
+#rg_api_zones_index:
+#    path:     /api/zones/
+#    defaults: { _controller: RgApiBundle:Zones:index }
+#    methods:  [GET, HEAD]
+#
+#rg_api_zones_show:
+#    path:     /api/zones/{id}/
+#    defaults: { _controller: RgApiBundle:Zones:show, _format:json }
 #    requirements: { id: \d+ }
-    methods:   [PUT]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-rg_api_subscribes_index:
-    path:     /api/subscribes/
-    defaults: { _controller: RgApiBundle:Subscribes:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_subscribes_show:
-    path:     /api/subscribes/{id}/
-    defaults: { _controller: RgApiBundle:Subscribes:show, _format:json }
-#    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
-
-rg_api_subscribes_create:
-    path:     /api/subscribes/
-    defaults: { _controller: RgApiBundle:Subscribes:create, _format:json }
-    methods:  [POST]
-
-rg_api_subscribes_edit:
-    path:     /api/subscribes/{id}/
-    defaults: { _controller: RgApiBundle:Subscribes:edit, _format:json }
-#    requirements: { id: \d+ }
-    methods:   [PUT]
-
-rg_api_periods_create:
-    path:     /api/periods/
-    defaults: { _controller: RgApiBundle:Periods:create, _format:json }
-    methods:  [POST]
-
-rg_api_periods_edit:
-    path:     /api/periods/{id}/
-    defaults: { _controller: RgApiBundle:Periods:edit, _format:json }
-#    requirements: { id: \d+ }
-    methods:   [PUT]
-
-
-
-
-
-
-
-rg_api_orders_index:
-    path:     /api/orders/
-    defaults: { _controller: RgApiBundle:Orders:index, _format:json }
-    methods:  [GET, HEAD]
-
-rg_api_orders_show:
-    path:     /api/orders/{id}/
-    defaults: { _controller: RgApiBundle:Orders:show, _format:json }
-#    requirements: { id: \d+ }
-    methods:  [GET, HEAD]
-
-rg_api_orders_create:
-    path:     /api/orders/
-    defaults: { _controller: RgApiBundle:Orders:create, _format:json }
-    methods:  [POST]
-
-rg_api_orders_edit:
-    path:     /api/orders/{id}/
-    defaults: { _controller: RgApiBundle:Orders:edit, _format:json }
-#    requirements: { id: \d+ }
-    methods:   [PUT]
+#    methods:  [GET, HEAD]
+#
+#
+#
+#
+#
+#
+#rg_api_orders_index:
+#    path:     /api/orders/
+#    defaults: { _controller: RgApiBundle:Orders:index, _format:json }
+#    methods:  [GET, HEAD]
+#
+#rg_api_orders_show:
+#    path:     /api/orders/{id}/
+#    defaults: { _controller: RgApiBundle:Orders:show, _format:json }
+##    requirements: { id: \d+ }
+#    methods:  [GET, HEAD]
+#
+#rg_api_orders_create:
+#    path:     /api/orders/
+#    defaults: { _controller: RgApiBundle:Orders:create, _format:json }
+#    methods:  [POST]
+#
+#rg_api_orders_edit:
+#    path:     /api/orders/{id}/
+#    defaults: { _controller: RgApiBundle:Orders:edit, _format:json }
+##    requirements: { id: \d+ }
+#    methods:   [PUT]

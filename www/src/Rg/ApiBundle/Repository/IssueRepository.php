@@ -2,6 +2,8 @@
 
 namespace Rg\ApiBundle\Repository;
 
+use Rg\ApiBundle\Entity\Area;
+
 /**
  * IssueRepository
  *
@@ -10,4 +12,42 @@ namespace Rg\ApiBundle\Repository;
  */
 class IssueRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getDistinctYears()
+    {
+        $qb = $this->createQueryBuilder('i');
+        $result = $qb
+            ->select('i.year')
+            ->groupBy('i.year')
+            ->orderBy('i.year')
+            ->getQuery()
+            ->getScalarResult()
+        ;
+
+        return $result;
+    }
+
+    public function findIssuesByYear(int $year)
+    {
+        $qb = $this->createQueryBuilder('i');
+        $result = $qb
+            ->addSelect('i.id')
+            ->addSelect('i.month')
+            ->addSelect('i.description')
+            ->addSelect('i.text')
+            ->addSelect('p, z, s')
+            ->leftJoin('i.patriffs', 'p')
+            ->leftJoin('p.zone', 'z')
+            ->leftJoin('i.summaries', 's')
+            ->andWhere(
+                $qb->expr()->eq('i.year', ':year')
+            )
+            ->setParameter(':year', $year)
+//            ->setParameter('zone_id', $area->getZone()->getId())
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $result;
+    }
+
 }
