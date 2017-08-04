@@ -2,14 +2,9 @@
 
 namespace Rg\ApiBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Rg\ApiBundle\Entity\Delivery;
-use Rg\ApiBundle\Entity\Issue;
 use Rg\ApiBundle\Entity\Patriff;
 use Rg\ApiBundle\Entity\Summary;
-use Rg\ApiBundle\RgApiBundle;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
 
@@ -100,7 +95,18 @@ class PatriaController extends Controller
             $deliveries
         );
 
-        return  $out->json($deliveries_with_issues_grouped_by_years);
+        $patria = $em->getRepository('RgApiBundle:Edition')->findOneBy(['keyword' => 'archive']);
+
+        $container = [
+            'id' => $patria->getId(),
+            'name' => $patria->getName(),
+            'description' => $patria->getDescription(),
+            'text' => $patria->getText(),
+            'image' => $patria->getImage(),
+            'deliveries' => $deliveries_with_issues_grouped_by_years,
+        ];
+
+        return  $out->json($container);
     }
 
 
