@@ -116,7 +116,7 @@ EXAMPLE;
             $items,
             function ($total = 0, Item $item) {
                 $item_total = $item->getCost() * $item->getQuantity();
-                $total = $total += $item_total;
+                $total += $item_total;
 
                 return $total;
             }
