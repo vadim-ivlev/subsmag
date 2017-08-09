@@ -26,6 +26,7 @@ class PatriffRepository extends \Doctrine\ORM\EntityRepository
 
     public function getDistinctYearsWithDelivery(int $delivery_id)
     {
+//        "SELECT i.year FROM Rg\ApiBundle\Entity\Patriff p INNER JOIN p.delivery d INNER JOIN p.issue i WHERE d.id = :delivery_id GROUP BY i.year"
         $qb = $this->createQueryBuilder('p');
         $result = $qb
             ->select('i.year')
@@ -38,11 +39,27 @@ class PatriffRepository extends \Doctrine\ORM\EntityRepository
             ->getResult()
         ;
 
+
         return $result;
     }
 
     public function findIssuesByYearAndDelivery(int $year, int $delivery_id, int $zone_id)
     {
+/*
+SELECT
+    i.id,\n
+    i.month,\n
+    i.year,\n
+    i.description,\n
+    i.text,\n
+    i.image\n
+, p,i,s FROM Rg\ApiBundle\Entity\Patriff p
+INNER JOIN p.delivery d
+INNER JOIN p.issue i
+INNER JOIN p.zone z
+LEFT JOIN i.summaries s
+WHERE d.id = :delivery_id AND i.year = :year AND z.id = :zone_id
+*/
         $qb = $this->createQueryBuilder('p');
         $result = $qb
             ->select('

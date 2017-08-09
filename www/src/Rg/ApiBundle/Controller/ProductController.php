@@ -213,12 +213,13 @@ class ProductController extends Controller
                                     }
                                 );
 
+                                // неоднозначно...
                                 $normalized_sales = $filtered_by_date_and_area_sales->map(
                                     function (Sale $sale) {
                                         $month = $sale->getMonth();
 
                                         return [
-                                            'id' => $month->getId(),
+                                            'id' => $sale->getId(),
                                             'number' => $month->getNumber(),
                                             'year' => $month->getYear(),
                                         ];
@@ -248,6 +249,7 @@ class ProductController extends Controller
                                     function (Tariff $tariff) {
                                         $timeunit = $tariff->getTimeunit();
                                         $price = $tariff->getPrice();
+                                        $id = $tariff->getId();
 
                                         $fake_discount = $timeunit->getDuration() == 1 ? 0 : 5.5;
 
@@ -259,6 +261,7 @@ class ProductController extends Controller
                                                 'duration' => $timeunit->getDuration(),
                                                 'year' => $timeunit->getYear(),
                                             ],
+                                            'id' => $id,
                                             'price' => $price,
 
                                             'discount' => $fake_discount,

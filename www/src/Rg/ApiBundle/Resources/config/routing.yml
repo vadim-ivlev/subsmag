@@ -14,6 +14,12 @@ rg_api_patria_index:
     defaults: { _controller: RgApiBundle:Patria:index, _format:json }
     methods:  [GET, HEAD]
 
+# создать заказ
+rg_api_order_create:
+    path:     /api/orders/
+    defaults: { _controller: RgApiBundle:Order:create, _format:json }
+    methods:  [POST]
+
 #### ####### ####### ####### ####### ####### ############# ######## ####### ####### ####### ####### ####### ###########
 ## All the next are old routes. They should be revised and refactored to new entity structure.
 #### ####### ####### ####### ####### ####### ############# ####### ####### ####### ####### ####### ####### ############

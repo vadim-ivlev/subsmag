@@ -14,6 +14,31 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
     public function getProductsWithMinPricesByArea(int $from_front_id)
     {
+/*
+SELECT \n
+    p,\n
+    p.id,\n
+    p.name,\n
+    p.description,\n
+    p.text,\n
+    p.postal_index,\n
+    p.is_kit,\n
+    p.is_archive,\n
+    p.outer_link,\n
+    p.sort\n
+, s,t,d,m,z,a,e,month
+FROM Rg\ApiBundle\Entity\Product p
+LEFT JOIN p.sales s
+LEFT JOIN s.month month
+LEFT JOIN p.tariffs t
+LEFT JOIN t.delivery d
+LEFT JOIN t.medium m
+LEFT JOIN t.zone z
+LEFT JOIN z.areas a
+INNER JOIN p.editions e
+WHERE a.from_front_id = :from_front_id OR a.from_front_id IS NULL
+ORDER BY p.sort ASC, month.year ASC, month.number ASC
+*/
         $qb = $this->createQueryBuilder('p');
         $result = $qb
             ->select('
