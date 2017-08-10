@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class OrderController extends Controller
 {
@@ -17,54 +18,7 @@ class OrderController extends Controller
 
     public function createAction(Request $request)
     {
-        $example = <<<EXAMPLE
-           {
-                "products": [
-                    {
-                        "id": 1,
-                        "media": 1,
-                        "delivery": 1,
-                        "sale": {
-                            "id": 27,
-                            "year": 2017,
-                            "number": 9
-                        },
-                        "tariff": 1,
-                        "duration": 3,
-                        "quantity": 1
-                    },
-                    {
-                        "id": 2,
-                        "media": 1,
-                        "delivery": 1,
-                        "sale": {
-                            "id": 2,
-                            "year": 2018,
-                            "number": 1
-                        },
-                        "tariff": 3,
-                        "duration": 6,
-                        "quantity": 2
-                    }
-                ],
-                "archives": [
-                    {
-                        "id": 6,
-                        "delivery": 1,
-                        "year": 2017,
-                        "issue": 3,
-                        "quantity": 1
-                    },
-                    {
-                        "id": 7,
-                        "delivery": 1,
-                        "year": 2017,
-                        "issue": 4,
-                        "quantity": 1
-                    }
-                ]
-           } 
-EXAMPLE;
+        $session = $request->getSession();
 
         $input_order = json_decode(
             $request->getContent()
@@ -145,7 +99,8 @@ EXAMPLE;
                     return $item->getId();
                 },
                 $items
-            )
+            ),
+            'session' => $session->getId() . $session->getName(),
         ];
 
         return (new Out())->json($resp);
