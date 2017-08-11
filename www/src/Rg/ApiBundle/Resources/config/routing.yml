@@ -20,6 +20,30 @@ rg_api_order_create:
     defaults: { _controller: RgApiBundle:Order:create, _format:json }
     methods:  [POST]
 
+# просмотреть корзину
+rg_api_cart_index:
+    path:     /api/cart/
+    defaults: { _controller: RgApiBundle:Cart:index, _format:json }
+    methods:  [GET]
+
+# добавить в корзину
+rg_api_cart_add:
+    path:     /api/cart/
+    defaults: { _controller: RgApiBundle:Cart:add, _format:json }
+    methods:  [PATCH]
+
+# удалить из корзины
+rg_api_cart_remove:
+    path:     /api/cart/
+    defaults: { _controller: RgApiBundle:Cart:remove, _format:json }
+    methods:  [DELETE]
+
+# очистить корзину
+rg_api_cart_empty:
+    path:     /api/cart/
+    defaults: { _controller: RgApiBundle:Cart:empty, _format:json }
+    methods:  [PUT]
+
 #### ####### ####### ####### ####### ####### ############# ######## ####### ####### ####### ####### ####### ###########
 ## All the next are old routes. They should be revised and refactored to new entity structure.
 #### ####### ####### ####### ####### ####### ############# ####### ####### ####### ####### ####### ####### ############

@@ -7,3 +7,12 @@ services:
     #service_name:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+    session:
+        class: Symfony\Component\HttpFoundation\Session\Session
+        arguments:
+            - "@session.storage"
+            - "@your.session.attribute_bag" #service id is defined below
+            - "@session.flash_bag"
+
+    your.session.attribute_bag:
+        class: Symfony\Component\HttpFoundation\Session\Attribute\NamespacedAttributeBag
