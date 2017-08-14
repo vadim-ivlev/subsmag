@@ -38,6 +38,12 @@ rg_api_cart_remove:
     defaults: { _controller: RgApiBundle:Cart:remove, _format:json }
     methods:  [DELETE]
 
+# изменить количество экземпляров позиции в корзине
+rg_api_cart_update_quantities:
+    path:     /api/cart/quantities/
+    defaults: { _controller: RgApiBundle:Cart:update, _format:json }
+    methods:  [PATCH]
+
 # очистить корзину
 rg_api_cart_empty:
     path:     /api/cart/

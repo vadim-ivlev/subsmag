@@ -2,8 +2,9 @@
 
 namespace Rg\ApiBundle\Controller;
 
-use Rg\ApiBundle\Entity\Item;
-use Rg\ApiBundle\Entity\Order;
+use Rg\ApiBundle\Cart\Cart;
+use Rg\ApiBundle\Cart\CartItem;
+use Rg\ApiBundle\Cart\CartPatritem;
 use Rg\ApiBundle\Entity\Tariff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -17,48 +18,134 @@ class CartController extends Controller
 
     public function indexAction(SessionInterface $session)
     {
-        $session->set('cart', new \stdClass());
-
-        $cart = $session->get('cart');
+        /** @var Cart $cart */
+        $cart = unserialize($session->get('cart'));
 
         return (new Out())->json($cart);
     }
 
     public function emptyAction(SessionInterface $session)
     {
-        $session->set('cart', new \stdClass());
+        $cart = new Cart();
 
-        $cart = $session->get('cart');
+        $session->set('cart', serialize($cart));
 
         return (new Out())->json($cart);
     }
 
     public function addAction(Request $request, SessionInterface $session)
     {
-        $session->set('cart', new \stdClass());
+        /** @var Cart $cart */
+        $cart = unserialize($session->get('cart'));
 
-        $cart = $session->get('cart');
+        # # #
+        $input_items = json_decode(
+            $request->getContent()
+        );
+
+        // создать итемсы для каждого продукта
+        $products = $input_items->products;
+        $cart_items = array_map(
+            function (\stdClass $product) {
+                // превратить анонима в продуктовую позицию корзины
+                $cart_item = new CartItem(
+                    $product->id,
+                    $product->medium,
+                    $product->delivery,
+                    $product->sale,
+                    $product->tariff,
+                    $product->duration,
+                    $product->quantity
+                );
+
+                return $cart_item;
+            },
+            $products
+        );
+
+        // создать патритемсы для каждого архива
+        $archives = $input_items->archives;
+        $cart_patritems = array_map(
+            function (\stdClass $archive) {
+                // превратить анонима в архивную позицию корзины
+                $cart_patritem = new CartPatritem(
+                    $archive->id,
+                    $archive->delivery,
+                    $archive->year,
+                    $archive->issue,
+                    $archive->quantity
+                );
+
+                return $cart_patritem;
+            },
+            $archives
+        );
+
+        // добавить в корзину
+        foreach ($cart_items as $cart_item) {
+            $cart->addItem($cart_item);
+        }
+
+        foreach ($cart_patritems as $cart_patritem) {
+            $cart->addPatritem($cart_patritem);
+        }
+        # # #
+
+        $session->set('cart', serialize($cart));
+
+        return (new Out())->json($cart);
+    }
+
+    public function updateAction(Request $request, SessionInterface $session)
+    {
+        /** @var Cart $cart */
+        $cart = unserialize($session->get('cart'));
+
+        ### do update action
+        $keys_to_update = json_decode(
+            $request->getContent()
+        );
+
+        $product_quantities = $keys_to_update->products;
+        $cart->updateMultipleItemsByKeys($product_quantities);
+
+        $archive_quantities = $keys_to_update->archives;
+        $cart->updateMultiplePatritemsByKeys($archive_quantities);
+
+        ###
+
+        $session->set('cart', serialize($cart));
 
         return (new Out())->json($cart);
     }
 
     public function removeAction(Request $request, SessionInterface $session)
     {
-        $session->set('cart', new \stdClass());
+        /** @var Cart $cart */
+        $cart = unserialize($session->get('cart'));
 
-        $cart = $session->get('cart');
+        ### do some remove action
+        $keys_to_remove = json_decode(
+            $request->getContent()
+        );
+        $product_keys = $keys_to_remove->products;
+        $archive_keys = $keys_to_remove->archives;
+
+        $cart->removeMultipleItemsByKeys($product_keys);
+        $cart->removeMultiplePatritemsByKeys($archive_keys);
+
+        ###
+
+        $session->set('cart', serialize($cart));
 
         return (new Out())->json($cart);
     }
 
-    private function supportAction(Request $request, SessionInterface $session)
+    /** fish for an upcoming action */
+    private function finallySaveCartAsOrder(SessionInterface $session)
     {
-        $counter = $session->get('order/counter');
-        $session->set('order/counter', ++$counter);
-
-        $input_order = json_decode(
-            $request->getContent()
-        );
+/*
+        $cart = unserialize($session->get('cart'));
 
         //отделить продукты от архивов
         $products = $input_order->products;
@@ -141,6 +228,7 @@ class CartController extends Controller
         ];
 
         return (new Out())->json($resp);
+*/
     }
 
     private function calculateTimeunitAmount(Tariff $tariff, int $duration) {
