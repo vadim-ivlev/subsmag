@@ -1,9 +1,16 @@
 services:
-#Listeners
+# Subscribers
+    rg_api.session_has_cart_subscriber:
+        class: Rg\ApiBundle\EventSubscriber\SessionHasCartSubscriber
+        tags:
+            - { name: kernel.event_subscriber, event: kernel.controller, method: onKernelController }
+
+# Listeners
     rg_api.cors_allow_listener:
         class: Rg\ApiBundle\Listeners\CorsAllowListener
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
 # Services
     rg_api.edition_normalizer:
         class: Rg\ApiBundle\Service\EditionNormalizer

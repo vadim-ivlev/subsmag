@@ -12,12 +12,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class CartController extends Controller
+class CartController extends Controller implements SessionHasCartController
 {
     const MONTH = 2048;
 
     public function indexAction(SessionInterface $session)
     {
+
         /** @var Cart $cart */
         $cart = unserialize($session->get('cart'));
 
