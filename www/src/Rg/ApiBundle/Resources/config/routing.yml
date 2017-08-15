@@ -20,6 +20,7 @@ rg_api_order_create:
     defaults: { _controller: RgApiBundle:Order:create, _format:json }
     methods:  [POST]
 
+### Корзина
 # просмотреть корзину
 rg_api_cart_index:
     path:     /api/cart/

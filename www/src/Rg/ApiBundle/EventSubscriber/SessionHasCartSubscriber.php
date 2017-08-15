@@ -12,7 +12,6 @@ namespace Rg\ApiBundle\EventSubscriber;
 use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Controller\SessionHasCartController;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
