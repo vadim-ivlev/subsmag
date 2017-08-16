@@ -214,4 +214,3 @@ class Patriff
         return $this->zone;
     }
 }
-

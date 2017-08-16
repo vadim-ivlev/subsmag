@@ -243,4 +243,3 @@ class Sale
         return $this->area;
     }
 }
-

@@ -10,4 +10,16 @@ namespace Rg\ApiBundle\Repository;
  */
 class AreaRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAreaWithNotEmptyWorkId()
+    {
+        $qb = $this->createQueryBuilder('a');
+        $result = $qb
+            ->select('a')
+            ->andWhere("a.works_id <> ''")
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $result;
+    }
 }

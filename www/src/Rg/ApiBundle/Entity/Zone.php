@@ -178,4 +178,3 @@ class Zone
         return $this->patriffs;
     }
 }
-

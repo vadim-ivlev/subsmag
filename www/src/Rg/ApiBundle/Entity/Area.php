@@ -155,5 +155,62 @@ class Area
     {
         return $this->zone;
     }
-}
+    /**
+     * @var string
+     */
+    private $works_id;
 
+    /**
+     * @var string
+     */
+    private $link;
+
+
+    /**
+     * Set worksId
+     *
+     * @param string $worksId
+     *
+     * @return Area
+     */
+    public function setWorksId($worksId)
+    {
+        $this->works_id = $worksId;
+
+        return $this;
+    }
+
+    /**
+     * Get worksId
+     *
+     * @return string
+     */
+    public function getWorksId()
+    {
+        return $this->works_id;
+    }
+
+    /**
+     * Set link
+     *
+     * @param string $link
+     *
+     * @return Area
+     */
+    public function setLink($link)
+    {
+        $this->link = $link;
+
+        return $this;
+    }
+
+    /**
+     * Get link
+     *
+     * @return string
+     */
+    public function getLink()
+    {
+        return $this->link;
+    }
+}

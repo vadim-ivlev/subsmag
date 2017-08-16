@@ -254,4 +254,3 @@ class Issue
         return $this->patriffs;
     }
 }
-

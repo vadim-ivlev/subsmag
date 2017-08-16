@@ -243,4 +243,3 @@ class Edition
         return $this->products;
     }
 }
-

@@ -16,6 +16,13 @@ Rg\ApiBundle\Entity\Area:
         from_front_id:
             type: integer
             column: from_front_id
+        ### for transfer from old subsmag
+        works_id:
+            type: string
+            column: works_id
+        link:
+            type: string
+            column: "`link`"
     manyToOne:
         zone:
             targetEntity: Zone

@@ -196,4 +196,3 @@ class Delivery
         return $this->patriffs;
     }
 }
-

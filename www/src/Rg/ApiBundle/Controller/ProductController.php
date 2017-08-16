@@ -24,7 +24,7 @@ class ProductController extends Controller
 
         $from_front_id = $request->query->get('area_id', $this->getParameter('area'));
 
-        $area = $em->getRepository('RgApiBundle:Area')->findOneBy(['id' => $from_front_id]);
+        $area = $em->getRepository('RgApiBundle:Area')->findOneBy(['from_front_id' => $from_front_id]);
 
         if (!$area) {
             $arrError = [

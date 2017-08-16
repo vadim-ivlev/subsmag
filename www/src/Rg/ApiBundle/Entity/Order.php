@@ -283,4 +283,3 @@ class Order
         return $this->user;
     }
 }
-

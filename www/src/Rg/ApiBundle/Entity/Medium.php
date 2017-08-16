@@ -196,4 +196,3 @@ class Medium
         return $this->patriffs;
     }
 }
-
