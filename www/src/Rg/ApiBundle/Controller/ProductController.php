@@ -293,18 +293,34 @@ class ProductController extends Controller
 
         ### attach minimal prices
         $container_with_min_prices = array_map(
-            function (array $item) {
+            function (array $item) use ($area) {
                 /** @var Product $product */
                 $product = $item[0];
 
-                $prices = $product->getTariffs()->map(
+                $tariffs = $product->getTariffs();
+
+                $filtered_tariffs = $tariffs->filter(
+                    function (Tariff $tariff) use ($area) {
+                        $criterion = $tariff->getZone()->getId() == $area->getZone()->getId();
+
+                        return $criterion;
+                    }
+                );
+
+                if ($filtered_tariffs->count() == 0) {
+                    $item['min_price'] = null;
+
+                    return $item;
+                }
+
+                $prices = $filtered_tariffs->map(
                     function (Tariff $tariff) {
                         return $tariff->getPrice();
                     }
                 )
                     ->toArray();
 
-                $item['min_price'] = empty($prices) ? null : min($prices);
+                $item['min_price'] = min($prices);
 
                 return $item;
             },
