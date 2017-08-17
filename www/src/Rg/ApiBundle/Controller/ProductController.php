@@ -70,6 +70,7 @@ class ProductController extends Controller
             },
             $product_container
         );
+//        dump($container_with_editions);die;
 
         ### attach available media for a product
         $container_with_media = array_map(

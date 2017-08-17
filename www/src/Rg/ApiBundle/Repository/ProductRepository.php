@@ -14,31 +14,29 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
     public function getProductsWithMinPricesByArea(int $from_front_id)
     {
-/*
-SELECT \n
-    p,\n
-    p.id,\n
-    p.name,\n
-    p.description,\n
-    p.text,\n
-    p.postal_index,\n
-    p.is_kit,\n
-    p.is_archive,\n
-    p.outer_link,\n
-    p.sort\n
-, s,t,d,m,z,a,e,month
-FROM Rg\ApiBundle\Entity\Product p
-LEFT JOIN p.sales s
-LEFT JOIN s.month month
-LEFT JOIN p.tariffs t
-LEFT JOIN t.delivery d
-LEFT JOIN t.medium m
-LEFT JOIN t.zone z
-LEFT JOIN z.areas a
-INNER JOIN p.editions e
-WHERE a.from_front_id = :from_front_id OR a.from_front_id IS NULL
-ORDER BY p.sort ASC, month.year ASC, month.number ASC
-*/
+        /*
+        SELECT
+            p,
+            p.id,
+            p.name,
+            p.description,
+            p.text,
+            p.postal_index,
+            p.is_kit,
+            p.is_archive,
+            p.outer_link,
+            p.sort
+        , s,t,d,m,z,a,e,month FROM Rg\ApiBundle\Entity\Product p
+        LEFT JOIN p.sales s
+        LEFT JOIN s.month month
+        LEFT JOIN p.tariffs t
+        LEFT JOIN t.delivery d
+        LEFT JOIN t.medium m
+        LEFT JOIN t.zone z
+        LEFT JOIN z.areas a WITH a.from_front_id = :from_front_id OR a.from_front_id IS NULL
+        INNER JOIN p.editions e
+        ORDER BY p.sort ASC, month.year ASC, month.number ASC
+         */
         $qb = $this->createQueryBuilder('p');
         $result = $qb
             ->select('
@@ -54,21 +52,28 @@ ORDER BY p.sort ASC, month.year ASC, month.number ASC
                 p.sort
             ')
             ->addSelect('s,t,d,m,z,a,e,month')
-            ->andWhere('a.from_front_id = :from_front_id OR a.from_front_id IS NULL')
             ->leftJoin('p.sales', 's')
             ->leftJoin('s.month', 'month')
             ->leftJoin('p.tariffs', 't')
             ->leftJoin('t.delivery', 'd')
             ->leftJoin('t.medium', 'm')
             ->leftJoin('t.zone', 'z')
-            ->leftJoin('z.areas', 'a')
+            ->leftJoin(
+                'z.areas',
+                'a',
+                Expr\Join::WITH,
+                $qb->expr()->orX(
+                    $qb->expr()->eq('a.from_front_id', ':from_front_id'),
+                    $qb->expr()->isNull('a.from_front_id')
+                )
+            )
             ->join('p.editions', 'e')
-//            ->groupBy('p,t,d,m,z,a,e')
             ->orderBy('p.sort')
             ->addOrderBy('month.year')
             ->addOrderBy('month.number')
             ->setParameter('from_front_id', $from_front_id)
             ->getQuery()
+//            ->getDQL(); echo $result;die; # for test purpose
             ->getResult()
         ;
 
