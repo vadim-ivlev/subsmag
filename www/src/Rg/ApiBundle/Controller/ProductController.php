@@ -70,7 +70,6 @@ class ProductController extends Controller
             },
             $product_container
         );
-//        dump($container_with_editions);die;
 
         ### attach available media for a product
         $container_with_media = array_map(
@@ -285,8 +284,6 @@ class ProductController extends Controller
                     $item['media']
                 );
 
-                ### clean luggage
-                unset($item[0]);
 
                 return $item;
             },
@@ -294,10 +291,42 @@ class ProductController extends Controller
         );
 
 
+        ### attach minimal prices
+        $container_with_min_prices = array_map(
+            function (array $item) {
+                /** @var Product $product */
+                $product = $item[0];
 
-//        dump($show);die;
+                $prices = $product->getTariffs()->map(
+                    function (Tariff $tariff) {
+                        return $tariff->getPrice();
+                    }
+                )
+                    ->toArray();
 
-        return  $out->json($container_with_periods);
+                $item['min_price'] = empty($prices) ? null : min($prices);
+
+                return $item;
+            },
+            $container_with_periods
+        );
+
+        $cleaned_from_Doctrine_element = $this->unsetLuggage($container_with_min_prices);
+
+        return  $out->json($cleaned_from_Doctrine_element);
+    }
+
+    private function unsetLuggage(array $container)
+    {
+        return array_map(
+            function (array $item) {
+                ### clean luggage
+                unset($item[0]);
+
+                return $item;
+            },
+            $container
+        );
     }
 
     public function showAction($id)
