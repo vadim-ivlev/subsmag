@@ -1,53 +1,54 @@
 rg_api_homepage:
-    path:     /api/
+    path:     /
     defaults: { _controller: RgApiBundle:Default:index }
 
 # подписки
 rg_api_product_index:
-    path:     /api/products/
+    path:     /products/
     defaults: { _controller: RgApiBundle:Product:index, _format:json }
     methods:  [GET, HEAD]
 
 # архивы Родины
 rg_api_patria_index:
-    path:     /api/patria/
+    path:     /patria/
     defaults: { _controller: RgApiBundle:Patria:index, _format:json }
     methods:  [GET, HEAD]
 
+### Заказ
 # создать заказ
 rg_api_order_create:
-    path:     /api/orders/
+    path:     /orders/
     defaults: { _controller: RgApiBundle:Order:create, _format:json }
     methods:  [POST]
 
 ### Корзина
 # просмотреть корзину
 rg_api_cart_index:
-    path:     /api/cart/
+    path:     /cart/
     defaults: { _controller: RgApiBundle:Cart:index, _format:json }
     methods:  [GET]
 
 # добавить в корзину
 rg_api_cart_add:
-    path:     /api/cart/
+    path:     /cart/
     defaults: { _controller: RgApiBundle:Cart:add, _format:json }
     methods:  [PATCH]
 
 # удалить из корзины
 rg_api_cart_remove:
-    path:     /api/cart/
+    path:     /cart/
     defaults: { _controller: RgApiBundle:Cart:remove, _format:json }
     methods:  [DELETE]
 
 # изменить количество экземпляров позиции в корзине
 rg_api_cart_update_quantities:
-    path:     /api/cart/quantities/
+    path:     /cart/quantities/
     defaults: { _controller: RgApiBundle:Cart:update, _format:json }
     methods:  [PATCH]
 
 # очистить корзину
 rg_api_cart_empty:
-    path:     /api/cart/
+    path:     /cart/
     defaults: { _controller: RgApiBundle:Cart:empty, _format:json }
     methods:  [PUT]
 

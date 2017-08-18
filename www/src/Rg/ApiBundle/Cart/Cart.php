@@ -99,6 +99,16 @@ class Cart implements \JsonSerializable
         return true;
     }
 
+    public function getCartItems()
+    {
+        return $this->items;
+    }
+
+    public function getCartPatritems()
+    {
+        return $this->patritems;
+    }
+
     function jsonSerialize()
     {
         return [
