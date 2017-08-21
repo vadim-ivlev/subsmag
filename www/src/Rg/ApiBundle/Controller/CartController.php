@@ -74,7 +74,8 @@ class CartController extends Controller implements SessionHasCartController
                     $archive->delivery,
                     $archive->year,
                     $archive->issue,
-                    $archive->quantity
+                    $archive->quantity,
+                    $archive->patriff
                 );
 
                 return $cart_patritem;

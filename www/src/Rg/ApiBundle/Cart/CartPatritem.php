@@ -19,13 +19,15 @@ class CartPatritem implements \JsonSerializable
     private $year;
     private $issue;
     private $quantity;
+    private $patriff;
 
     public function __construct(
         int $id,
         int $delivery,
         int $year,
         int $issue,
-        int $quantity
+        int $quantity,
+        int $patriff
     )
     {
         $this->id = $id;
@@ -33,6 +35,7 @@ class CartPatritem implements \JsonSerializable
         $this->year = $year;
         $this->issue = $issue;
         $this->quantity = $quantity;
+        $this->patriff = $patriff;
     }
 
     /**
@@ -115,6 +118,22 @@ class CartPatritem implements \JsonSerializable
         $this->quantity = $quantity;
     }
 
+    /**
+     * @return int
+     */
+    public function getPatriff(): int
+    {
+        return $this->patriff;
+    }
+
+    /**
+     * @param int $patriff
+     */
+    public function setPatriff(int $patriff)
+    {
+        $this->patriff = $patriff;
+    }
+
     function jsonSerialize()
     {
         return [
@@ -123,6 +142,7 @@ class CartPatritem implements \JsonSerializable
             "year" => $this->getYear(),
             "issue" => $this->getIssue(),
             "quantity" => $this->getQuantity(),
+            "patriff" => $this->getPatriff(),
         ];
     }
 }

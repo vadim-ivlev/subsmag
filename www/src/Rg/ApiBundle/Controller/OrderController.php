@@ -4,8 +4,10 @@ namespace Rg\ApiBundle\Controller;
 
 use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Cart\CartItem;
+use Rg\ApiBundle\Cart\CartPatritem;
 use Rg\ApiBundle\Entity\Item;
 use Rg\ApiBundle\Entity\Order;
+use Rg\ApiBundle\Entity\Patritem;
 use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Tariff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -18,6 +20,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OrderController extends Controller
 {
+    const MONTH = 2048;
+
     public function createAction(Request $request, SessionInterface $session)
     {
         /** @var Cart $cart */
@@ -70,6 +74,38 @@ class OrderController extends Controller
             $cart->getCartItems()
         );
 
+        ### подготовим массив архивных позиций
+/*        $patritems = array_map(
+            function (CartPatritem $cart_patritem) use ($doctrine, $order) {
+                $patritem = new Patritem();
+
+                $patritem->setQuantity($cart_patritem->getQuantity());
+
+                $patriff = $doctrine
+                    ->getRepository('RgApiBundle:Patriff')
+                    ->findOneBy(['id' => $cart_patritem->g()]);
+                $item->setTariff($tariff);
+
+                $timeunit_amount = $this->calculateTimeunitAmount($tariff, $cart_item->getDuration());
+                $item->setTimeunitAmount($timeunit_amount);
+
+                // вычислить стоимость единицы позиции по формуле
+                // cost = tu_amount * tariff.price
+                $cost = $timeunit_amount * $tariff->getPrice();
+                $item->setCost($cost);
+
+                $sale = $doctrine
+                    ->getRepository('RgApiBundle:Sale')
+                    ->findOneBy(['id' => $cart_item->getSale()]);
+                $item->setSale($sale);
+
+                $item->setOrder($order);
+
+                return $item;
+            },
+            $cart->getCartItems()
+        );*/
+
         ### подсчитаем количество экземпляров позиции
         $items_subtotal = array_reduce(
             $items,
@@ -85,6 +121,7 @@ class OrderController extends Controller
         $total = $items_subtotal + $patritems_subtotal;
         $order->setTotal($total);
 
+        ### записываем заказ в БД
         $em = $doctrine->getManager();
         $em->persist($order);
         array_walk(
