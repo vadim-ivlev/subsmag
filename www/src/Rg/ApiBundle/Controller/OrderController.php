@@ -8,14 +8,11 @@ use Rg\ApiBundle\Cart\CartPatritem;
 use Rg\ApiBundle\Entity\Item;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Entity\Patritem;
-use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Tariff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OrderController extends Controller
@@ -75,7 +72,7 @@ class OrderController extends Controller
         );
 
         ### подготовим массив архивных позиций
-/*        $patritems = array_map(
+        $patritems = array_map(
             function (CartPatritem $cart_patritem) use ($doctrine, $order) {
                 $patritem = new Patritem();
 
@@ -83,30 +80,22 @@ class OrderController extends Controller
 
                 $patriff = $doctrine
                     ->getRepository('RgApiBundle:Patriff')
-                    ->findOneBy(['id' => $cart_patritem->g()]);
-                $item->setTariff($tariff);
+                    ->findOneBy(['id' => $cart_patritem->getPatriff()]);
+                $patritem->setPatriff($patriff);
 
-                $timeunit_amount = $this->calculateTimeunitAmount($tariff, $cart_item->getDuration());
-                $item->setTimeunitAmount($timeunit_amount);
+                // стоимость единицы архивной позиции
+                $cost = $patriff->getPrice();
+                $patritem->setCost($cost);
 
-                // вычислить стоимость единицы позиции по формуле
-                // cost = tu_amount * tariff.price
-                $cost = $timeunit_amount * $tariff->getPrice();
-                $item->setCost($cost);
+                // к какому заказу относится
+                $patritem->setOrder($order);
 
-                $sale = $doctrine
-                    ->getRepository('RgApiBundle:Sale')
-                    ->findOneBy(['id' => $cart_item->getSale()]);
-                $item->setSale($sale);
-
-                $item->setOrder($order);
-
-                return $item;
+                return $patritem;
             },
-            $cart->getCartItems()
-        );*/
+            $cart->getCartPatritems()
+        );
 
-        ### подсчитаем количество экземпляров позиции
+        ### подсчёт Итого
         $items_subtotal = array_reduce(
             $items,
             function ($total = 0, Item $item) {
@@ -117,7 +106,16 @@ class OrderController extends Controller
             }
         );
 
-        $patritems_subtotal = 0;
+        $patritems_subtotal = array_reduce(
+            $patritems,
+            function ($total = 0, Patritem $patritem) {
+                $item_total = $patritem->getCost() * $patritem->getQuantity();
+                $total += $item_total;
+
+                return $total;
+            }
+        );
+
         $total = $items_subtotal + $patritems_subtotal;
         $order->setTotal($total);
 
@@ -132,8 +130,17 @@ class OrderController extends Controller
                 return $item;
             }
         );
+        array_walk(
+            $patritems,
+            function (Patritem $patritem) use ($em) {
+                $em->persist($patritem);
+
+                return $patritem;
+            }
+        );
         $em->flush();
 
+        ### показать сформированный заказ
         $resp = [
             'order' => $order->getId(),
             'total' => $order->getTotal(),
@@ -143,8 +150,12 @@ class OrderController extends Controller
                 },
                 $items
             ),
-            'session.order.counter' => $session->get('order/counter'),
-            'session.order' => $session->get('order'),
+            'patritems' => array_map(
+                function (Patritem $patritem) {
+                    return $patritem->getId();
+                },
+                $patritems
+            ),
         ];
 
         return (new Out())->json($resp);
@@ -159,4 +170,5 @@ class OrderController extends Controller
         }
         return 1;
     }
+
 }
