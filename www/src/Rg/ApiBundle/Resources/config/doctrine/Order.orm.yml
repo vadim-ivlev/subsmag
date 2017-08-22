@@ -12,10 +12,19 @@ Rg\ApiBundle\Entity\Order:
         date:
             type: datetime
             column: date
+        name:
+            type: string
+            column: name
+        phone:
+            type: string
+            column: phone
         address:
             type: text
             length: '1000'
             column: address
+        email:
+            type: string
+            column: email
         total:
             type: float
             column: total

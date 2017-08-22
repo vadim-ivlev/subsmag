@@ -34,12 +34,23 @@ class OrderController extends Controller
         $order = new Order();
         $order->setDate(new \DateTime());
 
-        $address = $order_details->address;
-        $order->setAddress($address);
+        ### обработать контактные данные
+        $order->setAddress($order_details->address);
+        #### фио
+        $order->setName($order_details->name);
+        #### телефон
+        $order->setPhone($order_details->phone);
+        #### mail
+        $order->setEmail($order_details->email);
 
         $order->setIsPaid(false);
 
+        ### способ оплаты
         $doctrine = $this->getDoctrine();
+        $payment = $doctrine
+            ->getRepository('RgApiBundle:Payment')
+            ->findOneBy(['name' => $order_details->payment]);
+        $order->setPayment($payment);
 
         ### подготовим массив подписных позиций
         $items = $this->mapSubscribeItems($cart->getCartItems(), $order);

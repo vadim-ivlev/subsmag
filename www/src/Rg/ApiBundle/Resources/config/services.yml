@@ -16,3 +16,5 @@ services:
         class: Rg\ApiBundle\Service\EditionNormalizer
     rg_api.period_timeunit_converter:
         class: Rg\ApiBundle\Service\PeriodTimeunitConverter
+    rg_api.product_cost_calculator:
+        class: Rg\ApiBundle\Service\ProductCostCalculator

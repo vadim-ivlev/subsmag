@@ -5,6 +5,11 @@ namespace Rg\ApiBundle\Controller;
 use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
+use Rg\ApiBundle\Entity\Delivery;
+use Rg\ApiBundle\Entity\Edition;
+use Rg\ApiBundle\Entity\Issue;
+use Rg\ApiBundle\Entity\Medium;
+use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Tariff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -22,7 +27,86 @@ class CartController extends Controller implements SessionHasCartController
         /** @var Cart $cart */
         $cart = unserialize($session->get('cart'));
 
-        return (new Out())->json($cart);
+        ### детализировать подписные позиции
+        $detailed_products = array_map(
+            function (CartItem $cart_item) {
+                $doctrine = $this->getDoctrine();
+                $tariff = $doctrine
+                    ->getRepository('RgApiBundle:Tariff')
+                    ->findOneBy(['id' => $cart_item->getTariff()]);
+
+                /** @var Product $product */
+                $product = $tariff->getProduct();
+
+                $images = $product->getEditions()->map(
+                    function (Edition $edition) {
+                        return $edition->getImage();
+                    }
+                )->toArray();
+
+                /** @var Medium $medium */
+                $medium = $tariff->getMedium();
+
+                /** @var Delivery $delivery */
+                $delivery = $tariff->getDelivery();
+
+                $duration = $cart_item->getDuration();
+
+                $cost = $this->get('rg_api.product_cost_calculator')
+                    ->itemCostCalculator($tariff, $duration);
+
+                return [
+                    'image' => $images,
+                    'is_kit' => $product->getIsKit(),
+                    'first_month' => '',
+                    'duration' => $duration,
+                    'medium' => $medium->getName(),
+                    'delivery' => $delivery->getName(),
+                    'quantity' => $cart_item->getQuantity(),
+                    'price' => $tariff->getPrice(),
+                    'cost' => $cost,
+                ];
+            },
+            $cart->getCartItems()
+        );
+
+        ### detail archive items
+        $detailed_archives = array_map(
+            function (CartPatritem $cart_patritem) {
+                $doctrine = $this->getDoctrine();
+                $patriff = $doctrine
+                    ->getRepository('RgApiBundle:Patriff')
+                    ->findOneBy(['id' => $cart_patritem->getPatriff()]);
+
+                /** @var Issue $issue */
+                $issue = $patriff->getIssue();
+
+                /** @var Delivery $delivery */
+                $delivery = $patriff->getDelivery();
+
+                $price = $patriff->getPrice();
+                $quantity = $cart_patritem->getQuantity();
+                $cost = $price * $quantity;
+
+                return [
+                    'month' => $issue->getMonth(),
+                    'year' => $issue->getYear(),
+                    'image' => $issue->getImage(),
+                    'delivery' => $delivery->getName(),
+                    'quantity' => $quantity,
+                    'price' => $price,
+                    'cost' => $cost,
+                ];
+            },
+            $cart->getCartPatritems()
+        );
+
+        $detailed_cart = [
+            'products' => $detailed_products,
+            'archives' => $detailed_archives,
+        ];
+
+        return (new Out())->json($detailed_cart);
     }
 
     public function emptyAction(SessionInterface $session)
@@ -70,10 +154,6 @@ class CartController extends Controller implements SessionHasCartController
             function (\stdClass $archive) {
                 // превратить анонима в архивную позицию корзины
                 $cart_patritem = new CartPatritem(
-//                    $archive->id,
-//                    $archive->delivery,
-//                    $archive->year,
-//                    $archive->issue,
                     $archive->quantity,
                     $archive->patriff
                 );
@@ -84,10 +164,12 @@ class CartController extends Controller implements SessionHasCartController
         );
 
         // добавить в корзину
+        /** @var CartItem $cart_item */
         foreach ($cart_items as $cart_item) {
             $cart->addItem($cart_item);
         }
 
+        /** @var CartPatritem $cart_patritem */
         foreach ($cart_patritems as $cart_patritem) {
             $cart->addPatritem($cart_patritem);
         }

@@ -14,92 +14,16 @@ namespace Rg\ApiBundle\Cart;
 
 class CartPatritem implements \JsonSerializable
 {
-    private $id;
-    private $delivery;
-    private $year;
-    private $issue;
     private $quantity;
     private $patriff;
 
     public function __construct(
-//        int $id,
-//        int $delivery,
-//        int $year,
-//        int $issue,
         int $quantity,
         int $patriff
     )
     {
-//        $this->id = $id;
-//        $this->delivery = $delivery;
-//        $this->year = $year;
-//        $this->issue = $issue;
         $this->quantity = $quantity;
         $this->patriff = $patriff;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDelivery()
-    {
-        return $this->delivery;
-    }
-
-    /**
-     * @param int $delivery
-     */
-    public function setDelivery(int $delivery)
-    {
-        $this->delivery = $delivery;
-    }
-
-    /**
-     * @return int
-     */
-    public function getYear()
-    {
-        return $this->year;
-    }
-
-    /**
-     * @param int $year
-     */
-    public function setYear(int $year)
-    {
-        $this->year = $year;
-    }
-
-    /**
-     * @return int
-     */
-    public function getIssue()
-    {
-        return $this->issue;
-    }
-
-    /**
-     * @param int $issue
-     */
-    public function setIssue(int $issue)
-    {
-        $this->issue = $issue;
     }
 
     /**
@@ -137,10 +61,6 @@ class CartPatritem implements \JsonSerializable
     function jsonSerialize()
     {
         return [
-//            "id" => $this->getId(),
-//            "delivery" => $this->getDelivery(),
-//            "year" => $this->getYear(),
-//            "issue" => $this->getIssue(),
             "quantity" => $this->getQuantity(),
             "patriff" => $this->getPatriff(),
         ];
