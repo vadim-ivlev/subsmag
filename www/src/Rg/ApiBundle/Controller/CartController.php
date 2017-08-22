@@ -70,10 +70,10 @@ class CartController extends Controller implements SessionHasCartController
             function (\stdClass $archive) {
                 // превратить анонима в архивную позицию корзины
                 $cart_patritem = new CartPatritem(
-                    $archive->id,
-                    $archive->delivery,
-                    $archive->year,
-                    $archive->issue,
+//                    $archive->id,
+//                    $archive->delivery,
+//                    $archive->year,
+//                    $archive->issue,
                     $archive->quantity,
                     $archive->patriff
                 );

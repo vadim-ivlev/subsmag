@@ -42,6 +42,7 @@ framework:
     trusted_proxies: ~
     session:
         # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        storage_id:  session.storage.native
         handler_id:  session.handler.native_file
         save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
     fragments: ~
@@ -96,8 +97,9 @@ swiftmailer:
 # Nelmio CORS configuration
 nelmio_cors:
     defaults:
+        origin_regex: true
         allow_credentials: true
-        allow_origin: ['*']
+        allow_origin: ['*.rg.ru', '^http://localhost:3000', 'null']
         allow_headers: ['*']
         allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
         max_age: 3600
