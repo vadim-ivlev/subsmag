@@ -95,15 +95,6 @@ class OrderController extends Controller
 
     }
 
-    private function calculateTimeunitAmount(Tariff $tariff, int $duration) {
-        $bitmask = $tariff->getTimeunit()->getBitmask();
-
-        if ($bitmask == self::MONTH) {
-            return $duration;
-        }
-        return 1;
-    }
-
     private function countTotal(array $items, array $patritems)
     {
         //
@@ -146,12 +137,11 @@ class OrderController extends Controller
                     ->findOneBy(['id' => $cart_item->getTariff()]);
                 $item->setTariff($tariff);
 
-                $timeunit_amount = $this->calculateTimeunitAmount($tariff, $cart_item->getDuration());
+                $calculator = $this->get('rg_api.product_cost_calculator');
+                $timeunit_amount = $calculator->calculateTimeunitAmount($tariff, $cart_item->getDuration());
                 $item->setTimeunitAmount($timeunit_amount);
 
-                // вычислить стоимость единицы позиции по формуле
-                // cost = tu_amount * tariff.price
-                $cost = $timeunit_amount * $tariff->getPrice();
+                $cost = $calculator->calculateItemCost($tariff, $cart_item->getDuration());
                 $item->setCost($cost);
 
                 $sale = $doctrine

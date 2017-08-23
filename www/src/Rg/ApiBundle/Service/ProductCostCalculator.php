@@ -9,7 +9,7 @@ class ProductCostCalculator
 {
     const MONTH = 2048;
 
-    private function calculateTimeunitAmount(Tariff $tariff, int $duration) {
+    public function calculateTimeunitAmount(Tariff $tariff, int $duration) {
         $bitmask = $tariff->getTimeunit()->getBitmask();
 
         if ($bitmask == self::MONTH) {
@@ -18,7 +18,7 @@ class ProductCostCalculator
         return 1;
     }
 
-    public function itemCostCalculator(Tariff $tariff, int $duration)
+    public function calculateItemCost(Tariff $tariff, int $duration)
     {
         $timeunit_amount = $this->calculateTimeunitAmount($tariff, $duration);
 
