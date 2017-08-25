@@ -79,37 +79,48 @@ class OrderController extends Controller
         if ($payment_name == 'platron') {
             ## инициализировать платёж:
                 # передать данные о платеже,
-                # получить №транзакции и урл для редиректа,
+                # получить №транзакции и урл для редиректа
             /** @var \SimpleXMLElement $platron_response */
             $platron_response = $this->get('rg_api.platron')->init($order);
             $redirect_url = (string) $platron_response->pg_redirect_url;
             $pg_payment_id = (string) $platron_response->pg_payment_id;
 
-                # отправить пользователя на платрон
-            return $this->redirect($redirect_url, 302);
-        } elseif ($payment_name == 'receipt') {
-//            $this->printBankReceipt();
-        } else {
-            throw new \Exception('Wrong payment type.');
-        }
+                # отправить пользователя на платрон (на фронте)
+            $resp = [
+                'order' => $order->getId(),
+                'total' => $order->getTotal(),
+                'pg_payment_id' => $pg_payment_id,
+                'pg_redirect_url' => $redirect_url,
+            ];
 
-        #### TEST: показать сформированный заказ
-        $resp = [
-            'order' => $order->getId(),
-            'total' => $order->getTotal(),
-            'items' => array_map(
-                function (Item $item) {
-                    return $item->getId();
-                },
-                $items
-            ),
-            'patritems' => array_map(
-                function (Patritem $patritem) {
-                    return $patritem->getId();
-                },
-                $patritems
-            ),
-        ];
+/*            #### TEST: показать сформированный заказ
+            $resp = [
+                'order' => $order->getId(),
+                'total' => $order->getTotal(),
+                'items' => array_map(
+                    function (Item $item) {
+                        return $item->getId();
+                    },
+                    $items
+                ),
+                'patritems' => array_map(
+                    function (Patritem $patritem) {
+                        return $patritem->getId();
+                    },
+                    $patritems
+                ),
+            ];
+*/
+        } elseif ($payment_name == 'receipt') {
+            $resp = [
+                'description' => 'Печатаю квитанцию...'
+            ];
+        } else {
+            $resp = [
+                'error' => 'bad bad bad',
+                'description' => 'Wrong payment type.'
+            ];
+        }
 
         return (new Out())->json($resp);
 
