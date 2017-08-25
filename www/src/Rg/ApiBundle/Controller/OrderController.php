@@ -73,7 +73,27 @@ class OrderController extends Controller
         }
         $em->flush();
 
-        ### показать сформированный заказ
+        ## переход к оплате
+        $payment_name = $order->getPayment()->getName();
+
+        if ($payment_name == 'platron') {
+            ## инициализировать платёж:
+                # передать данные о платеже,
+                # получить №транзакции и урл для редиректа,
+            /** @var \SimpleXMLElement $platron_response */
+            $platron_response = $this->get('rg_api.platron')->init($order);
+            $redirect_url = (string) $platron_response->pg_redirect_url;
+            $pg_payment_id = (string) $platron_response->pg_payment_id;
+
+                # отправить пользователя на платрон
+            return $this->redirect($redirect_url, 302);
+        } elseif ($payment_name == 'receipt') {
+//            $this->printBankReceipt();
+        } else {
+            throw new \Exception('Wrong payment type.');
+        }
+
+        #### TEST: показать сформированный заказ
         $resp = [
             'order' => $order->getId(),
             'total' => $order->getTotal(),
@@ -93,6 +113,14 @@ class OrderController extends Controller
 
         return (new Out())->json($resp);
 
+    }
+
+    /**
+     * supplies pg_check_url functionality
+     */
+    public function platronCheckAction()
+    {
+        //
     }
 
     private function countTotal(array $items, array $patritems)
@@ -185,4 +213,5 @@ class OrderController extends Controller
             $cart_patritems
         );
     }
+
 }

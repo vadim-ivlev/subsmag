@@ -18,3 +18,5 @@ services:
         class: Rg\ApiBundle\Service\PeriodTimeunitConverter
     rg_api.product_cost_calculator:
         class: Rg\ApiBundle\Service\ProductCostCalculator
+    rg_api.platron:
+        class: Rg\ApiBundle\Service\Platron
