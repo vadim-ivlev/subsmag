@@ -44,6 +44,7 @@ class OrderController extends Controller
         $order->setEmail($order_details->email);
 
         $order->setIsPaid(false);
+        $order->setPgPaymentId('');
 
         ### способ оплаты
         $doctrine = $this->getDoctrine();
@@ -85,6 +86,11 @@ class OrderController extends Controller
             $redirect_url = (string) $platron_response->pg_redirect_url;
             $pg_payment_id = (string) $platron_response->pg_payment_id;
 
+            ## сохранить id транзакции Платрона
+            $order->setPgPaymentId($pg_payment_id);
+            $em->persist($order);
+            $em->flush();
+
                 # отправить пользователя на платрон (на фронте)
             $resp = [
                 'order' => $order->getId(),
@@ -93,24 +99,6 @@ class OrderController extends Controller
                 'pg_redirect_url' => $redirect_url,
             ];
 
-/*            #### TEST: показать сформированный заказ
-            $resp = [
-                'order' => $order->getId(),
-                'total' => $order->getTotal(),
-                'items' => array_map(
-                    function (Item $item) {
-                        return $item->getId();
-                    },
-                    $items
-                ),
-                'patritems' => array_map(
-                    function (Patritem $patritem) {
-                        return $patritem->getId();
-                    },
-                    $patritems
-                ),
-            ];
-*/
         } elseif ($payment_name == 'receipt') {
             $resp = [
                 'description' => 'Печатаю квитанцию...'
@@ -124,14 +112,6 @@ class OrderController extends Controller
 
         return (new Out())->json($resp);
 
-    }
-
-    /**
-     * supplies pg_check_url functionality
-     */
-    public function platronCheckAction()
-    {
-        //
     }
 
     private function countTotal(array $items, array $patritems)

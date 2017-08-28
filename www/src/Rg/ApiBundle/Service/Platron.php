@@ -22,8 +22,8 @@ class Platron
     ];
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
 
-//    const BASE_URL = 'https://subsmag.rg.ru';
-    const BASE_URL = 'http://subsmag.loc';
+    const BASE_URL = 'https://subsmag.rg.ru';
+//    const BASE_URL = 'http://subsmag.loc';
 
     public function init(Order $order)
     {
@@ -34,11 +34,93 @@ class Platron
 
         $response_simple_xml = new \SimpleXMLElement($response_xml_str);
 
-        if (!$this->simpleValidate($response_simple_xml)) {
+        if (!$this->simpleValidateInit($response_simple_xml)) {
             throw new \Exception('Invalid response from Platron');
         }
 
         return $response_simple_xml;
+    }
+
+    /**
+     * Подтверждение готовности заказа и правильности суммы
+     * @param \SimpleXMLElement $pg_xml
+     * @return \SimpleXMLElement
+     */
+    public function prepareAgreeWithCheck(\SimpleXMLElement $pg_xml)
+    {
+        $xml_str = <<<RESPONSE_OK
+<?xml version="1.0" encoding="utf-8"?>
+  <response>
+	<pg_salt></pg_salt>
+	<pg_status>ok</pg_status>
+	<pg_timeout>600</pg_timeout>
+	<pg_sig></pg_sig>
+  </response>
+RESPONSE_OK;
+
+        $params = [
+            'pg_salt' => (string) $pg_xml->pg_salt,
+            'pg_status' => 'ok',
+            'pg_timeout' => '600',
+        ];
+
+        # count signature
+        ksort($params, SORT_STRING);
+
+        $joined = '';
+        foreach ($params as $value) {
+            $joined .= $value . ';';
+        }
+        $pg_sig = md5('check;' . $joined . self::SECRET_KEY);
+        # end count
+
+        $simple_xml = new \SimpleXMLElement($xml_str);
+        $simple_xml->pg_salt = $params['pg_salt'];
+        $simple_xml->pg_sig = $pg_sig;
+
+        return $simple_xml;
+    }
+
+    public function errorOnCheck(\SimpleXMLElement $pg_xml, string $message)
+    {
+    }
+
+    public function prepareRejectCheck(\SimpleXMLElement $pg_xml, string $message)
+    {
+        $xml_str = <<<RESPONSE_REJECT
+<?xml version="1.0" encoding="utf-8"?>
+  <response>
+	<pg_salt></pg_salt>
+	<pg_status>error</pg_status>
+	<pg_error_code>1</pg_error_code>
+	<pg_error_description></pg_error_description>
+	<pg_sig></pg_sig>
+  </response>
+RESPONSE_REJECT;
+
+        $params = [
+            'pg_salt' => (string) $pg_xml->pg_salt,
+            'pg_status' => 'error',
+            'pg_error_code' => 1,
+            'pg_error_description' => $message,
+        ];
+
+        # count signature
+        ksort($params, SORT_STRING);
+
+        $joined = '';
+        foreach ($params as $value) {
+            $joined .= $value . ';';
+        }
+        $pg_sig = md5('check;' . $joined . self::SECRET_KEY);
+        # end count
+
+        $simple_xml = new \SimpleXMLElement($xml_str);
+        $simple_xml->pg_salt = $params['pg_salt'];
+        $simple_xml->pg_sig = $pg_sig;
+        $simple_xml->pg_error_description = $message;
+
+        return $simple_xml;
     }
 
     private function prepareRequest(Order $order)
@@ -49,21 +131,22 @@ class Platron
         $params->pg_amount = $order->getTotal();
         $params->pg_currency = 'RUB';
 
-        $params->pg_check_url = self::BASE_URL . '/platron/check/';
-        $params->pg_result_url = self::BASE_URL . '/platron/result/';
+        $params->pg_check_url = self::BASE_URL . '/platron/check';
+        $params->pg_result_url = self::BASE_URL . '/platron/result';
 
-        $params->pg_request_method = 'GET';
+        $params->pg_request_method = 'XML';
 
-        $params->pg_success_url = self::BASE_URL . '/platron/success/';
-        $params->pg_failure_url = self::BASE_URL . '/platron/failure/';
+        $params->pg_success_url = self::BASE_URL . '/platron/success';
+        $params->pg_failure_url = self::BASE_URL . '/platron/failure';
 
         $params->pg_description = "Оплата подписки. Заказ №" . $order->getId();
 
         $params->pg_testing_mode = 1;
 
-        $this->salt = md5(time());
+        $this->salt = $this->generateSalt();
         $params->pg_salt = $this->salt;
 
+        # count signature
         $params = (array) $params;
         ksort($params, SORT_STRING);
 
@@ -72,6 +155,7 @@ class Platron
             $joined .= $value . ';';
         }
         $pg_sig = md5('init_payment.php;' . $joined . self::SECRET_KEY);
+        # end count
 
         $params['pg_sig'] = $pg_sig;
 
@@ -82,18 +166,23 @@ class Platron
     {
         $ch = curl_init();
         $query = http_build_query($params);
-        $params = [
+        $options = [
             CURLOPT_URL => self::HOST_TO_HOST,
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POSTFIELDS => $query,
         ];
 
-        curl_setopt_array($ch, $params);
-        return curl_exec($ch);
+        curl_setopt_array($ch, $options);
+
+        $result = curl_exec($ch);
+
+        curl_close($ch);
+
+        return $result;
     }
 
-    private function simpleValidate(\SimpleXMLElement $xml)
+    private function simpleValidateInit(\SimpleXMLElement $xml)
     {
         $condition = (string) $xml->pg_status == 'ok'
             && ( (string) $xml->pg_salt == $this->salt)
@@ -102,5 +191,10 @@ class Platron
         ;
 
         return $condition;
+    }
+
+    private function generateSalt()
+    {
+        return md5(time());
     }
 }

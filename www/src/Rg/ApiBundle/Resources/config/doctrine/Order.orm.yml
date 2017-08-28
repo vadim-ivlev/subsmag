@@ -31,6 +31,9 @@ Rg\ApiBundle\Entity\Order:
         is_paid:
             type: boolean
             column: is_paid
+        pg_payment_id:
+            type: string
+            column: pg_payment_id
     manyToOne:
         payment:
             targetEntity: Payment

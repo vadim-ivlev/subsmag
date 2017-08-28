@@ -369,4 +369,33 @@ class Order
     {
         return $this->email;
     }
+    /**
+     * @var string
+     */
+    private $pg_payment_id;
+
+
+    /**
+     * Set pgPaymentId
+     *
+     * @param string $pgPaymentId
+     *
+     * @return Order
+     */
+    public function setPgPaymentId($pgPaymentId)
+    {
+        $this->pg_payment_id = $pgPaymentId;
+
+        return $this;
+    }
+
+    /**
+     * Get pgPaymentId
+     *
+     * @return string
+     */
+    public function getPgPaymentId()
+    {
+        return $this->pg_payment_id;
+    }
 }
