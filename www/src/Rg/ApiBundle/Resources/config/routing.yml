@@ -24,24 +24,24 @@ rg_api_order_create:
 ### Platron
 # pg_check_url
 rg_api_platron_check_url:
-    path:     /platron/check/
+    path:     /platron/check
     defaults: { _controller: RgApiBundle:Platron:checkURL, _format:json }
     methods:  [POST]
 # pg_result_url
 rg_api_platron_result_url:
-    path:     /platron/result/
+    path:     /platron/result
     defaults: { _controller: RgApiBundle:Platron:resultURL, _format:json }
     methods:  [POST]
-# pg_success_url
-rg_api_platron_success_url:
-    path:     /platron/success/
+# success_payment_url
+rg_api_success_url:
+    path:     /platron/success
     defaults: { _controller: RgApiBundle:Platron:successURL, _format:json }
-    methods:  [POST]
-# pg_failure_url
+    methods:  [GET]
+# failure_payment_url
 rg_api_platron_failure_url:
-    path:     /platron/failure/
+    path:     /platron/failure
     defaults: { _controller: RgApiBundle:Platron:failureURL, _format:json }
-    methods:  [POST]
+    methods:  [GET]
 
 ### Корзина
 # просмотреть корзину

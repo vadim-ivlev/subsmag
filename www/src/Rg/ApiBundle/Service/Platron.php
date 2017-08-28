@@ -22,7 +22,7 @@ class Platron
     ];
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
 
-    const BASE_URL = 'https://subsmag.rg.ru';
+    const BASE_URL = 'https://subsmag.rg.ru/api';
 
     public function init(Order $order)
     {
@@ -84,20 +84,20 @@ RESPONSE_OK;
     {
         $url_tail = 'result';
 
+        // поле pg_description в случае успеха не передаётся
         $xml_str = <<<RESPONSE_OK
 <?xml version="1.0" encoding="utf-8"?>
   <response>
 	<pg_salt></pg_salt>
 	<pg_status>ok</pg_status>
-	<pg_description></pg_description>
 	<pg_sig></pg_sig>
   </response>
 RESPONSE_OK;
 
+
         $params = [
             'pg_salt' => (string) $pg_xml->pg_salt,
             'pg_status' => 'ok',
-            'pg_description' => 'Оплата прошла успешно. Заказ передан в отдел подписки.',
         ];
 
         # count signature
@@ -111,7 +111,7 @@ RESPONSE_OK;
         # end count
 
         $simple_xml = new \SimpleXMLElement($xml_str);
-        $simple_xml->pg_salt = $params['pg_salt'];
+        $simple_xml->pg_salt = (string) $pg_xml->pg_salt;
         $simple_xml->pg_sig = $pg_sig;
 
         return $simple_xml;
@@ -285,7 +285,10 @@ RESPONSE_REJECT;
         $params->pg_request_method = 'XML';
 
         $params->pg_success_url = self::BASE_URL . '/platron/success';
+        $params->pg_success_url_method = 'AUTOGET';
+
         $params->pg_failure_url = self::BASE_URL . '/platron/failure';
+        $params->pg_failure_url_method = 'GET';
 
         $params->pg_description = "Оплата подписки. Заказ №" . $order->getId();
 

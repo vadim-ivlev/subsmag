@@ -2,15 +2,12 @@
 
 namespace Rg\ApiBundle\Controller;
 
-use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
 use Rg\ApiBundle\Entity\Item;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Entity\Patritem;
-use Rg\ApiBundle\Entity\Tariff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
