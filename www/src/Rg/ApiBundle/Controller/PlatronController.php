@@ -47,7 +47,7 @@ class PlatronController extends Controller
         $order = $this->getDoctrine()->getRepository('RgApiBundle:Order')
             ->findOneBy(['id' => $order_id]);
         if (!$order) {
-            $xml = $this->get('rg_api.platron')->prepareRejectCheck($pg_xml,'Не найдён заказ с номером ' . $order_id . '.');
+            $xml = $this->get('rg_api.platron')->prepareErrorOnCheck($pg_xml,'Не найдён заказ с номером ' . $order_id . '.');
             return new Response($xml->asXML());
         }
 
@@ -59,7 +59,7 @@ class PlatronController extends Controller
             $xml = $this->get('rg_api.platron')->prepareAgreeWithCheck($pg_xml);
         } else {
             // send error
-            $xml = $this->get('rg_api.platron')->prepareRejectCheck($pg_xml,'Не совпадают данные заказа и оплаты.');
+            $xml = $this->get('rg_api.platron')->prepareErrorOnCheck($pg_xml,'Не совпадают данные заказа и оплаты.');
         }
 
         return new Response($xml->asXML());

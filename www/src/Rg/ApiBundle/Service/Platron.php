@@ -81,13 +81,9 @@ RESPONSE_OK;
         return $simple_xml;
     }
 
-    public function errorOnCheck(\SimpleXMLElement $pg_xml, string $message)
+    public function prepareErrorOnCheck(\SimpleXMLElement $pg_xml, string $message)
     {
-    }
-
-    public function prepareRejectCheck(\SimpleXMLElement $pg_xml, string $message)
-    {
-        $xml_str = <<<RESPONSE_REJECT
+        $xml_str = <<<RESPONSE_ERROR
 <?xml version="1.0" encoding="utf-8"?>
   <response>
 	<pg_salt></pg_salt>
@@ -96,7 +92,7 @@ RESPONSE_OK;
 	<pg_error_description></pg_error_description>
 	<pg_sig></pg_sig>
   </response>
-RESPONSE_REJECT;
+RESPONSE_ERROR;
 
         $params = [
             'pg_salt' => (string) $pg_xml->pg_salt,
@@ -119,6 +115,42 @@ RESPONSE_REJECT;
         $simple_xml->pg_salt = $params['pg_salt'];
         $simple_xml->pg_sig = $pg_sig;
         $simple_xml->pg_error_description = $message;
+
+        return $simple_xml;
+    }
+
+    public function prepareRejectCheck(\SimpleXMLElement $pg_xml, string $message)
+    {
+        $xml_str = <<<RESPONSE_REJECT
+<?xml version="1.0" encoding="utf-8"?>
+  <response>
+	<pg_salt></pg_salt>
+	<pg_status>rejected</pg_status>
+	<pg_description></pg_description>
+	<pg_sig></pg_sig>
+  </response>
+RESPONSE_REJECT;
+
+        $params = [
+            'pg_salt' => (string) $pg_xml->pg_salt,
+            'pg_status' => 'rejected',
+            'pg_description' => $message,
+        ];
+
+        # count signature
+        ksort($params, SORT_STRING);
+
+        $joined = '';
+        foreach ($params as $value) {
+            $joined .= $value . ';';
+        }
+        $pg_sig = md5('check;' . $joined . self::SECRET_KEY);
+        # end count
+
+        $simple_xml = new \SimpleXMLElement($xml_str);
+        $simple_xml->pg_salt = $params['pg_salt'];
+        $simple_xml->pg_sig = $pg_sig;
+        $simple_xml->pg_description = $message;
 
         return $simple_xml;
     }
