@@ -23,7 +23,6 @@ class Platron
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
 
     const BASE_URL = 'https://subsmag.rg.ru';
-//    const BASE_URL = 'http://subsmag.loc';
 
     public function init(Order $order)
     {
@@ -77,6 +76,123 @@ RESPONSE_OK;
         $simple_xml = new \SimpleXMLElement($xml_str);
         $simple_xml->pg_salt = $params['pg_salt'];
         $simple_xml->pg_sig = $pg_sig;
+
+        return $simple_xml;
+    }
+
+    public function prepareOkOnResult(\SimpleXMLElement $pg_xml)
+    {
+        $url_tail = 'result';
+
+        $xml_str = <<<RESPONSE_OK
+<?xml version="1.0" encoding="utf-8"?>
+  <response>
+	<pg_salt></pg_salt>
+	<pg_status>ok</pg_status>
+	<pg_description></pg_description>
+	<pg_sig></pg_sig>
+  </response>
+RESPONSE_OK;
+
+        $params = [
+            'pg_salt' => (string) $pg_xml->pg_salt,
+            'pg_status' => 'ok',
+            'pg_description' => 'Оплата прошла успешно. Заказ передан в отдел подписки.',
+        ];
+
+        # count signature
+        ksort($params, SORT_STRING);
+
+        $joined = '';
+        foreach ($params as $value) {
+            $joined .= $value . ';';
+        }
+        $pg_sig = md5($url_tail . ';' . $joined . self::SECRET_KEY);
+        # end count
+
+        $simple_xml = new \SimpleXMLElement($xml_str);
+        $simple_xml->pg_salt = $params['pg_salt'];
+        $simple_xml->pg_sig = $pg_sig;
+
+        return $simple_xml;
+    }
+
+    public function prepareRejectedOnResult(\SimpleXMLElement $pg_xml, string $message)
+    {
+        $url_tail = 'result';
+
+        $xml_str = <<<RESPONSE_REJECT
+<?xml version="1.0" encoding="utf-8"?>
+  <response>
+	<pg_salt></pg_salt>
+	<pg_status>rejected</pg_status>
+	<pg_description></pg_description>
+	<pg_sig></pg_sig>
+  </response>
+RESPONSE_REJECT;
+
+        $params = [
+            'pg_salt' => (string) $pg_xml->pg_salt,
+            'pg_status' => 'rejected',
+            'pg_description' => $message,
+        ];
+
+        # count signature
+        ksort($params, SORT_STRING);
+
+        $joined = '';
+        foreach ($params as $value) {
+            $joined .= $value . ';';
+        }
+        $pg_sig = md5($url_tail . ';' . $joined . self::SECRET_KEY);
+        # end count
+
+        $simple_xml = new \SimpleXMLElement($xml_str);
+        $simple_xml->pg_salt = $params['pg_salt'];
+        $simple_xml->pg_sig = $pg_sig;
+        $simple_xml->pg_description = $message;
+
+        return $simple_xml;
+    }
+
+    public function prepareErrorOnResult(\SimpleXMLElement $pg_xml, string $message)
+    {
+        $url = 'result';
+        $xml_str = <<<RESPONSE_ERROR
+<?xml version="1.0" encoding="utf-8"?>
+  <response>
+	<pg_salt></pg_salt>
+	<pg_status>error</pg_status>
+	<pg_error_code>1</pg_error_code>
+	<pg_error_description></pg_error_description>
+	<pg_description></pg_description>
+	<pg_sig></pg_sig>
+  </response>
+RESPONSE_ERROR;
+
+        $params = [
+            'pg_salt' => (string) $pg_xml->pg_salt,
+            'pg_status' => 'error',
+            'pg_error_code' => 1,
+            'pg_error_description' => $message,
+            'pg_description' => $message,
+        ];
+
+        # count signature
+        ksort($params, SORT_STRING);
+
+        $joined = '';
+        foreach ($params as $value) {
+            $joined .= $value . ';';
+        }
+        $pg_sig = md5($url . ';' . $joined . self::SECRET_KEY);
+        # end count
+
+        $simple_xml = new \SimpleXMLElement($xml_str);
+        $simple_xml->pg_salt = $params['pg_salt'];
+        $simple_xml->pg_sig = $pg_sig;
+        $simple_xml->pg_error_description = $message;
+        $simple_xml->pg_description = $message;
 
         return $simple_xml;
     }

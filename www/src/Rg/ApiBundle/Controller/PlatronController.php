@@ -7,6 +7,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * //TODO: Закрыть для всех, кроме Платрона
+ * Class PlatronController
+ * @package Rg\ApiBundle\Controller
+ */
 class PlatronController extends Controller
 {
     public function checkURLAction(Request $request)
@@ -14,7 +19,6 @@ class PlatronController extends Controller
         /*
          * Проверка возможности платежа.
          * Приходит от Платрона.
-         * //TODO: Закрыть для всех, кроме Платрона
          * Полный список: https://front.platron.ru/docs/api/checking_possibility_payment/
         pg_payment_system
         pg_result
@@ -47,7 +51,8 @@ class PlatronController extends Controller
         $order = $this->getDoctrine()->getRepository('RgApiBundle:Order')
             ->findOneBy(['id' => $order_id]);
         if (!$order) {
-            $xml = $this->get('rg_api.platron')->prepareErrorOnCheck($pg_xml,'Не найдён заказ с номером ' . $order_id . '.');
+            $message = 'Не найдён заказ с номером ' . $order_id . '.';
+            $xml = $this->get('rg_api.platron')->prepareErrorOnCheck($pg_xml, $message);
             return new Response($xml->asXML());
         }
 
@@ -59,7 +64,8 @@ class PlatronController extends Controller
             $xml = $this->get('rg_api.platron')->prepareAgreeWithCheck($pg_xml);
         } else {
             // send error
-            $xml = $this->get('rg_api.platron')->prepareErrorOnCheck($pg_xml,'Не совпадают данные заказа и оплаты.');
+            $message = 'Не совпадают данные заказа и оплаты.';
+            $xml = $this->get('rg_api.platron')->prepareErrorOnCheck($pg_xml, $message);
         }
 
         return new Response($xml->asXML());
@@ -68,6 +74,38 @@ class PlatronController extends Controller
 
     public function resultURLAction(Request $request)
     {
+        $pg_xml_str = $request->request->get('pg_xml');
+        $pg_xml = new \SimpleXMLElement($pg_xml_str);
+
+        # допустим, проверена подпись и есть все поля.
+        # проверить совпадение номера и стоимости заказа, pg_payment_id
+        $order_id = (int) $pg_xml->pg_order_id;
+        $payment_id = (string) $pg_xml->pg_payment_id;
+        $amount = (float) $pg_xml->pg_amount;
+        $currency = (int) $pg_xml->pg_currency;
+
+        $order = $this->getDoctrine()->getRepository('RgApiBundle:Order')
+            ->findOneBy(['id' => $order_id]);
+        if (!$order) {
+            $message = 'Не найдён заказ с номером ' . $order_id . '.';
+            $xml = $this->get('rg_api.platron')->prepareErrorOnResult($pg_xml, $message);
+
+            return new Response($xml->asXML());
+        }
+
+        $condition = $order->getTotal() == $amount
+            && $order->getPgPaymentId() == $payment_id
+        ;
+        if ($condition) {
+            // send ok
+            $xml = $this->get('rg_api.platron')->prepareOkOnResult($pg_xml);
+        } else {
+            // send error
+            $message = 'Не совпадают данные заказа и оплаты.';
+            $xml = $this->get('rg_api.platron')->prepareErrorOnResult($pg_xml, $message);
+        }
+
+        return new Response($xml->asXML());
 
     }
 
