@@ -2,35 +2,24 @@ rg_api:
     resource: "@RgApiBundle/Resources/config/routing.yml"
     prefix:   /api/
 
-###################
-### switched off to test with Platron
-###################
-### to work with vue SPA
-#fallback:
-#    path: /{req}
-##    defaults: { _controller: 'AppBundle:Default:index' }
+##################
+## The secret way to work with vue SPA
+## Ask nobody please about why this is like this is.
+##################
+fallback:
+    path: /{req}
+    defaults: { _controller: 'AppBundle:Default:index' }
 #    defaults:
 #        _controller: 'FrameworkBundle:Template:template'
 #        template: "default/index.html.twig"
-#    requirements:
-#        req: ".+"
-#
-#root:
-#    path: /
-#    defaults: { _controller: 'AppBundle:Default:index' }
-###################
-### switched off to test with Platron
-###################
+    requirements:
+        req: ".+"
 
-### this works, but only with index.html
-#fallback:
-#    path: /{req}
-#    defaults:
-#        _controller: FrameworkBundle:Redirect:urlRedirect
-#        path: /index.html
-#        permanent: true
-#    requirements:
-#        req: ".+"
+root:
+    path: /
+    defaults: { _controller: 'AppBundle:Default:index' }
+##################
+##################
 
 app:
     resource: '@AppBundle/Controller/'
