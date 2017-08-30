@@ -19,4 +19,7 @@ Rg\ApiBundle\Entity\Month:
         sales:
             targetEntity: Sale
             mappedBy: month
+        items:
+            targetEntity: Item
+            mappedBy: month
     lifecycleCallbacks: {  }

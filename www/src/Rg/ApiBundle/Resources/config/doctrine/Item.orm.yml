@@ -9,6 +9,9 @@ Rg\ApiBundle\Entity\Item:
             generator:
                 strategy: AUTO
     fields:
+        duration:
+            type: smallint
+            column: duration
         quantity:
             type: integer
             column: quantity
@@ -22,8 +25,8 @@ Rg\ApiBundle\Entity\Item:
         order:
             targetEntity: Order
             inversedBy: items
-        sale:
-            targetEntity: Sale
+        month:
+            targetEntity: Month
             inversedBy: items
         tariff:
             targetEntity: Tariff

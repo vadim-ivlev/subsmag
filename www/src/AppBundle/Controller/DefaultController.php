@@ -10,9 +10,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DefaultController extends Controller
 {
-    /**
-     * @Route("/", name="homepage")
-     */
     public function indexAction(Request $request)
     {
         $base_dir = realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR;
@@ -25,7 +22,6 @@ class DefaultController extends Controller
 
         return new Response(
             file_get_contents($index_path)
-//            json_encode($resp)
         );
     }
 }

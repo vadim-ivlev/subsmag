@@ -24,95 +24,25 @@ namespace Rg\ApiBundle\Cart;
  */
 class CartItem implements \JsonSerializable
 {
-    private $id;
-    private $medium;
-    private $delivery;
-    private $sale;
-    private $tariff;
+    private $first_month;
     private $duration;
+    private $year;
+    private $tariff;
     private $quantity;
 
     public function __construct(
-        int $id,
-        int $medium,
-        int $delivery,
-        int $sale,
-        int $tariff,
+        int $first_month,
         int $duration,
+        int $year,
+        int $tariff,
         int $quantity
     )
     {
-        $this->id = $id;
-        $this->medium = $medium;
-        $this->delivery = $delivery;
-        $this->sale = $sale;
+        $this->setFirstMonth($first_month);
+        $this->setDuration($duration);
+        $this->setYear($year);
         $this->tariff = $tariff;
-        $this->duration = $duration;
         $this->quantity = $quantity;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMedium()
-    {
-        return $this->medium;
-    }
-
-    /**
-     * @param int $medium
-     */
-    public function setMedium(int $medium)
-    {
-        $this->medium = $medium;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDelivery()
-    {
-        return $this->delivery;
-    }
-
-    /**
-     * @param int $delivery
-     */
-    public function setDelivery(int $delivery)
-    {
-        $this->delivery = $delivery;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSale()
-    {
-        return $this->sale;
-    }
-
-    /**
-     * @param int $sale
-     */
-    public function setSale(int $sale)
-    {
-        $this->sale = $sale;
     }
 
     /**
@@ -139,11 +69,12 @@ class CartItem implements \JsonSerializable
         return $this->duration;
     }
 
-    /**
-     * @param int $duration
-     */
     public function setDuration(int $duration)
     {
+        $condition = $duration > 0 && $duration < 13;
+        if (!$condition)
+            throw new \Exception('Wrong duration. Min: 1, Max: 12');
+
         $this->duration = $duration;
     }
 
@@ -163,15 +94,53 @@ class CartItem implements \JsonSerializable
         $this->quantity = $quantity;
     }
 
+    /**
+     * @return int
+     */
+    public function getFirstMonth(): int
+    {
+        return $this->first_month;
+    }
+
+    /**
+     * @param int $first_month
+     * @throws \Exception
+     */
+    public function setFirstMonth(int $first_month)
+    {
+        $condition = $first_month > 0 && $first_month < 13;
+
+        if (!$condition)
+            throw new \Exception('Wrong first month number. Min: 1, Max: 12');
+
+        $this->first_month = $first_month;
+    }
+
+    /**
+     * @return int
+     */
+    public function getYear(): int
+    {
+        return $this->year;
+    }
+
+    public function setYear(int $year)
+    {
+        $condition = $year > 2016 && $year < 2099;
+
+        if (!$condition)
+            throw new \Exception('Wrong year. Min: 2017, Max: 2099');
+
+        $this->year = $year;
+    }
+
     function jsonSerialize()
     {
         return [
-            "id" => $this->getId(),
-            "medium" => $this->getMedium(),
-            "delivery" => $this->getDelivery(),
-            "sale" => $this->getSale(),
-            "tariff" => $this->getTariff(),
+            "first_month" => $this->getFirstMonth(),
             "duration" => $this->getDuration(),
+            "year" => $this->getYear(),
+            "tariff" => $this->getTariff(),
             "quantity" => $this->getQuantity(),
         ];
     }

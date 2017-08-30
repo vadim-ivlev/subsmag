@@ -196,4 +196,62 @@ class Item
     {
         return $this->tariff;
     }
+    /**
+     * @var integer
+     */
+    private $duration;
+
+    /**
+     * @var \Rg\ApiBundle\Entity\Month
+     */
+    private $month;
+
+
+    /**
+     * Set duration
+     *
+     * @param integer $duration
+     *
+     * @return Item
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return integer
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * Set month
+     *
+     * @param \Rg\ApiBundle\Entity\Month $month
+     *
+     * @return Item
+     */
+    public function setMonth(\Rg\ApiBundle\Entity\Month $month = null)
+    {
+        $this->month = $month;
+
+        return $this;
+    }
+
+    /**
+     * Get month
+     *
+     * @return \Rg\ApiBundle\Entity\Month
+     */
+    public function getMonth()
+    {
+        return $this->month;
+    }
 }

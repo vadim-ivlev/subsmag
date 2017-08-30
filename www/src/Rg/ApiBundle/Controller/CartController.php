@@ -53,16 +53,15 @@ class CartController extends Controller implements SessionHasCartController
 
         // создать итемсы для каждого продукта
         $products = $input_items->products;
+
         $cart_items = array_map(
             function (\stdClass $product) {
                 // превратить анонима в продуктовую позицию корзины
                 $cart_item = new CartItem(
-                    $product->id,
-                    $product->medium,
-                    $product->delivery,
-                    $product->sale,
-                    $product->tariff,
+                    $product->first_month,
                     $product->duration,
+                    $product->year,
+                    $product->tariff,
                     $product->quantity
                 );
 
@@ -188,7 +187,8 @@ class CartController extends Controller implements SessionHasCartController
                 return [
                     'image' => $images,
                     'is_kit' => $product->getIsKit(),
-                    'first_month' => '',
+                    'first_month' => $cart_item->getFirstMonth(),
+                    'year' => $cart_item->getYear(),
                     'duration' => $duration,
                     'medium' => $medium->getName(),
                     'delivery' => $delivery->getName(),

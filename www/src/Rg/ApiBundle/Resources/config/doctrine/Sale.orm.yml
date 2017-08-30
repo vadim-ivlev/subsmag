@@ -18,10 +18,6 @@ Rg\ApiBundle\Entity\Sale:
         is_regional:
             type: boolean
             column: is_regional
-    oneToMany:
-        items:
-            targetEntity: Item
-            mappedBy: sale
     manyToOne:
         product:
             targetEntity: Product

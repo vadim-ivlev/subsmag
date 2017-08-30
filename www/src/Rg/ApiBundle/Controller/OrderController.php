@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OrderController extends Controller
 {
-    const MONTH = 2048;
+    const MONTH = 2048; //100000'000000
 
     public function createAction(Request $request, SessionInterface $session)
     {
@@ -160,10 +160,15 @@ class OrderController extends Controller
                 $cost = $calculator->calculateItemCost($tariff, $cart_item->getDuration());
                 $item->setCost($cost);
 
-                $sale = $doctrine
-                    ->getRepository('RgApiBundle:Sale')
-                    ->findOneBy(['id' => $cart_item->getSale()]);
-                $item->setSale($sale);
+                $month = $doctrine
+                    ->getRepository('RgApiBundle:Month')
+                    ->findOneBy([
+                        'number' => $cart_item->getFirstMonth(),
+                        'year' => $cart_item->getYear(),
+                    ]);
+                $item->setMonth($month);
+
+                $item->setDuration($cart_item->getDuration());
 
                 $item->setOrder($order);
 

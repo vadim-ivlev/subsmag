@@ -13,16 +13,10 @@ class Platron
     const MERCHANT_ID = 8888;
     const SECRET_KEY = 'xywoxelepejepowi';
 
-    const ORDER_STATUS = [
-        'partial' => 'Транзакция создается',
-        'pending' => 'Ожидание оплаты',
-        'ok' => 'Оплачен',
-        'failed' => 'Платеж не прошел',
-        'revoked' => 'Платеж отозван'
-    ];
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
 
-    const BASE_URL = 'https://subsmag.rg.ru/api';
+    const API_URL = 'https://subsmag.rg.ru/api';
+    const BASE_URL = 'https://subsmag.rg.ru';
 
     public function init(Order $order)
     {
@@ -279,11 +273,12 @@ RESPONSE_REJECT;
         $params->pg_amount = $order->getTotal();
         $params->pg_currency = 'RUB';
 
-        $params->pg_check_url = self::BASE_URL . '/platron/check';
-        $params->pg_result_url = self::BASE_URL . '/platron/result';
+        $params->pg_check_url = self::API_URL . '/platron/check';
+        $params->pg_result_url = self::API_URL . '/platron/result';
 
         $params->pg_request_method = 'XML';
 
+        # put your attention here. Success url works after Platron redirects the browser.
         $params->pg_success_url = self::BASE_URL . '/platron/success';
         $params->pg_success_url_method = 'AUTOGET';
 
