@@ -1,0 +1,64 @@
+Rg\ApiBundle\Entity\Vendor:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\VendorRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '200'
+            column: name
+        keyword:
+            type: string
+            length: '20'
+            column: keyword
+        address:
+            type: string
+            length: '200'
+            column: address
+        phone:
+            type: string
+            length: '50'
+            column: phone
+        fax:
+            type: string
+            length: '50'
+            column: fax
+        email:
+            type: string
+            length: '50'
+            column: email
+        inn:
+            type: string
+            length: '10'
+            column: inn
+        kpp:
+            type: string
+            length: '9'
+            column: kpp
+        account:
+            type: string
+            length: '20'
+            column: account
+        bank:
+            type: string
+            length: '150'
+            column: bank
+        bik:
+            type: string
+            length: '9'
+            column: bik
+        corr:
+            type: string
+            length: '20'
+            column: corr
+        head_name:
+            type: string
+            length: '100'
+            column: head_name
+    lifecycleCallbacks: {  }

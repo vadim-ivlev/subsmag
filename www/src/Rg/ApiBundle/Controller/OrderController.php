@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class OrderController extends Controller
 {
@@ -71,6 +72,9 @@ class OrderController extends Controller
         }
         $em->flush();
 
+        ## очищаем корзину
+        $this->get('rg_api.cart_controller')->emptyAction($session);
+
         ## переход к оплате
         $payment_name = $order->getPayment()->getName();
 
@@ -97,9 +101,63 @@ class OrderController extends Controller
             ];
 
         } elseif ($payment_name == 'receipt') {
-            $resp = [
-                'description' => 'Печатаю квитанцию...'
-            ];
+            # подготовить банковскую квитанцию
+            $vendor = $doctrine->getRepository('RgApiBundle:Vendor')
+                ->findOneBy(['keyword' => 'zaorg']); // magic word. What if there'd be more than one vendor?
+
+            $price = new \stdClass();
+            $price->total = $order->getTotal();
+            $price->integer = floor($price->total);
+//            $price->decimal = fmod($price->total, 1); // bad idea cause of float division tricks!!!
+            $price->decimal = floor( ( $price->total - $price->integer ) * 100);
+
+            $due_date = $order->getDate()->add(
+                new \DateInterval('P7D')
+            );
+
+            ## the names of ordered items
+            $goods = [];
+
+            /** @var Item $item */
+            foreach ($items as $item) {
+                $product = $item->getTariff()->getProduct();
+
+                $month = $item->getMonth();
+                $first_month = $month->getNumber();
+                $last_month = $first_month + $item->getDuration();
+
+                $short_descr = $product->getName() .
+                    ' ' .
+                    $first_month .
+                    '-' .
+                    $last_month .
+                    "'" .
+                    $month->getYear();
+
+                $goods[] = $short_descr;
+            }
+
+            /** @var Patritem $patritem */
+            foreach ($patritems as $patritem) {
+                $issue = $patritem->getPatriff()->getIssue();
+
+                $patria = 'Родина №' .
+                    $issue->getMonth() .
+                    "'" .
+                    $issue->getYear();
+
+                $goods[] = $patria;
+            }
+
+            $names_list = join(', ', $goods);
+
+            return $this->render('@RgApi/order/receipt.html.twig', [
+                'vendor' => $vendor,
+                'order' => $order,
+                'price' => $price,
+                'due_date' => $due_date,
+                'goods' => $names_list,
+            ]);
         } else {
             $resp = [
                 'error' => 'bad bad bad',
@@ -150,7 +208,10 @@ class OrderController extends Controller
 
                 $tariff = $doctrine
                     ->getRepository('RgApiBundle:Tariff')
-                    ->findOneBy(['id' => $cart_item->getTariff()]);
+                    ->findOneBy(
+                        [
+                            'id' => $cart_item->getTariff()
+                        ]);
                 $item->setTariff($tariff);
 
                 $calculator = $this->get('rg_api.product_cost_calculator');
