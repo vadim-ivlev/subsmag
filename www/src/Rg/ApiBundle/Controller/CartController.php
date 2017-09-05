@@ -184,6 +184,7 @@ class CartController extends Controller implements SessionHasCartController
                     ->calculateItemCost($tariff, $duration);
 
                 return [
+                    'name' => $product->getName(),
                     'image' => $images,
                     'is_kit' => $product->getIsKit(),
                     'first_month' => $cart_item->getFirstMonth(),
