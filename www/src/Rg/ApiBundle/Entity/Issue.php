@@ -253,4 +253,33 @@ class Issue
     {
         return $this->patriffs;
     }
+    /**
+     * @var string
+     */
+    private $image_base64;
+
+
+    /**
+     * Set imageBase64
+     *
+     * @param string $imageBase64
+     *
+     * @return Issue
+     */
+    public function setImageBase64($imageBase64)
+    {
+        $this->image_base64 = $imageBase64;
+
+        return $this;
+    }
+
+    /**
+     * Get imageBase64
+     *
+     * @return string
+     */
+    public function getImageBase64()
+    {
+        return $this->image_base64;
+    }
 }

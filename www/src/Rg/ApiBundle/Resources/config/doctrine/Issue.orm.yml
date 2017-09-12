@@ -25,6 +25,9 @@ Rg\ApiBundle\Entity\Issue:
         image:
             type: string
             column: image
+        image_base64:
+            type: text
+            column: "image_base64"
     oneToMany:
         summaries:
             targetEntity: Summary
