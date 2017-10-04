@@ -27,7 +27,7 @@ rg_api_get_receipt_by_order:
     defaults: { _controller: RgApiBundle:Order:getReceiptByOrderId }
     methods:  [GET, HEAD]
     requirements:
-        order_id: \d+
+        order_id: \w+
 
 ### Platron
 # pg_check_url

@@ -19,6 +19,9 @@ use Symfony\Component\Validator\Constraints\DateTime;
 class OrderController extends Controller
 {
     const MONTH = 2048; //100000'000000
+    const CIPHER = 'AES-128-CBC';
+    const IV = 'ABC^DEF_GHI+JKL-';
+    const PASS = 'try_to_decrypt_it';
 
     public function createAction(Request $request, SessionInterface $session)
     {
@@ -267,23 +270,27 @@ class OrderController extends Controller
 
         $names_list = join(', ', $goods);
 
+        $permalink_id = $this->encryptOrderId($order->getId());
+
         $rendered_response = $this->render('@RgApi/order/receipt.html.twig', [
             'vendor' => $vendor,
             'order' => $order,
             'price' => $price,
             'due_date' => $due_date,
             'goods' => $names_list,
+            'permalink_id' => $permalink_id,
         ]);
 
         return $rendered_response;
     }
 
-    public function getReceiptByOrderIdAction(int $order_id)
+    public function getReceiptByOrderIdAction($order_id)
     {
+        $id = $this->decryptOrderId($order_id);
         $doctrine = $this->getDoctrine();
 
         $order = $doctrine->getRepository('RgApiBundle:Order')
-            ->findOneBy(['id' => $order_id]);
+            ->findOneBy(['id' => $id]);
 
         if (is_null($order)) {
             return new Response('There is no such an order.');
@@ -293,5 +300,15 @@ class OrderController extends Controller
         $patritems = $order->getPatritems();
 
         return $this->createReceipt($order, $items, $patritems);
+    }
+
+    private function encryptOrderId(int $id)
+    {
+        return base64_encode(openssl_encrypt($id, self::CIPHER, self::PASS, 0, self::IV));
+    }
+
+    private function decryptOrderId(string $key)
+    {
+        return openssl_decrypt(base64_decode($key), self::CIPHER, self::PASS, 0, self::IV);
     }
 }
