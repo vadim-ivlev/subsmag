@@ -207,6 +207,9 @@ class CartController extends Controller implements SessionHasCartController
                 $patriff = $doctrine
                     ->getRepository('RgApiBundle:Patriff')
                     ->findOneBy(['id' => $cart_patritem->getPatriff()]);
+                if (is_null($patriff)) {
+                    throw new \Exception('there is no such a tariff for Rodina');
+                }
 
                 /** @var Issue $issue */
                 $issue = $patriff->getIssue();
