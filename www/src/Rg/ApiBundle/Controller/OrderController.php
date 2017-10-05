@@ -15,14 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class OrderController extends Controller
 {
     const MONTH = 2048; //100000'000000
-    const CIPHER = 'AES-128-CBC';
-    const IV = 'ABC^DEF_GHI+JKL-';
-    const PASS = 'try_to_decrypt_it';
 
     public function createAction(Request $request, SessionInterface $session)
     {
@@ -124,7 +120,7 @@ class OrderController extends Controller
 
     public function getReceiptByOrderIdAction($enc_id)
     {
-        $id = $this->decryptOrderId($enc_id);
+        $id = $this->get('rg_api.encryptor')->decryptOrderId($enc_id);
         $doctrine = $this->getDoctrine();
 
         $order = $doctrine->getRepository('RgApiBundle:Order')
@@ -293,7 +289,7 @@ class OrderController extends Controller
 
         $names_list = join(', ', $goods);
 
-        $permalink_id = $this->encryptOrderId($order->getId());
+        $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
 
         ## записать в очередь почтовое уведомление
         $em = $doctrine->getManager();
@@ -310,16 +306,6 @@ class OrderController extends Controller
         ]);
 
         return $rendered_response;
-    }
-
-    private function encryptOrderId(int $id)
-    {
-        return base64_encode(openssl_encrypt($id, self::CIPHER, self::PASS, 0, self::IV));
-    }
-
-    private function decryptOrderId(string $key)
-    {
-        return openssl_decrypt(base64_decode($key), self::CIPHER, self::PASS, 0, self::IV);
     }
 
     private function createNotification(Order $order)

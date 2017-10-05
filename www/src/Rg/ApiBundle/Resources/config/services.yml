@@ -20,5 +20,7 @@ services:
         class: Rg\ApiBundle\Service\ProductCostCalculator
     rg_api.platron:
         class: Rg\ApiBundle\Service\Platron
+    rg_api.encryptor:
+        class: Rg\ApiBundle\Service\Encryptor
     rg_api.cart_controller:
         class: Rg\ApiBundle\Controller\CartController
