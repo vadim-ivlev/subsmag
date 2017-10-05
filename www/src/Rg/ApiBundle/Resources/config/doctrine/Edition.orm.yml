@@ -23,6 +23,9 @@ Rg\ApiBundle\Entity\Edition:
         text:
             type: text
             column: "`text`"
+        texta:
+            type: text
+            column: texta
         frequency:
             type: smallint
             column: frequency

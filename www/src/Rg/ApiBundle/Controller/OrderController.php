@@ -284,9 +284,9 @@ class OrderController extends Controller
         return $rendered_response;
     }
 
-    public function getReceiptByOrderIdAction($order_id)
+    public function getReceiptByOrderIdAction($enc_id)
     {
-        $id = $this->decryptOrderId($order_id);
+        $id = $this->decryptOrderId($enc_id);
         $doctrine = $this->getDoctrine();
 
         $order = $doctrine->getRepository('RgApiBundle:Order')

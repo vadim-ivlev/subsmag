@@ -242,4 +242,33 @@ class Edition
     {
         return $this->products;
     }
+    /**
+     * @var string
+     */
+    private $texta;
+
+
+    /**
+     * Set texta
+     *
+     * @param string $texta
+     *
+     * @return Edition
+     */
+    public function setTexta($texta)
+    {
+        $this->texta = $texta;
+
+        return $this;
+    }
+
+    /**
+     * Get texta
+     *
+     * @return string
+     */
+    public function getTexta()
+    {
+        return $this->texta;
+    }
 }
