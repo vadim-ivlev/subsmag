@@ -3,12 +3,15 @@
 namespace Rg\ApiBundle\Command;
 
 use Doctrine\ORM\QueryBuilder;
+use Rg\ApiBundle\Entity\Notification;
+use Rg\ApiBundle\Entity\Order;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class XMLMaterialParserCommand
@@ -16,6 +19,13 @@ use Symfony\Component\DependencyInjection\Container;
  */
 class MailSenderCommand extends ContainerAwareCommand
 {
+    const HOST = 'subsmag.rg.ru';
+    const SCHEME = 'https';
+
+    // для локальной разработки, можно удалить
+//    const HOST = 'subsmag.loc';
+//    const SCHEME = 'http';
+
     /**
      * @return null
      */
@@ -42,10 +52,82 @@ class MailSenderCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $format = "Y-m-d H:i:s";
+        $this->printHeader($output);
 
         /** @var Container $container */
         $container = $this->getContainer();
+        $doctrine = $container->get('doctrine');
+        $em = $doctrine->getManager();
+
+        $notifications = $doctrine->getRepository('RgApiBundle:Notification')
+            ->findBy(
+                [
+                    'type' => 'order_created',
+                    'state' => 'queued',
+                ]
+            );
+
+        array_walk(
+            $notifications,
+            function (Notification $notification) use ($em, $output)
+            {
+                $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+
+                // отправить письмо
+                $mailer = new \Swift_Mailer($transport);
+
+                // Create a message
+                $order = $notification->getOrder();
+
+                $subject = 'Заказ №'. $order->getId() . ' создан';
+                $from = ['subsmag@rg.ru' => 'Отдел подписки Российской газеты'];
+                $to = [$order->getEmail() => $order->getName()];
+
+                $body = [];
+                $body[] = 'Уважаемая (уважаемый) ' . $order->getName() . '!';
+                $body[] = '';
+                $body[] = 'Ваш заказ №' . $order->getId() . ' создан.';
+                $payment_type = $order->getPayment()->getName();
+
+                if ($payment_type == 'platron') {
+                    $body[] = 'Вы выбрали для оплаты сервис Платрон. Пожалуйста, следуйте инструкциям на сайте Platron.';
+                }
+                if ($payment_type == 'receipt') {
+                    $body[] = 'Вы выбрали оплату по банковской квитанции.';
+                    $body[] = 'Образец квитанции вы можете получить по ссылке ';
+                    $body[] = $this->generateUrl($order);
+                }
+                $body_text = join("\n", $body);
+
+                $message = (new \Swift_Message($subject))
+                    ->setFrom($from)
+                    ->setTo($to)
+                    ->setBody($body_text)
+                  ;
+
+                $output->writeln($message->getBody());
+
+                // send an email
+                $result = $mailer->send($message);
+
+                // output result to console
+                $output->writeln("Sent $result messages to " . join($to));
+
+                // записать результат отправки в БД
+
+//                $em->persist($notification);
+//                $em->flush();
+            }
+        );
+
+        $output->writeln("Done!");
+
+        return;
+    }
+
+    private function printHeader(OutputInterface $output)
+    {
+        $format = "Y-m-d H:i:s";
 
         $output->writeln("");
         $output->writeln("**************************************");
@@ -53,49 +135,25 @@ class MailSenderCommand extends ContainerAwareCommand
         $output->writeln("**       " . date($format) . "      **");
         $output->writeln("**************************************");
         $output->writeln("");
+    }
 
-        $doctrine = $container->get('doctrine');
-        $em = $doctrine->getManager();
+    private function generateUrl(Order $order)
+    {
+        $container = $this->getContainer();
 
-        /** @var QueryBuilder $qb */
-        $qb = $em->createQueryBuilder();
-        $qb->select('u')->from('AccountBundle:User', 'u')
-            ->where(
-                $qb->expr()->orX(
-                    $qb->expr()->like('u.email', ':e')
-//                    ,$qb->expr()->like('u.email', ':c')
-                )
-            )
-            ->setParameter('e', '%100500%')
-        ;
-        $u = $qb->getQuery()->getResult();
+        $context = $container->get('router')->getContext();
+        $context->setHost(self::HOST);
+        $context->setScheme(self::SCHEME);
 
-        //
-        $summaries = $doctrine
-            ->getRepository('RgApiBundle:Summary')
-            ->findAll()
-        ;
+        $generator = $this->getContainer()->get('router')->getGenerator();
+        $generator->setContext($context);
 
-        // внести и записать изменения
-        $em = $doctrine->getManager();
-        array_walk(
-            $summaries,
-            function (Summary $summary) use ($em)
-            {
-                $summary->setTitle($this->getRandomPhrase());
-                $summary->setText($this->getRandomPhrase() . $this->getRandomPhrase() . $this->getRandomPhrase());
-                $summary->setPage(mt_rand(1,205));
-
-                $em->persist($summary);
-
-                $em->flush();
-
-                return $summary;
-            }
+        $url = $generator->generate(
+            'rg_api_get_receipt_by_order',
+            ['enc_id' => $container->get('rg_api.encryptor')->encryptOrderId($order->getId())],
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
 
-
-        $output->writeln("Done!");
-
+        return $url;
     }
 }
