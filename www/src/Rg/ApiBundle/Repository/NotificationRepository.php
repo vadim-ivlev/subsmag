@@ -10,4 +10,25 @@ namespace Rg\ApiBundle\Repository;
  */
 class NotificationRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getQueueOfCreated()
+    {
+        $qb = $this->createQueryBuilder('n');
+        $result = $qb
+            ->select('n')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('n.type', ':type'),
+                    $qb->expr()->eq('n.state', ":state")
+                )
+            )
+            ->getQuery()
+            ->setParameter('type', 'order_created')
+            ->setParameter('state', 'queued')
+//            ->getDQL(); echo $result;die; # for test purpose
+            ->getResult()
+//            ->getArrayResult()
+        ;
+
+        return $result;
+    }
 }

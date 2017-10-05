@@ -59,13 +59,10 @@ class MailSenderCommand extends ContainerAwareCommand
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
 
-        $notifications = $doctrine->getRepository('RgApiBundle:Notification')
-            ->findBy(
-                [
-                    'type' => 'order_created',
-                    'state' => 'queued',
-                ]
-            );
+        $notifications = $doctrine
+            ->getRepository('RgApiBundle:Notification')
+            ->getQueueOfCreated()
+        ;
 
         $swift_sender = function (Notification $notification) use ($em, $output) {
             $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
