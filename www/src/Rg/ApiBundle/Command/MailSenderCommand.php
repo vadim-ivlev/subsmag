@@ -67,57 +67,111 @@ class MailSenderCommand extends ContainerAwareCommand
                 ]
             );
 
+        $swift_sender = function (Notification $notification) use ($em, $output) {
+            $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+            $mailer = new \Swift_Mailer($transport);
+
+            // Create a message
+            $order = $notification->getOrder();
+
+            $subject = 'Заказ №'. $order->getId() . ' создан';
+
+            $from = ['subsmag@rg.ru' => 'Отдел подписки Российской газеты'];
+            $to = [$order->getEmail() => $order->getName()];
+//            $from = 'subsmag@rg.ru';
+//            $to = $order->getEmail();
+
+            $body = [];
+            $body[] = 'Уважаемая (уважаемый) ' . $order->getName() . '!';
+            $body[] = '';
+            $body[] = 'Ваш заказ №' . $order->getId() . ' создан.';
+            $payment_type = $order->getPayment()->getName();
+
+            if ($payment_type == 'platron') {
+                $body[] = 'Вы выбрали для оплаты сервис Платрон. Пожалуйста, следуйте инструкциям на сайте Platron.';
+            }
+            if ($payment_type == 'receipt') {
+                $body[] = 'Вы выбрали оплату по банковской квитанции.';
+                $body[] = 'Образец квитанции вы можете получить по ссылке ';
+                $body[] = $this->generateUrl($order);
+            }
+            $body_text = join("\r\n", $body);
+
+            $message = (new \Swift_Message($subject))
+                ->setFrom($from)
+                ->setTo($to)
+                ->setBody($body_text)
+              ;
+
+            $output->writeln($message->getBody());
+
+            // send an email
+            $result = $mailer->send($message);
+
+            // output result to console
+            $output->writeln("Sent $result messages to " . $order->getEmail());
+
+            // записать результат отправки
+            if ($result) {
+                $notification->setState('sent');
+            } else {
+                $notification->setState('error');
+                $notification->setError('Email sending failed.');
+            }
+
+            $em->persist($notification);
+            $em->flush();
+        };
+
+/*
+        $php_mail_sender = function (Notification $notification) use ($em, $output) {
+            // Create a message
+            $order = $notification->getOrder();
+
+            $subject = 'Заказ №'. $order->getId() . ' создан';
+            $from = 'subsmag@rg.ru';
+            $to = $order->getEmail();
+
+            $body = [];
+            $body[] = 'Уважаемая (уважаемый) ' . $order->getName() . '!';
+            $body[] = '';
+            $body[] = 'Ваш заказ №' . $order->getId() . ' создан.';
+            $payment_type = $order->getPayment()->getName();
+
+            if ($payment_type == 'platron') {
+                $body[] = 'Вы выбрали для оплаты сервис Платрон. Пожалуйста, следуйте инструкциям на сайте Platron.';
+            }
+            if ($payment_type == 'receipt') {
+                $body[] = 'Вы выбрали оплату по банковской квитанции.';
+                $body[] = 'Образец квитанции вы можете получить по ссылке ';
+                $body[] = $this->generateUrl($order);
+            }
+            $body_text = join("\r\n", $body);
+
+            $headers = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $from . "\r\n";
+
+            // send an email
+            $result = mail($to, $subject, $body_text, $headers);
+
+            // output result to console
+            $output->writeln("Sent $result messages to " . $order->getEmail());
+
+            // записать результат отправки
+            if ($result) {
+                $notification->setState('sent');
+            } else {
+                $notification->setState('error');
+                $notification->setError('Email sending failed.');
+            }
+
+            $em->persist($notification);
+            $em->flush();
+        };
+*/
+
         array_walk(
             $notifications,
-            function (Notification $notification) use ($em, $output)
-            {
-                $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
-
-                // отправить письмо
-                $mailer = new \Swift_Mailer($transport);
-
-                // Create a message
-                $order = $notification->getOrder();
-
-                $subject = 'Заказ №'. $order->getId() . ' создан';
-                $from = ['subsmag@rg.ru' => 'Отдел подписки Российской газеты'];
-                $to = [$order->getEmail() => $order->getName()];
-
-                $body = [];
-                $body[] = 'Уважаемая (уважаемый) ' . $order->getName() . '!';
-                $body[] = '';
-                $body[] = 'Ваш заказ №' . $order->getId() . ' создан.';
-                $payment_type = $order->getPayment()->getName();
-
-                if ($payment_type == 'platron') {
-                    $body[] = 'Вы выбрали для оплаты сервис Платрон. Пожалуйста, следуйте инструкциям на сайте Platron.';
-                }
-                if ($payment_type == 'receipt') {
-                    $body[] = 'Вы выбрали оплату по банковской квитанции.';
-                    $body[] = 'Образец квитанции вы можете получить по ссылке ';
-                    $body[] = $this->generateUrl($order);
-                }
-                $body_text = join("\n", $body);
-
-                $message = (new \Swift_Message($subject))
-                    ->setFrom($from)
-                    ->setTo($to)
-                    ->setBody($body_text)
-                  ;
-
-                $output->writeln($message->getBody());
-
-                // send an email
-                $result = $mailer->send($message);
-
-                // output result to console
-                $output->writeln("Sent $result messages to " . join($to));
-
-                // записать результат отправки в БД
-
-//                $em->persist($notification);
-//                $em->flush();
-            }
+            $swift_sender
         );
 
         $output->writeln("Done!");
