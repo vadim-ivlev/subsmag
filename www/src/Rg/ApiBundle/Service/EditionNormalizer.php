@@ -19,6 +19,8 @@ class EditionNormalizer
             'name' => $edition->getName(),
             'keyword' => $edition->getKeyword(),
             'description' => $edition->getDescription(),
+            'text' => $edition->getText(),
+            'texta' => $edition->getTexta(),
             'frequency' => $edition->getFrequency(),
             'image' => $edition->getImage(),
         ];
