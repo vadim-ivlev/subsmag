@@ -398,4 +398,43 @@ class Order
     {
         return $this->pg_payment_id;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $notifications;
+
+
+    /**
+     * Add notification
+     *
+     * @param \Rg\ApiBundle\Entity\Notification $notification
+     *
+     * @return Order
+     */
+    public function addNotification(\Rg\ApiBundle\Entity\Notification $notification)
+    {
+        $this->notifications[] = $notification;
+
+        return $this;
+    }
+
+    /**
+     * Remove notification
+     *
+     * @param \Rg\ApiBundle\Entity\Notification $notification
+     */
+    public function removeNotification(\Rg\ApiBundle\Entity\Notification $notification)
+    {
+        $this->notifications->removeElement($notification);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
 }

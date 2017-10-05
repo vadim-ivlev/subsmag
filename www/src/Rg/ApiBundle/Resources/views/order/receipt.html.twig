@@ -264,7 +264,7 @@
   <li>Идентификация платежа производится по квитанции, поступившей в наш банк.</li>
 </ul>
 </div>
-{% set permalink = url('rg_api_get_receipt_by_order', {'order_id': permalink_id}) %}
+{% set permalink = url('rg_api_get_receipt_by_order', {'enc_id': permalink_id}) %}
 
 <a href="{{ permalink }}">Ссылка на квитанцию: {{ permalink }}</a>
 </body></html>

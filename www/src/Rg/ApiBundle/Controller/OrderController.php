@@ -6,6 +6,7 @@ use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
 use Rg\ApiBundle\Entity\Item;
+use Rg\ApiBundle\Entity\Notification;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Entity\Patritem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -94,6 +95,10 @@ class OrderController extends Controller
             ## сохранить id транзакции Платрона
             $order->setPgPaymentId($pg_payment_id);
             $em->persist($order);
+
+            ## подготовить запись для почтового уведомления
+            $em->persist($this->createNotification($order));
+
             $em->flush();
 
                 # отправить пользователя на платрон (на фронте)
@@ -115,6 +120,24 @@ class OrderController extends Controller
 
         return (new Out())->json($resp);
 
+    }
+
+    public function getReceiptByOrderIdAction($enc_id)
+    {
+        $id = $this->decryptOrderId($enc_id);
+        $doctrine = $this->getDoctrine();
+
+        $order = $doctrine->getRepository('RgApiBundle:Order')
+            ->findOneBy(['id' => $id]);
+
+        if (is_null($order)) {
+            return new Response('There is no such an order.');
+        }
+
+        $items = $order->getItems();
+        $patritems = $order->getPatritems();
+
+        return $this->createReceipt($order, $items, $patritems);
     }
 
     private function countTotal(array $items, array $patritems)
@@ -272,6 +295,11 @@ class OrderController extends Controller
 
         $permalink_id = $this->encryptOrderId($order->getId());
 
+        ## записать в очередь почтовое уведомление
+        $em = $doctrine->getManager();
+        $em->persist($this->createNotification($order));
+        $em->flush();
+
         $rendered_response = $this->render('@RgApi/order/receipt.html.twig', [
             'vendor' => $vendor,
             'order' => $order,
@@ -284,24 +312,6 @@ class OrderController extends Controller
         return $rendered_response;
     }
 
-    public function getReceiptByOrderIdAction($enc_id)
-    {
-        $id = $this->decryptOrderId($enc_id);
-        $doctrine = $this->getDoctrine();
-
-        $order = $doctrine->getRepository('RgApiBundle:Order')
-            ->findOneBy(['id' => $id]);
-
-        if (is_null($order)) {
-            return new Response('There is no such an order.');
-        }
-
-        $items = $order->getItems();
-        $patritems = $order->getPatritems();
-
-        return $this->createReceipt($order, $items, $patritems);
-    }
-
     private function encryptOrderId(int $id)
     {
         return base64_encode(openssl_encrypt($id, self::CIPHER, self::PASS, 0, self::IV));
@@ -310,5 +320,17 @@ class OrderController extends Controller
     private function decryptOrderId(string $key)
     {
         return openssl_decrypt(base64_decode($key), self::CIPHER, self::PASS, 0, self::IV);
+    }
+
+    private function createNotification(Order $order)
+    {
+        $notification = new Notification();
+        $notification->setType('order_created');
+        $notification->setState('queued');
+        $notification->setDate(new \DateTime());
+        $notification->setOrder($order);
+        $notification->setError('');
+
+        return $notification;
     }
 }

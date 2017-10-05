@@ -48,4 +48,7 @@ Rg\ApiBundle\Entity\Order:
         patritems:
             targetEntity: Patritem
             mappedBy: order
+        notifications:
+            targetEntity: Notification
+            mappedBy: order
     lifecycleCallbacks: {  }

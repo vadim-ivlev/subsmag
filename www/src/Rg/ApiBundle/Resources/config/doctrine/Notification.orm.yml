@@ -1,0 +1,28 @@
+Rg\ApiBundle\Entity\Notification:
+    type: entity
+    table: "notification"
+    repositoryClass: Rg\ApiBundle\Repository\NotificationRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        type: # order_created, order_paid
+            type: string
+            column: type
+        state: # queued -- в очереди на отправку, sent -- отправлено, failed -- ошибка отправки
+            type: string
+            column: state
+        date:
+            type: datetime
+            column: date
+        error:
+            type: string
+            column: error
+    manyToOne:
+        order:
+            targetEntity: Order
+            inversedBy: notifications
+    lifecycleCallbacks: {  }
