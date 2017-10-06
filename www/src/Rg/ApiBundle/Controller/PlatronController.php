@@ -127,9 +127,12 @@ class PlatronController extends Controller
         ## Успешный платёж.
         # изменить статус заказа на "оплачено"
         $order->setIsPaid(true);
+        # добавить в очередь отправку счастливого письма
+        $notification = $this->get('rg_api.notification_queue')->onOrderPaid($order);
 
         $em = $doctrine->getManager();
         $em->persist($order);
+        $em->persist($notification);
         $em->flush();
 
         // send ok to Platron

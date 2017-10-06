@@ -2,7 +2,6 @@
 
 namespace Rg\ApiBundle\Command;
 
-use Doctrine\ORM\QueryBuilder;
 use Rg\ApiBundle\Entity\Notification;
 use Rg\ApiBundle\Entity\Order;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -54,6 +53,16 @@ class MailSenderCommand extends ContainerAwareCommand
     {
         $this->printHeader($output);
 
+        $this->sendCreated($output);
+        $this->sendPaid($output);
+
+        $output->writeln("Done!");
+
+        return;
+    }
+
+    private function sendCreated(OutputInterface $output)
+    {
         /** @var Container $container */
         $container = $this->getContainer();
         $doctrine = $container->get('doctrine');
@@ -75,8 +84,6 @@ class MailSenderCommand extends ContainerAwareCommand
 
             $from = ['subsmag@rg.ru' => 'Отдел подписки Российской газеты'];
             $to = [$order->getEmail() => $order->getName()];
-//            $from = 'subsmag@rg.ru';
-//            $to = $order->getEmail();
 
             $body = [];
             $body[] = 'Уважаемая (уважаемый) ' . $order->getName() . '!';
@@ -98,7 +105,7 @@ class MailSenderCommand extends ContainerAwareCommand
                 ->setFrom($from)
                 ->setTo($to)
                 ->setBody($body_text)
-              ;
+            ;
 
             $output->writeln($message->getBody());
 
@@ -120,35 +127,53 @@ class MailSenderCommand extends ContainerAwareCommand
             $em->flush();
         };
 
-/*
-        $php_mail_sender = function (Notification $notification) use ($em, $output) {
+        array_walk(
+            $notifications,
+            $swift_sender
+        );
+    }
+
+    private function sendPaid(OutputInterface $output)
+    {
+        /** @var Container $container */
+        $container = $this->getContainer();
+        $doctrine = $container->get('doctrine');
+        $em = $doctrine->getManager();
+
+        $notifications = $doctrine
+            ->getRepository('RgApiBundle:Notification')
+            ->getQueueOfPaid()
+        ;
+
+        $swift_sender = function (Notification $notification) use ($em, $output) {
+            $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
+            $mailer = new \Swift_Mailer($transport);
+
             // Create a message
             $order = $notification->getOrder();
 
             $subject = 'Заказ №'. $order->getId() . ' создан';
-            $from = 'subsmag@rg.ru';
-            $to = $order->getEmail();
+
+            $from = ['subsmag@rg.ru' => 'Отдел подписки Российской газеты'];
+            $to = [$order->getEmail() => $order->getName()];
 
             $body = [];
             $body[] = 'Уважаемая (уважаемый) ' . $order->getName() . '!';
             $body[] = '';
-            $body[] = 'Ваш заказ №' . $order->getId() . ' создан.';
-            $payment_type = $order->getPayment()->getName();
+            $body[] = 'Заказ №' . $order->getId() . ' оплачен.';
 
-            if ($payment_type == 'platron') {
-                $body[] = 'Вы выбрали для оплаты сервис Платрон. Пожалуйста, следуйте инструкциям на сайте Platron.';
-            }
-            if ($payment_type == 'receipt') {
-                $body[] = 'Вы выбрали оплату по банковской квитанции.';
-                $body[] = 'Образец квитанции вы можете получить по ссылке ';
-                $body[] = $this->generateUrl($order);
-            }
             $body_text = join("\r\n", $body);
 
-            $headers = 'From: ' . $from . "\r\n" . 'Reply-To: ' . $from . "\r\n";
+            $message = (new \Swift_Message($subject))
+                ->setFrom($from)
+                ->setTo($to)
+                ->setBody($body_text)
+            ;
+
+            $output->writeln($message->getBody());
 
             // send an email
-            $result = mail($to, $subject, $body_text, $headers);
+            $result = $mailer->send($message);
 
             // output result to console
             $output->writeln("Sent $result messages to " . $order->getEmail());
@@ -164,18 +189,12 @@ class MailSenderCommand extends ContainerAwareCommand
             $em->persist($notification);
             $em->flush();
         };
-*/
 
         array_walk(
             $notifications,
             $swift_sender
         );
-
-        $output->writeln("Done!");
-
-        return;
     }
-
     private function printHeader(OutputInterface $output)
     {
         $format = "Y-m-d H:i:s";

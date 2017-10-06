@@ -24,9 +24,27 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->setParameter('type', 'order_created')
             ->setParameter('state', 'queued')
-//            ->getDQL(); echo $result;die; # for test purpose
             ->getResult()
-//            ->getArrayResult()
+        ;
+
+        return $result;
+    }
+
+    public function getQueueOfPaid()
+    {
+        $qb = $this->createQueryBuilder('n');
+        $result = $qb
+            ->select('n')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('n.type', ':type'),
+                    $qb->expr()->eq('n.state', ":state")
+                )
+            )
+            ->getQuery()
+            ->setParameter('type', 'order_paid')
+            ->setParameter('state', 'queued')
+            ->getResult()
         ;
 
         return $result;
