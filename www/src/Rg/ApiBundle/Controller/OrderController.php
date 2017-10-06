@@ -93,7 +93,7 @@ class OrderController extends Controller
             $em->persist($order);
 
             ## подготовить запись для почтового уведомления
-            $em->persist($this->createNotification($order));
+            $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
 
             $em->flush();
 
@@ -293,7 +293,7 @@ class OrderController extends Controller
 
         ## записать в очередь почтовое уведомление
         $em = $doctrine->getManager();
-        $em->persist($this->createNotification($order));
+        $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
         $em->flush();
 
         $rendered_response = $this->render('@RgApi/order/receipt.html.twig', [
@@ -308,15 +308,4 @@ class OrderController extends Controller
         return $rendered_response;
     }
 
-    private function createNotification(Order $order)
-    {
-        $notification = new Notification();
-        $notification->setType('order_created');
-        $notification->setState('queued');
-        $notification->setDate(new \DateTime());
-        $notification->setOrder($order);
-        $notification->setError('');
-
-        return $notification;
-    }
 }
