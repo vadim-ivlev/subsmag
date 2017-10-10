@@ -25,7 +25,11 @@ class Platron
 
         $response_xml_str = $this->sendRequest($request);
 
-        $response_simple_xml = new \SimpleXMLElement($response_xml_str);
+        try {
+            $response_simple_xml = new \SimpleXMLElement($response_xml_str);
+        } catch (\Exception $e) {
+            return null;
+        }
 
         if (!$this->simpleValidateInit($response_simple_xml)) {
             throw new \Exception('Invalid response from Platron');
@@ -268,7 +272,7 @@ RESPONSE_REJECT;
     private function prepareRequest(Order $order)
     {
         $params = new \stdClass();
-        $params->pg_merchant_id = 8888;
+        $params->pg_merchant_id = self::MERCHANT_ID;
         $params->pg_order_id = $order->getId();
         $params->pg_amount = $order->getTotal();
         $params->pg_currency = 'RUB';

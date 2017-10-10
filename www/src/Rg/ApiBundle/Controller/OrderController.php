@@ -85,6 +85,13 @@ class OrderController extends Controller
                 # получить №транзакции и урл для редиректа
             /** @var \SimpleXMLElement $platron_response */
             $platron_response = $this->get('rg_api.platron')->init($order);
+            if ($platron_response === null) {
+                $error = [
+                    'error' => 'Platron: unparseable response',
+                    'description' => 'Order has been created, but an unparseable response received from Platron.',
+                ];
+                return (new Out())->json($error);
+            }
             $redirect_url = (string) $platron_response->pg_redirect_url;
             $pg_payment_id = (string) $platron_response->pg_payment_id;
 
