@@ -9,15 +9,22 @@ use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Sale;
 use Rg\ApiBundle\Entity\Tariff;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
 
 class ProductController extends Controller
 {
+    private $current_time;
 
     public function indexAction(Request $request)
     {
+        $this->current_time = new \DateTime();
+
+        //TODO: test!! Remove it.
+        ### test!!!
+//        $this->current_time = new \DateTime('2018-03-01');
+        ### test!!!
+
         $out = new Out();
 
         $em = $this->getDoctrine()->getManager();
@@ -168,6 +175,8 @@ class ProductController extends Controller
                                 /**
                                  * есть регионализированные продажи, есть общие.
                                  * если есть month-area для этого региона, взять его вместо общего.
+                                 * Сейчас логика полагает, что обязательно есть федеральные окна продаж,
+                                 * и могут быть или не быть региональные.
                                  */
                                 ############
                                 $partitioned = $sales->partition(
@@ -183,7 +192,7 @@ class ProductController extends Controller
 
                                 $area_checked = $region_specific_sales->filter(
                                     function (Sale $sale) use ($area) {
-                                        $area_criterion = $sale->getArea()->getFromFrontId() == $area->getFromFrontId();
+                                        $area_criterion = ($sale->getArea()->getFromFrontId() == $area->getFromFrontId());
 
                                         return $area_criterion;
                                     }
@@ -201,6 +210,8 @@ class ProductController extends Controller
                                         return $sale;
                                     }
                                 );
+//                                dump($filtered_by_area_sales);
+//                                die;
                                 ############
                                 ############
 
@@ -209,7 +220,11 @@ class ProductController extends Controller
                                         $start = $sale->getStart();
                                         $end = $sale->getEnd();
 
-                                        $criterion = ((new \DateTime()) > $start) and ((new \DateTime()) < $end);
+                                        ###
+                                        // TODO: test purpose!!! Remove.
+                                        $time = $this->current_time;
+                                        ###
+                                        $criterion = (($time > $start) && ($time < $end));
 
                                         return $criterion;
                                     }
@@ -242,6 +257,22 @@ class ProductController extends Controller
                                         $criterion = ($tariff->getMedium()->getId() == $medium['id']);
                                         $criterion = $criterion && ($tariff->getDelivery()->getId() == $delivery['id']);
                                         $criterion = $criterion && ($tariff->getZone()->getId() == $area->getZone()->getId());
+
+
+                                        // есть два типа тарифов -- месячные и {полугодовые-годовые}
+                                        // год тарифа д.б. не меньше текущего года.
+                                        // первый месяц тарифа, если не нулевой (это месячный), д.б. не меньше текущего месяца.
+                                        /** @var \DateTime $time */
+                                        $time = $this->current_time;
+                                        $current_month = (int) $time->format('m');
+                                        $current_year = (int) $time->format('Y');
+
+                                        $criterion = $criterion && ( (int)$tariff->getTimeunit()->getYear() >= $current_year );
+
+                                        $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
+                                        if ($tariff_first_month > 0) {
+                                            $criterion = $criterion && ($tariff_first_month >= $current_month );
+                                        }
 
                                         return $criterion;
                                     }
