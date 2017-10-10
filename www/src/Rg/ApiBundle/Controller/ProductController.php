@@ -3,6 +3,8 @@
 namespace Rg\ApiBundle\Controller;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Rg\ApiBundle\Entity\Area;
 use Rg\ApiBundle\Entity\Delivery;
 use Rg\ApiBundle\Entity\Edition;
 use Rg\ApiBundle\Entity\Product;
@@ -168,147 +170,7 @@ class ProductController extends Controller
                         if (empty($medium['deliveries'])) return $medium;
 
                         $medium['deliveries'] = array_map(
-                            function (array $delivery) use ($product, $area, $medium) {
-                                $sales = $product->getSales();
-
-                                ############
-                                /**
-                                 * есть регионализированные продажи, есть общие.
-                                 * если есть month-area для этого региона, взять его вместо общего.
-                                 * Сейчас логика полагает, что обязательно есть федеральные окна продаж,
-                                 * и могут быть или не быть региональные.
-                                 */
-                                ############
-                                $partitioned = $sales->partition(
-                                    function ($key, Sale $sale) {
-                                        return !($sale->getIsRegional());
-                                    }
-                                );
-
-                                /** @var ArrayCollection $for_all_regions_sales */
-                                $for_all_regions_sales = $partitioned[0];
-                                /** @var ArrayCollection $region_specific_sales */
-                                $region_specific_sales = $partitioned[1];
-
-                                $area_checked = $region_specific_sales->filter(
-                                    function (Sale $sale) use ($area) {
-                                        $area_criterion = ($sale->getArea()->getFromFrontId() == $area->getFromFrontId());
-
-                                        return $area_criterion;
-                                    }
-                                );
-
-                                $filtered_by_area_sales = $for_all_regions_sales->map(
-                                    function (Sale $sale) use ($area_checked) {
-
-                                        foreach ($area_checked->getIterator() as $replacer) {
-                                            if ($sale->getMonth()->getId() == $replacer->getMonth()->getId()) {
-                                                return $replacer;
-                                            }
-                                        }
-
-                                        return $sale;
-                                    }
-                                );
-//                                dump($filtered_by_area_sales);
-//                                die;
-                                ############
-                                ############
-
-                                $filtered_by_date_and_area_sales = $filtered_by_area_sales->filter(
-                                    function (Sale $sale) {
-                                        $start = $sale->getStart();
-                                        $end = $sale->getEnd();
-
-                                        ###
-                                        // TODO: test purpose!!! Remove.
-                                        $time = $this->current_time;
-                                        ###
-                                        $criterion = (($time > $start) && ($time < $end));
-
-                                        return $criterion;
-                                    }
-                                );
-
-                                // неоднозначно...
-                                $normalized_sales = $filtered_by_date_and_area_sales->map(
-                                    function (Sale $sale) {
-                                        $month = $sale->getMonth();
-
-                                        return [
-                                            'id' => $sale->getId(),
-                                            'number' => $month->getNumber(),
-                                            'year' => $month->getYear(),
-                                        ];
-                                    }
-                                );
-
-                                $delivery['sales'] = array_values($normalized_sales->toArray());
-
-                                #######
-                                /**
-                                 * timeunits and prices
-                                 */
-                                #######
-                                $tariffs = $product->getTariffs();
-
-                                $filtered_tariffs = $tariffs->filter(
-                                    function (Tariff $tariff) use ($product, $medium, $delivery, $area) {
-                                        $criterion = ($tariff->getMedium()->getId() == $medium['id']);
-                                        $criterion = $criterion && ($tariff->getDelivery()->getId() == $delivery['id']);
-                                        $criterion = $criterion && ($tariff->getZone()->getId() == $area->getZone()->getId());
-
-
-                                        // есть два типа тарифов -- месячные и {полугодовые-годовые}
-                                        // год тарифа д.б. не меньше текущего года.
-                                        // первый месяц тарифа, если не нулевой (это месячный), д.б. не меньше текущего месяца.
-                                        /** @var \DateTime $time */
-                                        $time = $this->current_time;
-                                        $current_month = (int) $time->format('m');
-                                        $current_year = (int) $time->format('Y');
-
-                                        $criterion = $criterion && ( (int)$tariff->getTimeunit()->getYear() >= $current_year );
-
-                                        $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
-                                        if ($tariff_first_month > 0) {
-                                            $criterion = $criterion && ($tariff_first_month >= $current_month );
-                                        }
-
-                                        return $criterion;
-                                    }
-                                );
-
-                                $timeunits_with_prices = $filtered_tariffs->map(
-                                    function (Tariff $tariff) {
-                                        $timeunit = $tariff->getTimeunit();
-                                        $price = $tariff->getPrice();
-                                        $id = $tariff->getId();
-
-                                        $fake_discount = $timeunit->getDuration() == 1 ? 0 : 5.5;
-
-                                        $norm = [
-                                            'timeunit' => [
-                                                'id' => $timeunit->getId(),
-                                                'name' => $timeunit->getName(),
-                                                'first_month' => $timeunit->getFirstMonth(),
-                                                'duration' => $timeunit->getDuration(),
-                                                'year' => $timeunit->getYear(),
-                                            ],
-                                            'id' => $id,
-                                            'price' => $price,
-
-                                            'discount' => $fake_discount,
-                                        ];
-                                        return $norm;
-                                    }
-                                );
-
-                                $delivery['tariffs'] = array_values($timeunits_with_prices->toArray());
-                                #######
-                                #######
-
-                                return $delivery;
-                            },
+                            $this->appendDeliveries($product, $area, $medium),
                             $medium['deliveries']
                         );
 
@@ -334,7 +196,7 @@ class ProductController extends Controller
 
                 $filtered_tariffs = $tariffs->filter(
                     function (Tariff $tariff) use ($area) {
-                        $criterion = $tariff->getZone()->getId() == $area->getZone()->getId();
+                        $criterion = ($tariff->getZone()->getId() == $area->getZone()->getId());
 
                         return $criterion;
                     }
@@ -426,4 +288,169 @@ class ProductController extends Controller
         return (new Out())->json( ['ask' => 'wait for a while, please.']);
     }
 
+    private function appendPrices(Collection $tariff_collection): Collection
+    {
+        return $tariff_collection->map(
+            function (Tariff $tariff) {
+                $timeunit = $tariff->getTimeunit();
+                $price = $tariff->getPrice();
+                $id = $tariff->getId();
+
+                $fake_discount = $timeunit->getDuration() == 1 ? 0 : 5.5;
+
+                $norm = [
+                    'timeunit' => [
+                        'id' => $timeunit->getId(),
+                        'name' => $timeunit->getName(),
+                        'first_month' => $timeunit->getFirstMonth(),
+                        'duration' => $timeunit->getDuration(),
+                        'year' => $timeunit->getYear(),
+                    ],
+                    'id' => $id,
+                    'price' => $price,
+
+                    'discount' => $fake_discount,
+                ];
+                return $norm;
+            }
+        );
+    }
+
+    private function filterTariffs(Collection $tariffs, $product, $medium, $delivery, Area $area)
+    {
+        return $tariffs->filter(
+            function (Tariff $tariff) use ($product, $medium, $delivery, $area) {
+                $criterion = ($tariff->getMedium()->getId() == $medium['id']);
+                $criterion = $criterion && ($tariff->getDelivery()->getId() == $delivery['id']);
+                $criterion = $criterion && ($tariff->getZone()->getId() == $area->getZone()->getId());
+
+
+                // есть два типа тарифов -- месячные и {полугодовые-годовые}
+                // год тарифа д.б. не меньше текущего года.
+                // первый месяц тарифа, если не нулевой (это месячный), д.б. не меньше текущего месяца.
+                /** @var \DateTime $time */
+                $time = $this->current_time;
+                $current_month = (int) $time->format('m');
+                $current_year = (int) $time->format('Y');
+
+                $criterion = $criterion && ( (int)$tariff->getTimeunit()->getYear() >= $current_year );
+
+                $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
+                if ($tariff_first_month > 0) {
+                    $criterion = $criterion && ($tariff_first_month >= $current_month );
+                }
+
+                return $criterion;
+            }
+        );
+    }
+
+    private function fetchFilteredSales(Product $product, Area $area)
+    {
+        $sales = $product->getSales();
+
+        ############
+        /**
+         * есть регионализированные продажи, есть общие.
+         * если есть month-area для этого региона, взять его вместо общего.
+         * Сейчас логика полагает, что обязательно есть федеральные окна продаж,
+         * и для каждого федерального могут быть или не быть региональные.
+         */
+        ############
+        $partitioned = $sales->partition(
+            function ($key, Sale $sale) {
+                return !($sale->getIsRegional());
+            }
+        );
+
+        /** @var ArrayCollection $for_all_regions_sales */
+        $for_all_regions_sales = $partitioned[0];
+        /** @var ArrayCollection $region_specific_sales */
+        $region_specific_sales = $partitioned[1];
+
+        $area_checked = $region_specific_sales->filter(
+            function (Sale $sale) use ($area) {
+                $area_criterion = ($sale->getArea()->getFromFrontId() == $area->getFromFrontId());
+
+                return $area_criterion;
+            }
+        );
+
+        $filtered_by_area_sales = $for_all_regions_sales->map(
+            function (Sale $sale) use ($area_checked) {
+
+                foreach ($area_checked->getIterator() as $replacer) {
+                    if ($sale->getMonth()->getId() == $replacer->getMonth()->getId()) {
+                        return $replacer;
+                    }
+                }
+
+                return $sale;
+            }
+        );
+//                                dump($filtered_by_area_sales);
+//                                die;
+        ############
+        ############
+
+        $filtered_by_date_and_area_sales = $filtered_by_area_sales->filter(
+            function (Sale $sale) {
+                $start = $sale->getStart();
+                $end = $sale->getEnd();
+
+                ###
+                // TODO: test purpose!!! Remove.
+                $time = $this->current_time;
+                ###
+                $criterion = (($time > $start) && ($time < $end));
+
+                return $criterion;
+            }
+        );
+
+        // неоднозначно...
+        $normalized_sales = $filtered_by_date_and_area_sales->map(
+            function (Sale $sale) {
+                $month = $sale->getMonth();
+
+                return [
+                    'id' => $sale->getId(),
+                    'number' => $month->getNumber(),
+                    'year' => $month->getYear(),
+                ];
+            }
+        );
+
+        return array_values($normalized_sales->toArray());
+    }
+
+    private function appendDeliveries(Product $product, $area, $medium)
+    {
+        return function (array $delivery) use ($product, $area, $medium) {
+            $delivery['sales'] = $this->fetchFilteredSales($product, $area);
+
+            #######
+            /**
+             * timeunits and prices
+             */
+            #######
+            $tariffs = $product->getTariffs();
+
+            $filtered_tariffs = $this->filterTariffs(
+                $tariffs,
+                $product,
+                $medium,
+                $delivery,
+                $area
+            );
+
+            $timeunits_with_prices = $this->appendPrices($filtered_tariffs);
+
+            $delivery['tariffs'] = array_values($timeunits_with_prices->toArray());
+            #######
+            #######
+
+            return $delivery;
+        };
+    }
 }
