@@ -75,10 +75,10 @@ Rg\ApiBundle\Entity\Legal:
     manyToOne:
         city:
             targetEntity: City
-            inversedBy: legals
+            inversedBy: legal_addresses
         delivery_city:
             targetEntity: City
-            inversedBy: legals
+            inversedBy: legal_deliveries
     oneToMany:
         orders:
             targetEntity: Order

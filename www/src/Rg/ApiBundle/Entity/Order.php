@@ -437,4 +437,33 @@ class Order
     {
         return $this->notifications;
     }
+    /**
+     * @var \Rg\ApiBundle\Entity\Legal
+     */
+    private $legal;
+
+
+    /**
+     * Set legal
+     *
+     * @param \Rg\ApiBundle\Entity\Legal $legal
+     *
+     * @return Order
+     */
+    public function setLegal(\Rg\ApiBundle\Entity\Legal $legal = null)
+    {
+        $this->legal = $legal;
+
+        return $this;
+    }
+
+    /**
+     * Get legal
+     *
+     * @return \Rg\ApiBundle\Entity\Legal
+     */
+    public function getLegal()
+    {
+        return $this->legal;
+    }
 }

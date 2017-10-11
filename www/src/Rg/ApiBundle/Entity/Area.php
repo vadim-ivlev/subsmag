@@ -213,4 +213,43 @@ class Area
     {
         return $this->link;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $cities;
+
+
+    /**
+     * Add city
+     *
+     * @param \Rg\ApiBundle\Entity\City $city
+     *
+     * @return Area
+     */
+    public function addCity(\Rg\ApiBundle\Entity\City $city)
+    {
+        $this->cities[] = $city;
+
+        return $this;
+    }
+
+    /**
+     * Remove city
+     *
+     * @param \Rg\ApiBundle\Entity\City $city
+     */
+    public function removeCity(\Rg\ApiBundle\Entity\City $city)
+    {
+        $this->cities->removeElement($city);
+    }
+
+    /**
+     * Get cities
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCities()
+    {
+        return $this->cities;
+    }
 }

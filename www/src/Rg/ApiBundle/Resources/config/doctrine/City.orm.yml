@@ -18,10 +18,10 @@ Rg\ApiBundle\Entity\City:
             targetEntity: Area
             inversedBy: cities
     oneToMany:
-        legals:
+        legal_addresses:
             targetEntity: Legal
             mappedBy: city
-        legals:
+        legal_deliveries:
             targetEntity: Legal
             mappedBy: delivery_city
     lifecycleCallbacks: {  }
