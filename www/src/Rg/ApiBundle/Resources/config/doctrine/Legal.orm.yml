@@ -1,0 +1,86 @@
+Rg\ApiBundle\Entity\Legal:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\LegalRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: text
+            column: name
+        inn:
+            type: string
+            column: inn
+        kpp:
+            type: string
+            column: kpp
+        bank_name:
+            type: string
+            column: bank_name
+        bank_account:
+            type: string
+            column: bank_account
+        bik:
+            type: string
+            column: bik
+        postcode:
+            type: string
+            column: postcode
+        street:
+            type: string
+            column: street
+        building_number:
+            type: string
+            column: building_number
+        building_subnumber:
+            type: string
+            column: building_subnumber
+        building_part:
+            type: string
+            column: building_part
+        appartment:
+            type: string
+            column: appartment
+        contact_name:
+            type: string
+            column: contact_name
+        contact_phone:
+            type: string
+            column: contact_phone
+        contact_email:
+            type: string
+            column: contact_email
+        delivery_postcode:
+            type: string
+            column: delivery_postcode
+        delivery_street:
+            type: string
+            column: delivery_street
+        delivery_building_number:
+            type: string
+            column: delivery_building_number
+        delivery_building_subnumber:
+            type: string
+            column: delivery_building_subnumber
+        delivery_building_part:
+            type: string
+            column: delivery_building_part
+        delivery_appartment:
+            type: string
+            column: delivery_appartment
+    manyToOne:
+        city:
+            targetEntity: City
+            inversedBy: legals
+        delivery_city:
+            targetEntity: City
+            inversedBy: legals
+    oneToMany:
+        orders:
+            targetEntity: Order
+            mappedBy: legal
+    lifecycleCallbacks: {  }

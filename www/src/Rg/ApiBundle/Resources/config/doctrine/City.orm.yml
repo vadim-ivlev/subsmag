@@ -1,0 +1,27 @@
+Rg\ApiBundle\Entity\City:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\CityRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '100'
+            column: name
+    manyToOne:
+        area:
+            targetEntity: Area
+            inversedBy: cities
+    oneToMany:
+        legals:
+            targetEntity: Legal
+            mappedBy: city
+        legals:
+            targetEntity: Legal
+            mappedBy: delivery_city
+    lifecycleCallbacks: {  }

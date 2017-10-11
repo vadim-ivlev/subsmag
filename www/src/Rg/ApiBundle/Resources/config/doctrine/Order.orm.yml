@@ -41,6 +41,9 @@ Rg\ApiBundle\Entity\Order:
         user:
             targetEntity: User
             inversedBy: orders
+        legal:
+            targetEntity: Legal
+            inversedBy: orders
     oneToMany:
         items:
             targetEntity: Item
