@@ -22,4 +22,18 @@ class AreaRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    public function getAreaWithNotEmptyWorkIdOrderedByWorkId()
+    {
+        $qb = $this->createQueryBuilder('a');
+        $result = $qb
+            ->select('a')
+            ->andWhere("a.works_id <> ''")
+            ->orderBy('a.works_id')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $result;
+    }
 }
