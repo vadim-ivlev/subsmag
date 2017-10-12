@@ -5,7 +5,9 @@ namespace Rg\ApiBundle\Controller;
 use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
+use Rg\ApiBundle\Entity\City;
 use Rg\ApiBundle\Entity\Item;
+use Rg\ApiBundle\Entity\Legal;
 use Rg\ApiBundle\Entity\Notification;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Entity\Patritem;
@@ -22,6 +24,8 @@ class OrderController extends Controller
 
     public function createAction(Request $request, SessionInterface $session)
     {
+        $doctrine = $this->getDoctrine();
+
         /** @var Cart $cart */
         $cart = unserialize($session->get('cart'));
 
@@ -33,20 +37,66 @@ class OrderController extends Controller
         $order = new Order();
         $order->setDate(new \DateTime());
 
-        ### обработать контактные данные
-        $order->setAddress($order_details->address);
-        #### фио
-        $order->setName($order_details->name);
-        #### телефон
-        $order->setPhone($order_details->phone);
-        #### mail
-        $order->setEmail($order_details->email);
+        if ($order_details->is_legal) {
+            // заказывает ЮЛ
+            $legal = new Legal();
+
+            $legal->setName($order_details->org_name);
+            $legal->setInn($order_details->inn);
+            $legal->setKpp($order_details->kpp);
+            $legal->setBankName($order_details->bank_name);
+            $legal->setBankAccount($order_details->bank_account);
+            $legal->setBik($order_details->bik);
+
+            $city = $doctrine->getRepository('RgApiBundle:City')
+                ->findOneBy(['id' => $order_details->city_id]);
+            $legal->setCity($city);
+
+            $legal->setPostcode($order_details->postcode);
+            $legal->setStreet($order_details->street);
+            $legal->setBuildingNumber($order_details->building_number);
+            $legal->setBuildingSubnumber($order_details->building_subnumber);
+            $legal->setBuildingPart($order_details->building_part);
+            $legal->setAppartment($order_details->appartment);
+
+            $legal->setContactName($order_details->contact_name);
+            $legal->setContactPhone($order_details->contact_phone);
+            $legal->setContactEmail($order_details->contact_email);
+
+            $delivery_city = $doctrine->getRepository('RgApiBundle:City')
+                ->findOneBy(['id' => $order_details->delivery_city_id]);
+            $legal->setDeliveryCity($delivery_city);
+
+            $legal->setDeliveryPostcode($order_details->delivery_postcode);
+            $legal->setDeliveryStreet($order_details->delivery_street);
+            $legal->setDeliveryBuildingNumber($order_details->delivery_building_number);
+            $legal->setDeliveryBuildingSubnumber($order_details->delivery_building_subnumber);
+            $legal->setDeliveryBuildingPart($order_details->delivery_building_part);
+            $legal->setDeliveryAppartment($order_details->delivery_appartment);
+
+            $em = $doctrine->getManager();
+            $em->persist($legal);
+            $em->flush();
+            $order->setLegal($legal);
+            die('i am not ready yet');
+
+        } else {
+            // заказывает ФЛ
+            ### обработать контактные данные
+
+            $order->setAddress($order_details->address);
+            #### фио
+            $order->setName($order_details->name);
+            #### телефон
+            $order->setPhone($order_details->phone);
+            #### mail
+            $order->setEmail($order_details->email);
+        }
 
         $order->setIsPaid(false);
         $order->setPgPaymentId('');
 
         ### способ оплаты
-        $doctrine = $this->getDoctrine();
         $payment = $doctrine
             ->getRepository('RgApiBundle:Payment')
             ->findOneBy(['name' => $order_details->payment]);

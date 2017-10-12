@@ -27,9 +27,7 @@ class DevDumper
     public function symDump($var) {
         ob_start();
 
-        echo "<pre>";
         dump($var);
-        echo "</pre>";
 
         $content = ob_get_clean();
 

@@ -2,6 +2,12 @@ rg_api_homepage:
     path:     /
     defaults: { _controller: RgApiBundle:Default:index }
 
+# список городов по региону из куков
+rg_api_area_list:
+    path:     /cities/
+    defaults: { _controller: RgApiBundle:Area:getCities, _format:json }
+    methods:  [GET, HEAD]
+
 # подписки
 rg_api_product_index:
     path:     /products/
