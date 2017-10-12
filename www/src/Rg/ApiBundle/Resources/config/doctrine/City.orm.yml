@@ -13,6 +13,13 @@ Rg\ApiBundle\Entity\City:
             type: string
             length: '100'
             column: name
+        type:
+            type: string
+            length: '20'
+            column: type
+        works_cid:
+            type: integer
+            column: works_cid
     manyToOne:
         area:
             targetEntity: Area

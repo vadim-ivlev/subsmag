@@ -204,4 +204,62 @@ class City
     {
         return $this->legal_deliveries;
     }
+    /**
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @var integer
+     */
+    private $works_cid;
+
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return City
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set worksCid
+     *
+     * @param integer $worksCid
+     *
+     * @return City
+     */
+    public function setWorksCid($worksCid)
+    {
+        $this->works_cid = $worksCid;
+
+        return $this;
+    }
+
+    /**
+     * Get worksCid
+     *
+     * @return integer
+     */
+    public function getWorksCid()
+    {
+        return $this->works_cid;
+    }
 }

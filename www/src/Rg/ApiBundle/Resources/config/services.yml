@@ -26,3 +26,5 @@ services:
         class: Rg\ApiBundle\Service\NotificationQueue
     rg_api.cart_controller:
         class: Rg\ApiBundle\Controller\CartController
+    rg_api.dev_dumper:
+        class: Rg\ApiBundle\Service\DevDumper
