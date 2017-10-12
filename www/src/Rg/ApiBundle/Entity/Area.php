@@ -252,4 +252,140 @@ class Area
     {
         return $this->cities;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $areas;
+
+    /**
+     * @var \Rg\ApiBundle\Entity\Area
+     */
+    private $area;
+
+
+    /**
+     * Add area
+     *
+     * @param \Rg\ApiBundle\Entity\Area $area
+     *
+     * @return Area
+     */
+    public function addArea(\Rg\ApiBundle\Entity\Area $area)
+    {
+        $this->areas[] = $area;
+
+        return $this;
+    }
+
+    /**
+     * Remove area
+     *
+     * @param \Rg\ApiBundle\Entity\Area $area
+     */
+    public function removeArea(\Rg\ApiBundle\Entity\Area $area)
+    {
+        $this->areas->removeElement($area);
+    }
+
+    /**
+     * Get areas
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAreas()
+    {
+        return $this->areas;
+    }
+
+    /**
+     * Set area
+     *
+     * @param \Rg\ApiBundle\Entity\Area $area
+     *
+     * @return Area
+     */
+    public function setArea(\Rg\ApiBundle\Entity\Area $area = null)
+    {
+        $this->area = $area;
+
+        return $this;
+    }
+
+    /**
+     * Get area
+     *
+     * @return \Rg\ApiBundle\Entity\Area
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $child_areas;
+
+    /**
+     * @var \Rg\ApiBundle\Entity\Area
+     */
+    private $parent_area;
+
+
+    /**
+     * Add childArea
+     *
+     * @param \Rg\ApiBundle\Entity\Area $childArea
+     *
+     * @return Area
+     */
+    public function addChildArea(\Rg\ApiBundle\Entity\Area $childArea)
+    {
+        $this->child_areas[] = $childArea;
+
+        return $this;
+    }
+
+    /**
+     * Remove childArea
+     *
+     * @param \Rg\ApiBundle\Entity\Area $childArea
+     */
+    public function removeChildArea(\Rg\ApiBundle\Entity\Area $childArea)
+    {
+        $this->child_areas->removeElement($childArea);
+    }
+
+    /**
+     * Get childAreas
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getChildAreas()
+    {
+        return $this->child_areas;
+    }
+
+    /**
+     * Set parentArea
+     *
+     * @param \Rg\ApiBundle\Entity\Area $parentArea
+     *
+     * @return Area
+     */
+    public function setParentArea(\Rg\ApiBundle\Entity\Area $parentArea = null)
+    {
+        $this->parent_area = $parentArea;
+
+        return $this;
+    }
+
+    /**
+     * Get parentArea
+     *
+     * @return \Rg\ApiBundle\Entity\Area
+     */
+    public function getParentArea()
+    {
+        return $this->parent_area;
+    }
 }

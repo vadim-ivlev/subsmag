@@ -36,4 +36,44 @@ class AreaRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    public function getCitiesStep2()
+    {
+        $qb = $this->createQueryBuilder('a');
+        $result = $qb
+            ->select('a')
+            ->andWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->isNull('a.parent_area'),
+                    $qb->expr()->eq('a.works_id', ':str')
+                )
+            )
+            ->orderBy('a.id')
+            ->setParameter('str', '')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $result;
+    }
+
+    public function getCitiesStep1()
+    {
+        $qb = $this->createQueryBuilder('a');
+        $result = $qb
+            ->select('a')
+            ->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->isNull('a.works_id'),
+                    $qb->expr()->eq('a.works_id', ':str')
+                )
+            )
+            ->orderBy('a.works_id')
+            ->setParameter('str', '')
+            ->getQuery()
+            ->getResult()
+        ;
+
+        return $result;
+    }
 }

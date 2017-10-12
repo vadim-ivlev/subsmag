@@ -47,10 +47,11 @@ class FetchCitiesFromWorksCommand extends ContainerAwareCommand
 
         ########## your code here ##########
 
-//        $cities_array = array_values(unserialize($cities));
-
         $doctrine = $this->getContainer()->get('doctrine');
         $em = $doctrine->getManager();
+
+        $output->writeln("You already did that!!!");
+        return;
 
         $areas = $em->getRepository('RgApiBundle:Area')
             ->getAreaWithNotEmptyWorkIdOrderedByWorkId();
@@ -106,5 +107,70 @@ class FetchCitiesFromWorksCommand extends ContainerAwareCommand
         if (!is_array($cities_array)) throw new \Exception('bad array given for region ' . $region_id);
 
         return $cities_array;
+    }
+
+    private function codeAtWorks() {
+        echo "don't use it."; die;
+        // /works/www/project/subscribe_mag/region_zone.php
+        require_once 'init.php';
+
+        dbal_connect('subs');
+
+        #### only for a subsmag develop. REMOVE IT RIGHT NOW!!!
+        if (isset($_POST['parse_rid'])) {
+            $query = "SELECT * FROM ".TP."geo_cities where region_id = " . $_POST['parse_rid'];
+            $result = dbal_get_all($query);
+            echo serialize($result);
+
+            die;
+        }
+        if ($_GET['list_all'] == 'yep') {
+        //    $query = "SELECT * FROM ".TP."geo_cities limit 1000";
+        //    $query = "SHOW TABLES";
+
+            /*    $query = "SELECT * FROM ".TP."city limit 10";
+                $result = dbal_get_all($query);
+                echo "<pre>";
+                print_r($result);
+                echo "</pre>";*/
+
+            /*    $query = "SELECT * FROM ".TP."country limit 10";
+                $result = dbal_get_all($query);
+                echo "<pre>";
+                print_r($result);
+                echo "</pre>";*/
+
+            $query = "SELECT * FROM ".TP."geo_cities where region_id = " . $_GET['rid'];
+            $result = dbal_get_all($query);
+            echo "<pre>";
+            print_r($result);
+            echo "</pre>";
+        //    echo serialize($result);
+
+            /*    $query = "SELECT * FROM ".TP."geo_regions order by rid";
+                $result = dbal_get_all($query);
+                echo "<table>";
+                foreach ($result as $region) {
+                    echo "<tr>";
+                    echo "<td>", $region['rid'], "</td><td>", $region['name'], "</td>";
+                    echo "</tr>";
+                }
+                echo "</table>";*/
+
+            /*    $query = "SELECT count(*) FROM ".TP."geo_cities";
+                $result = dbal_get_all($query);
+                echo "<pre>";
+                print_r($result);
+                echo "</pre>";
+
+                $query = "SELECT * FROM ".TP."geo_cities limit 500 OFFSET 190001";
+                $result = dbal_get_all($query);
+                echo "<pre>";
+                print_r($result);
+                echo "</pre>";*/
+
+            die;
+        }
+        ##############
     }
 }

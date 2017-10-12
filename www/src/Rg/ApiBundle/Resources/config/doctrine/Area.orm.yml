@@ -20,14 +20,25 @@ Rg\ApiBundle\Entity\Area:
         works_id:
             type: string
             column: works_id
+        ### use relations instead
+#        parent_region_id:
+#            type: string
+#            column: parent_region_id
         link:
             type: string
             column: "`link`"
     manyToOne:
+        ### not empty means that i'm a little city in the big area
+        parent_area:
+            targetEntity: Area
+            inversedBy: child_areas
         zone:
             targetEntity: Zone
             inversedBy: areas
     oneToMany:
+        child_areas:
+            targetEntity: Area
+            mappedBy: parent_area
         cities:
             targetEntity: City
             mappedBy: area
