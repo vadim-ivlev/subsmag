@@ -99,6 +99,11 @@ class MailSenderCommand extends ContainerAwareCommand
                 $body[] = 'Образец квитанции вы можете получить по ссылке ';
                 $body[] = $this->generateUrl($order);
             }
+            if ($payment_type == 'invoice') {
+                $body[] = 'Вы выбрали оплату по платёжному поручению.';
+                $body[] = 'Образец платёжного поручения вы можете получить по ссылке ';
+                $body[] = $this->generateUrl($order);
+            }
             $body_text = join("\r\n", $body);
 
             $message = (new \Swift_Message($subject))
@@ -152,7 +157,7 @@ class MailSenderCommand extends ContainerAwareCommand
             // Create a message
             $order = $notification->getOrder();
 
-            $subject = 'Заказ №'. $order->getId() . ' создан';
+            $subject = 'Заказ №'. $order->getId() . ' оплачен';
 
             $from = ['subsmag@rg.ru' => 'Отдел подписки Российской газеты'];
             $to = [$order->getEmail() => $order->getName()];
@@ -218,8 +223,14 @@ class MailSenderCommand extends ContainerAwareCommand
         $generator = $this->getContainer()->get('router')->getGenerator();
         $generator->setContext($context);
 
+        if (!is_null($order->getLegal())) {
+            $name = 'rg_api_get_invoice_by_order';
+        } else {
+            $name = 'rg_api_get_receipt_by_order';
+        }
+
         $url = $generator->generate(
-            'rg_api_get_receipt_by_order',
+            $name,
             ['enc_id' => $container->get('rg_api.encryptor')->encryptOrderId($order->getId())],
             UrlGeneratorInterface::ABSOLUTE_URL
         );

@@ -229,7 +229,40 @@ li.ie-safari a {background-position:-400px 0}
     </tr>
     </thead>
     <tbody>
-	{{ goods }}
+
+    {% for good in goods %}
+    <tr>
+        <td style="width:10mm;">{{ loop.index }}</td>
+        <td>{{ good }}</td>
+        <td style="width:13mm;">[invoice_tariff_count]</td>
+        <td style="width:17mm;">Комплект</td>
+        <td style="width:22mm;"><!--111222--></td>
+        <td style="width:18mm;">&nbsp;</td>
+        <td style="width:22mm;">&nbsp;</td>
+        <td style="width:22mm;">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="width:10mm;">&nbsp;</td>
+        <td>каталожная стоимость</td>
+        <td style="width:13mm;">&nbsp;</td>
+        <td style="width:17mm;">&nbsp;</td>
+        <td style="width:22mm;">[invoice_tariff_catalog]</td>
+        <td style="width:18mm;">10</td>
+        <td style="width:22mm;">[invoice_tariff_catalog_only_nds]</td>
+        <td style="width:22mm;">[invoice_tariff_catalog_plus_nds]</td>
+    </tr>
+    <tr>
+        <td style="width:10mm;">&nbsp;</td>
+        <td>доставочная стоимость</td>
+        <td style="width:13mm;">&nbsp;</td>
+        <td style="width:17mm;">&nbsp;</td>
+        <td style="width:22mm;">[invoice_tariff_delivery]</td>
+        <td style="width:18mm;">18</td>
+        <td style="width:22mm;">[invoice_tariff_delivery_only_nds]</td>
+        <td style="width:22mm;">[invoice_tariff_delivery_plus_nds]</td>
+    </tr>
+    {% endfor %}
+
     </tbody>
 </table>
 
@@ -313,6 +346,10 @@ li.ie-safari a {background-position:-400px 0}
 </div>
 </div>
 
+<div class="link_to_invoice">
+    {% set permalink = url('rg_api_get_invoice_by_order', {'enc_id': permalink_id}) %}
 
+    <a href="{{ permalink }}">Ссылка на платёжное поручение: {{ permalink }}</a>
+</div>
 
 </body></html>

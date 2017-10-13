@@ -60,10 +60,6 @@ class AreaController extends Controller
 //        $rg_geo_data = "%7B%22id%22%3A96%2C%22rgId%22%3A3718%2C%22link%22%3A%22%5C%2Fregion%5C%2Fdfo%5C%2Fprimorie%5C%2Fvladivostok%5C%2F%22%2C%22originName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%22%2C%22originPrepositionalName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%5Cu0435%22%2C%22originGenitiveName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%5Cu0430%22%2C%22rubricName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%22%2C%22rubricPrepositionalName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%5Cu0435%22%2C%22rubricGenitiveName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%5Cu0430%22%7D";
 
         if (!$rg_geo_data) {
-            $error = [
-                'error' => 'Region not found in cookie',
-            ];
-
             return 0;
         }
 

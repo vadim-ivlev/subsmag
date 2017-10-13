@@ -35,6 +35,14 @@ rg_api_get_receipt_by_order:
     requirements:
         enc_id: \w+
 
+# получить платёжное поручение по номеру заказа
+rg_api_get_invoice_by_order:
+    path:     /invoice/{enc_id}/
+    defaults: { _controller: RgApiBundle:Order:getInvoiceByOrderId }
+    methods:  [GET, HEAD]
+    requirements:
+        enc_id: \w+
+
 ### Platron
 # pg_check_url
 rg_api_platron_check_url:

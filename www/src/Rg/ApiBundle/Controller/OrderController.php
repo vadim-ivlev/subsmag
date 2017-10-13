@@ -205,6 +205,24 @@ class OrderController extends Controller
 
     }
 
+    public function getInvoiceByOrderIdAction($enc_id)
+    {
+        $id = $this->get('rg_api.encryptor')->decryptOrderId($enc_id);
+        $doctrine = $this->getDoctrine();
+
+        $order = $doctrine->getRepository('RgApiBundle:Order')
+            ->findOneBy(['id' => $id]);
+
+        if (is_null($order)) {
+            return new Response('There is no such an order.');
+        }
+
+        $items = $order->getItems();
+        $patritems = $order->getPatritems();
+
+        return $this->createInvoice($order, $items, $patritems);
+    }
+
     public function getReceiptByOrderIdAction($enc_id)
     {
         $id = $this->get('rg_api.encryptor')->decryptOrderId($enc_id);
@@ -454,7 +472,7 @@ class OrderController extends Controller
             $goods[] = $patria;
         }
 
-        $names_list = join(', ', $goods);
+//        $names_list = join(', ', $goods);
 
         $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
 
@@ -467,7 +485,8 @@ class OrderController extends Controller
             'ndsless_price' => $ndsless_price,
             'text_price' => $this->get('rg_api.price_to_text_converter')->convert($price->integer, $price->decimal),
             'due_date' => $due_date,
-            'goods' => $names_list,
+//            'goods' => $names_list,
+            'goods' => $goods,
             'permalink_id' => $permalink_id,
         ]);
 
