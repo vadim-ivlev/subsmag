@@ -61,4 +61,13 @@ Rg\ApiBundle\Entity\Vendor:
             type: string
             length: '100'
             column: head_name
+        ### например, главбух или врио главбуха
+        accountant_title:
+            type: string
+            length: '100'
+            column: accountant_title
+        accountant_name:
+            type: string
+            length: '100'
+            column: accountant_name
     lifecycleCallbacks: {  }

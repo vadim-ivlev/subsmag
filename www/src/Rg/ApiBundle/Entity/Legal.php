@@ -735,4 +735,62 @@ class Legal
     {
         return $this->delivery_city;
     }
+    /**
+     * @var string
+     */
+    private $bank_corr_account;
+
+
+    /**
+     * Set bankCorrAccount
+     *
+     * @param string $bankCorrAccount
+     *
+     * @return Legal
+     */
+    public function setBankCorrAccount($bankCorrAccount)
+    {
+        $this->bank_corr_account = $bankCorrAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get bankCorrAccount
+     *
+     * @return string
+     */
+    public function getBankCorrAccount()
+    {
+        return $this->bank_corr_account;
+    }
+    /**
+     * @var string
+     */
+    private $contact_fax;
+
+
+    /**
+     * Set contactFax
+     *
+     * @param string $contactFax
+     *
+     * @return Legal
+     */
+    public function setContactFax($contactFax)
+    {
+        $this->contact_fax = $contactFax;
+
+        return $this;
+    }
+
+    /**
+     * Get contactFax
+     *
+     * @return string
+     */
+    public function getContactFax()
+    {
+        return $this->contact_fax;
+    }
 }

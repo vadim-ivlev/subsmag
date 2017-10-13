@@ -24,6 +24,9 @@ Rg\ApiBundle\Entity\Legal:
         bank_account:
             type: string
             column: bank_account
+        bank_corr_account:
+            type: string
+            column: bank_corr_account
         bik:
             type: string
             column: bik
@@ -51,6 +54,9 @@ Rg\ApiBundle\Entity\Legal:
         contact_phone:
             type: string
             column: contact_phone
+        contact_fax:
+            type: string
+            column: contact_fax
         contact_email:
             type: string
             column: contact_email

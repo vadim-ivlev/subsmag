@@ -28,3 +28,5 @@ services:
         class: Rg\ApiBundle\Controller\CartController
     rg_api.dev_dumper:
         class: Rg\ApiBundle\Service\DevDumper
+    rg_api.price_to_text_converter:
+        class: Rg\ApiBundle\Service\PriceToTextConverter

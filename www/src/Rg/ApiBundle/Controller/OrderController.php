@@ -46,6 +46,7 @@ class OrderController extends Controller
             $legal->setKpp($order_details->kpp);
             $legal->setBankName($order_details->bank_name);
             $legal->setBankAccount($order_details->bank_account);
+            $legal->setBankCorrAccount($order_details->bank_corr);
             $legal->setBik($order_details->bik);
 
             $city = $doctrine->getRepository('RgApiBundle:City')
@@ -61,6 +62,7 @@ class OrderController extends Controller
 
             $legal->setContactName($order_details->contact_name);
             $legal->setContactPhone($order_details->contact_phone);
+            $legal->setContactFax($order_details->contact_fax ?? '');
             $legal->setContactEmail($order_details->contact_email);
 
             $delivery_city = $doctrine->getRepository('RgApiBundle:City')
@@ -78,8 +80,15 @@ class OrderController extends Controller
             $em->persist($legal);
             $em->flush();
             $order->setLegal($legal);
-            die('i am not ready yet');
 
+            ###
+            $order->setAddress($this->deliveryAddressToString($legal));
+            #### фио
+            $order->setName($order_details->contact_name);
+            #### телефон
+            $order->setPhone($order_details->contact_phone);
+            #### mail
+            $order->setEmail($order_details->contact_email);
         } else {
             // заказывает ФЛ
             ### обработать контактные данные
@@ -100,6 +109,18 @@ class OrderController extends Controller
         $payment = $doctrine
             ->getRepository('RgApiBundle:Payment')
             ->findOneBy(['name' => $order_details->payment]);
+        if (!$payment) {
+            $resp = [
+                'error' => 'Payment not found',
+            ];
+            return (new Out())->json($resp);
+        }
+        if (!is_null($order->getLegal()) && $payment->getName() == 'receipt') {
+            $resp = [
+                'error' => 'Payment type not available for legal entity.',
+            ];
+            return (new Out())->json($resp);
+        }
         $order->setPayment($payment);
 
         ### подготовим массив подписных позиций
@@ -163,11 +184,20 @@ class OrderController extends Controller
             ];
 
         } elseif ($payment_name == 'receipt') {
+
+            ## записать в очередь почтовое уведомление
+            $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
+            $em->flush();
+
             return $this->createReceipt($order, $items, $patritems);
+        } elseif ($payment_name == 'invoice') {
+            ## записать в очередь почтовое уведомление
+            $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
+            $em->flush();
+            return $this->createInvoice($order, $items, $patritems);
         } else {
             $resp = [
-                'error' => 'bad bad bad',
-                'description' => 'Wrong payment type.'
+                'error' => 'Wrong payment type received.'
             ];
         }
 
@@ -348,11 +378,6 @@ class OrderController extends Controller
 
         $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
 
-        ## записать в очередь почтовое уведомление
-        $em = $doctrine->getManager();
-        $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
-        $em->flush();
-
         $rendered_response = $this->render('@RgApi/order/receipt.html.twig', [
             'vendor' => $vendor,
             'order' => $order,
@@ -365,4 +390,96 @@ class OrderController extends Controller
         return $rendered_response;
     }
 
+    private function createInvoice(Order $order, $items, $patritems)
+    {
+         $doctrine = $this->getDoctrine();
+
+        # подготовить платёжное поручение
+        $vendor = $doctrine->getRepository('RgApiBundle:Vendor')
+            ->findOneBy(['keyword' => 'zaorg']); // magic word. What if there'd be more than one vendor?
+
+        $order_price = $order->getTotal();
+
+        $price = new \stdClass();
+        $price->total = number_format($order_price, 2, ',', '');
+        $price->integer = floor($order_price);
+//            $price->decimal = fmod($price->total, 1); // bad idea cause of float division tricks!!!
+        $price->decimal = floor( ( $order_price - $price->integer ) * 100);
+
+        $nds = bcsub($order_price, bcdiv($order_price, '1.18', 2), 2);
+        $ndsless_price = bcsub($order_price, $nds, 2);
+
+        $due_date = $order->getDate()->add(
+            new \DateInterval('P7D')
+        );
+
+        ## the names of ordered items
+        $goods = [];
+
+        /** @var Item $item */
+        foreach ($items as $item) {
+            $product = $item->getTariff()->getProduct();
+
+            $month = $item->getMonth();
+            $first_month = $month->getNumber();
+            $last_month = $first_month + $item->getDuration();
+
+            $short_descr = $product->getName() .
+                ' ' .
+                $first_month .
+                '-' .
+                $last_month .
+                "'" .
+                $month->getYear();
+
+            $goods[] = $short_descr;
+        }
+
+        /** @var Patritem $patritem */
+        foreach ($patritems as $patritem) {
+            $issue = $patritem->getPatriff()->getIssue();
+
+            $patria = 'Родина №' .
+                $issue->getMonth() .
+                "'" .
+                $issue->getYear();
+
+            $goods[] = $patria;
+        }
+
+        $names_list = join(', ', $goods);
+
+        $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
+
+        $rendered_response = $this->render('@RgApi/order/invoice.html.twig', [
+            'vendor' => $vendor,
+            'order' => $order,
+            'legal' => $order->getLegal(),
+            'price' => $price,
+            'nds' => $nds,
+            'ndsless_price' => $ndsless_price,
+            'text_price' => $this->get('rg_api.price_to_text_converter')->convert($price->integer, $price->decimal),
+            'due_date' => $due_date,
+            'goods' => $names_list,
+            'permalink_id' => $permalink_id,
+        ]);
+
+        return $rendered_response;
+    }
+
+    private function deliveryAddressToString(Legal $legal)
+    {
+        $del = [
+            $legal->getDeliveryPostcode(),
+            $legal->getDeliveryCity()->getArea()->getName(),
+            $legal->getDeliveryCity()->getName(),
+            $legal->getDeliveryStreet(),
+            $legal->getDeliveryBuildingNumber(),
+            $legal->getDeliveryBuildingSubnumber(),
+            $legal->getDeliveryBuildingPart(),
+            $legal->getDeliveryAppartment(),
+        ];
+
+        return join(' ', $del);
+    }
 }

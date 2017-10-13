@@ -399,4 +399,62 @@ class Vendor
     {
         return $this->keyword;
     }
+    /**
+     * @var string
+     */
+    private $accountant_name;
+
+
+    /**
+     * Set accountantName
+     *
+     * @param string $accountantName
+     *
+     * @return Vendor
+     */
+    public function setAccountantName($accountantName)
+    {
+        $this->accountant_name = $accountantName;
+
+        return $this;
+    }
+
+    /**
+     * Get accountantName
+     *
+     * @return string
+     */
+    public function getAccountantName()
+    {
+        return $this->accountant_name;
+    }
+    /**
+     * @var string
+     */
+    private $accountant_title;
+
+
+    /**
+     * Set accountantTitle
+     *
+     * @param string $accountantTitle
+     *
+     * @return Vendor
+     */
+    public function setAccountantTitle($accountantTitle)
+    {
+        $this->accountant_title = $accountantTitle;
+
+        return $this;
+    }
+
+    /**
+     * Get accountantTitle
+     *
+     * @return string
+     */
+    public function getAccountantTitle()
+    {
+        return $this->accountant_title;
+    }
 }

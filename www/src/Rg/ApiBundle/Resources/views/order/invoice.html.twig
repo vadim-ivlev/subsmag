@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head>
+    <title>Бланк "Счет на оплату"</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+        body { height: 297mm; width: 210mm; margin-left: auto; margin-right: auto; border: 1px #efefef solid; font-size: 12px; font-family:Arial;}
+        table.invoice_bank_rekv { border-collapse: collapse; border: 1px solid; }
+        table.invoice_bank_rekv > tbody > tr > td, table.invoice_bank_rekv > tr > td { border: 1px solid; }
+        table.invoice_items { border: 1px solid; border-collapse: collapse;}
+        table.invoice_items td, table.invoice_items th { border: 1px solid;}
+        div {padding:5px;font-size: 11px;}
+        
+    </style>
+</head>
+<body>
+
+<div style="position:relative; margin: 0;padding: 0; z-index: 100; height: 297mm;">
+<!--[if lte IE 6]>
+<style type=text/css>
+#ie-message {text-align:center;width:209mm;background:#f3f5f2;margin:0;padding:10px 0 15px;border:2px solid #f00}
+#ie-message h2 {color:#84100e;}
+#ie-message p {font-size:16px;font-family:Arial, sans-serif;}
+ul.ie-list {width:200mm;height:132px;display:block;overflow:hidden;text-align:center;margin:auto;padding:0;}
+.ie-list li {display:inline-block;width:19%;height:130px;float:left;margin:0 auto;text-align:center}
+.ie-list li a {display:block;width:100px;height:120px;overflow:hidden;font-size:0px;text-decoration:none !important;background-image:url(//rg.ru/img/d/browsers.png);background-repeat:no-repeat;text-align:center;margin:0 auto;}
+.ie-list li a span {display:block;margin:105px auto 0;height:15px;line-height:15px;color:#999;text-decoration:underline;font-size:11px;font-weight:bold;font-family:Verdana, sans-serif;cursor:pointer}
+.ie-list li a:hover span {color:#84100e;}
+li.ie-chrome a {background-position:0 0}
+li.ie-ff a {background-position:-100px 0}
+li.ie-ie a {background-position:-200px 0}
+li.ie-opera a {background-position:-300px 0}
+li.ie-safari a {background-position:-400px 0}
+</style>
+<div id="ie-message">
+  <h2>Внимание! Счет может некорректно отображаться в вашей версии веб-обозревателя.</h2>
+  <p>Для безопасного просмотра рекомендуем установить любой из приведенных ниже браузеров:</p>
+  <div class="ie-browsers">
+    <ul class="ie-list">
+      <li class="ie-chrome"><a target="_blank" href="http://www.google.com/chrome/"><span>Google Chrome</span></a></li>
+      <li class="ie-ff"><a target="_blank" href="http://www.mozilla.com/firefox/"><span>Mozilla Firefox</span></a></li>
+      <li class="ie-ie"><a target="_blank" href="http://www.microsoft.com/windows/Internet-explorer/default.aspx"><span>Internet Explorer</span></a></li>
+      <li class="ie-opera"><a target="_blank" href="http://www.opera.com/download/"><span>Opera</span></a></li>
+      <li class="ie-safari"><a target="_blank" href="http://www.apple.com/safari/download/"><span>Safari</span></a></li>
+    </ul>
+  </div>
+</div>
+<![endif]-->
+
+<table width="100%">
+    <tbody><tr>
+        <td style="width: 170mm;">
+            <div style="width:170mm; font-size: 11px; ">
+            	Поставщик: ИНН:{{ vendor.inn }} КПП:{{ vendor.kpp }} {{ vendor.name }}<br>
+            	Адрес: {{ vendor.address }}<br>
+            	Банк: {{ vendor.bank }}<br>
+            	Счет №:{{ vendor.account }}  БИК {{ vendor.bik }}  К/С № :{{ vendor.corr }}
+           	</div>
+        </td>    	
+        <td valign="top">
+        	<div style="font-size: 11px; ">
+        		Тел: {{ vendor.phone }}<br>
+	        	Факс: {{ vendor.fax }}
+	        </div>
+       	</td>
+    </tr>
+</tbody></table>
+
+<table cellpadding="0" cellspacing="0" width="100%">
+    <tbody><tr>
+        <td style="width: 170mm;">
+            <div style="width:170mm;border-top:1px solid;">
+            	Грузоотправитель и его адрес: он же
+           	</div>
+        </td>    	
+        <td valign="top">
+        	<div style="border-top:1px solid;">
+        		К реестру №
+	        </div>
+       	</td>
+    </tr>
+    <tr>
+        <td style="width: 170mm;">
+            <div style="width:170mm;border-top:1px solid;">
+            	Грузополучатель и его адрес: ИНН&nbsp;{{ legal.inn }}&nbsp;&nbsp;КПП&nbsp;{{ legal.kpp }}&nbsp;{{ legal.name }}<br>
+				{{ legal.deliveryPostcode }}, {{ legal.deliveryCity.area.name }}, {{ legal.deliveryCity.name }},&nbsp;ул.&nbsp;{{ legal.deliveryStreet }},&nbsp;д.&nbsp;{{ legal.deliveryBuildingSubnumber }}{{ legal.deliveryBuildingPart }}{{ legal.deliveryAppartment }}<br>
+				Расч.&nbsp;счет:&nbsp;{{ legal.bankAccount }}<br>
+				Банк:&nbsp;{{ legal.bankName }}
+
+				
+           	</div>
+        </td>    	
+        <td valign="top">
+        	<div style="border-top:1px solid;">
+        		Дата получения
+	        </div>
+       	</td>
+    </tr>    
+</tbody>
+</table>
+
+
+<br>
+
+<div style="font-weight: bold; font-size: 14px; padding:5px; text-align:center;border-top:1px solid;">
+    Счет № {{ order.id }}/WEB
+</div>
+<br>
+
+<table cellpadding="0" cellspacing="0" width="100%">
+    <tbody><tr>
+        <td style="width: 130mm;">
+            <div style="width:130mm; ">
+            	Заказ-наряд № 
+           	</div>
+        </td>
+        <td valign="top">
+        	<div>
+        		Дата: {{ order.date | date("Y-m-d") }}
+	        </div>
+       	</td>
+    </tr> 
+</tbody>
+</table>
+
+
+<table class="invoice_items" cellpadding="0" cellspacing="0" width="100%">
+    <tbody><tr>
+        <td style="width: 130mm;" colspan="2" rowspan="3" valign="top">
+            <div style="width: 130mm;">Плательщик и его адрес</div>
+			
+			<div style="width: 130mm;">ИНН&nbsp;{{ legal.inn }}&nbsp;&nbsp;КПП&nbsp;{{ legal.kpp }}&nbsp;{{ legal.name }}<br>
+            {{ legal.postcode }}, {{ legal.city.area.name }}, {{ legal.city.name }},&nbsp;ул.&nbsp;{{ legal.street }},&nbsp;д.&nbsp;{{ legal.buildingSubnumber }}{{ legal.buildingPart }}{{ legal.appartment }}<br>
+			Расч.&nbsp;счет:&nbsp;{{ legal.bankAccount }}<br>
+			Банк:&nbsp;{{ legal.bankName }}<br>
+			</div>
+        </td>
+        <td colspan="3">
+            <div style="text-align: center">
+            Сумма счета</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="text-align: center">по расч.  цене</div>
+        </td>
+        <td>
+            <div style="text-align: center">разница объед</div>
+        </td>
+        <td>
+            <div style="text-align: center">наценка на ком. товар</div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="text-align: center">xxx</div>
+        </td>
+        <td>
+            <div style="text-align: center">xxx</div>
+        </td>
+        <td>
+            <div style="text-align: center">xxx</div>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 65mm;" valign="top">
+            <div style="width: 65mm;">на ст.</div>
+        </td>
+        <td style="width: 65mm;" valign="top">
+            <div style="width: 65mm;">со ст.</div>
+        </td>
+        <td rowspan="2" colspan="3" valign="top">
+            <div style="text-align: center">
+            	Всего продажная Р.<br>
+				{{ price.total }}
+           	</div>
+        </td>        
+    </tr>
+    <tr>
+        <td style="width: 65mm;" valign="top">
+            <div style="width: 65mm;">дата отпр.</div>
+        </td>
+        <td style="width: 65mm;" valign="top">
+            <div style="width: 65mm;">способ отпр.</div>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 65mm;" valign="top">
+            <div style="width: 65mm;">квит./накл. №</div>
+        </td>
+        <td style="width: 65mm;" valign="top">
+            <div style="width: 65mm;">упаковка</div>           
+        </td>
+        <td colspan="3" style="width: 65mm;" valign="top">
+            <div>Отметка об оплате</div>
+        </td>        
+    </tr>
+    <tr>
+        <td style="width: 65mm;" valign="top">
+            <div style="width: 65mm;">число мест</div>
+        </td>
+        <td style="width: 65mm;" valign="top">
+            <div style="width: 65mm;">вес</div>
+        </td>
+        <td colspan="3" style="width: 65mm;" valign="top">
+            <div>Шифр</div>
+        </td>        
+    </tr>
+    <tr>
+        <td style="width: 130mm;" colspan="5" valign="top">
+            <div style="width: 65mm;">Дополнения</div>
+        </td>
+
+    </tr>    
+ 
+</tbody></table>
+<br>
+
+<table class="invoice_items" align="center" cellpadding="3" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th style="width:10mm;">№</th>
+        <th>Предмет счета</th>
+        <th style="width:13mm;">Кол-во</th>
+        <th style="width:17mm;">Ед.изм</th>
+        <th style="width:22mm;">Цена</th>
+        <th style="width:18mm;">НДС, %</th>
+        <th style="width:22mm;">Сумма НДС</th>
+        <th style="width:22mm;">Полн. ст-ть</th>
+    </tr>
+    </thead>
+    <tbody>
+	{{ goods }}
+    </tbody>
+</table>
+
+
+<table border="0" cellpadding="3" cellspacing="0" width="100%">
+    <tbody><tr>
+        <td style="width:140mm; text-align:right; font-size: 14px;">Сумма без НДС:</td>
+        <td style="width:30mm; text-align:right; font-size: 14px;">{{ ndsless_price }}</td>
+        <td></td>        
+    </tr>
+    <tr>
+        <td style="width:140mm; text-align:right; font-size: 14px;">Налог на добавленную стоимость:</td>
+        <td style="width:30mm;text-align:right; font-size: 14px;">{{ nds }}</td>
+        <td></td>        
+    </tr>
+    <tr>
+        <td style="width:140mm; font-weight:bold;  text-align:right; font-size: 14px;">Итого сумма к оплате:</td>
+        <td style="width:30mm; font-weight:bold;  text-align:right; font-size: 14px;">{{ price.total }}</td>
+        <td></td>        
+    </tr>
+    <tr>
+        <td style="width:170mm; font-weight:bold;  text-align:right; font-size: 14px;" colspan="2">{{ text_price }}</td>
+
+        <td></td>        
+    </tr>
+</tbody></table>
+
+<div style="font-weight: bold; font-size: 14px; padding:5px; text-align:center;border-top:1px solid;">
+&nbsp;
+</div>
+
+<div style="position:relative">
+<div style="position:absolute; top: 45px; left: 200px;z-index: 1;width: 42mm;"><img src="http://img.rg.ru/i/subscribe/signatures/[invoice_rg_id]_stamp.png" style="width: 42mm;"></div>
+<table border="0" cellpadding="3" cellspacing="0" width="100%" style="z-index: 5; position:relative">
+    <tbody>
+	<tr>
+      
+        <td style="text-align:center; font-size: 15px;" colspan=3><b><i>Счет действителен для оплаты до {{ due_date | date("Y-m-d") }} включительно</i></b><br><br></td>
+              
+    </tr>
+	
+
+	<tr>
+        <td style="width:120mm; text-align:right; font-size: 14px;">Руководитель организации</td>
+        <td style="width:60mm; text-align:center; font-size: 14px; border-bottom: 1px solid;"><img src="http://img.rg.ru/i/subscribe/signatures/[invoice_rg_id]_director.png" style="/*width:[invoice_rg_director_width]mm/*130px*/; max-width: 60mm; max-height: 25mm;"></td>
+        <td style="width:60mm; text-align:left; font-size: 14px;">{{ vendor.headName }}</td>
+    </tr>
+    <tr>
+        <td style="width:120mm;">&nbsp;</td>
+        <td style="width:60mm; text-align:center; font-size: 10px;">подпись</td>
+        <td>&nbsp;</td>        
+    </tr>    
+    <!--<tr>
+        <td style="height:10mm;" colspan="3">&nbsp;</td>
+    </tr> -->    
+    <tr>
+        <td style="width:120mm; text-align:right; font-size: 14px;">{{ vendor.accountantTitle }}</td>
+        <td style="width:60mm; text-align:center; font-size: 14px; border-bottom: 1px solid;"><img src="http://img.rg.ru/i/subscribe/signatures/[invoice_rg_id]_accountant.png" style="/*width:[invoice_rg_accountant_width]mm/*130px*/; max-width: 60mm; max-height: 25mm;"></td>
+        <td style="width:60mm; text-align:left; font-size: 14px;">{{ vendor.accountantName }}</td>
+    </tr>
+    <tr>
+        <td style="width:120mm;">&nbsp;</td>
+        <td style="width:60mm; text-align:center; font-size: 10px;">подпись</td>
+        <td>&nbsp;</td>        
+    </tr>
+
+	
+	<!--<tr>
+      
+        <td style="text-align:center; font-size: 10px;" colspan=3>Телефоны отдела подписки 8-499-257-50-19</td>
+              
+    </tr>	-->
+	
+	<tr>
+      
+        <td style="text-align:center; font-size: 12px;" colspan=3><br>При оплате позднее установленных сроков редакция оставляет за собой право на изменение даты начала подписки.</td>
+              
+    </tr>	
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+</body></html>
