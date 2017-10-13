@@ -457,4 +457,91 @@ class Vendor
     {
         return $this->accountant_title;
     }
+    /**
+     * @var string
+     */
+    private $stamp_img;
+
+    /**
+     * @var string
+     */
+    private $head_sign_img;
+
+    /**
+     * @var string
+     */
+    private $accountant_sign_img;
+
+
+    /**
+     * Set stampImg
+     *
+     * @param string $stampImg
+     *
+     * @return Vendor
+     */
+    public function setStampImg($stampImg)
+    {
+        $this->stamp_img = $stampImg;
+
+        return $this;
+    }
+
+    /**
+     * Get stampImg
+     *
+     * @return string
+     */
+    public function getStampImg()
+    {
+        return $this->stamp_img;
+    }
+
+    /**
+     * Set headSignImg
+     *
+     * @param string $headSignImg
+     *
+     * @return Vendor
+     */
+    public function setHeadSignImg($headSignImg)
+    {
+        $this->head_sign_img = $headSignImg;
+
+        return $this;
+    }
+
+    /**
+     * Get headSignImg
+     *
+     * @return string
+     */
+    public function getHeadSignImg()
+    {
+        return $this->head_sign_img;
+    }
+
+    /**
+     * Set accountantSignImg
+     *
+     * @param string $accountantSignImg
+     *
+     * @return Vendor
+     */
+    public function setAccountantSignImg($accountantSignImg)
+    {
+        $this->accountant_sign_img = $accountantSignImg;
+
+        return $this;
+    }
+
+    /**
+     * Get accountantSignImg
+     *
+     * @return string
+     */
+    public function getAccountantSignImg()
+    {
+        return $this->accountant_sign_img;
+    }
 }

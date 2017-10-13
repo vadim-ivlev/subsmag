@@ -70,4 +70,13 @@ Rg\ApiBundle\Entity\Vendor:
             type: string
             length: '100'
             column: accountant_name
+        stamp_img:
+            type: string
+            column: stamp_img
+        head_sign_img:
+            type: string
+            column: head_sign_img
+        accountant_sign_img:
+            type: string
+            column: accountant_sign_img
     lifecycleCallbacks: {  }
