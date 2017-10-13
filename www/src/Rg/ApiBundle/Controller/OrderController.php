@@ -406,8 +406,15 @@ class OrderController extends Controller
 //            $price->decimal = fmod($price->total, 1); // bad idea cause of float division tricks!!!
         $price->decimal = floor( ( $order_price - $price->integer ) * 100);
 
-        $nds = bcsub($order_price, bcdiv($order_price, '1.18', 2), 2);
-        $ndsless_price = bcsub($order_price, $nds, 2);
+        $price_for_nds = number_format($order_price, 2, '.', '');
+
+        $nds_float = $order_price - ($order_price / 1.18);
+        $ndsless_price_float = $price_for_nds - $nds_float;
+
+        $nds = number_format($nds_float, 2, '.', '');
+        $ndsless_price = number_format($ndsless_price_float, 2, '.', '');
+//        $nds = bcsub($price_for_nds, bcdiv($price_for_nds, '1.18', 2), 2);
+//        $ndsless_price = bcsub($price_for_nds, $nds, 2);
 
         $due_date = $order->getDate()->add(
             new \DateInterval('P7D')
