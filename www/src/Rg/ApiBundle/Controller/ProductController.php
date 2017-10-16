@@ -210,7 +210,7 @@ class ProductController extends Controller
 
                 $prices = $filtered_tariffs->map(
                     function (Tariff $tariff) {
-                        return $tariff->getPrice();
+                        return ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice());
                     }
                 )
                     ->toArray();
@@ -240,60 +240,12 @@ class ProductController extends Controller
         );
     }
 
-    public function showAction($id)
-    {
-        $out = new Out();
-
-        $em = $this->getDoctrine()->getManager();
-
-        $product = $em->getRepository('RgApiBundle:Product')->find($id);
-
-        if (!$product) {
-            $arrError = [
-                'status' => "error",
-                'description' => 'Комплект не найден!',
-            ];
-            return $out->json($arrError);
-        }
-
-        $editions = array_map(
-            [$this->get('rg_api.edition_normalizer'), 'convertToArray'],
-            iterator_to_array($product->getEditions())
-        );
-
-        $prod = [
-            'id' => $product->getId(),
-            'name' => $product->getName(),
-            'description' => $product->getDescription(),
-            'postal_index' => $product->getPostalIndex(),
-            'is_kit' => $product->getIsKit(),
-            'is_archive' => $product->getIsArchive(),
-            'outer_link' => $product->getOuterLink(),
-            'sort' => $product->getSort(),
-            'editions' => $editions,
-        ];
-
-        $response = $out->json($prod);
-
-        return $response;
-    }
-
-    public function createAction(Request $request)
-    {
-        return (new Out())->json( ['ask' => 'wait for a while, please.']);
-    }
-
-    public function editAction($id, Request $request)
-    {
-        return (new Out())->json( ['ask' => 'wait for a while, please.']);
-    }
-
     private function appendPrices(Collection $tariff_collection): Collection
     {
         return $tariff_collection->map(
             function (Tariff $tariff) {
                 $timeunit = $tariff->getTimeunit();
-                $price = $tariff->getPrice();
+                $price = ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice());
                 $id = $tariff->getId();
 
                 $fake_discount = $timeunit->getDuration() == 1 ? 0 : 5.5;

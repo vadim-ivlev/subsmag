@@ -33,6 +33,11 @@ class OrderController extends Controller
         $order_details = json_decode(
             $request->getContent()
         );
+        // если передан не json
+        if (is_null($order_details)) {
+            $error = 'not valid json.';
+            return (new Out())->json(['error' => $error, 'debug' => $order_details,]);
+        }
 
         $order = new Order();
         $order->setDate(new \DateTime());
@@ -79,6 +84,7 @@ class OrderController extends Controller
             $em = $doctrine->getManager();
             $em->persist($legal);
             $em->flush();
+
             $order->setLegal($legal);
 
             ###

@@ -15,7 +15,12 @@ class Tariff
     /**
      * @var float
      */
-    private $price;
+    private $catalogue_price;
+
+    /**
+     * @var float
+     */
+    private $delivery_price;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -66,27 +71,51 @@ class Tariff
     }
 
     /**
-     * Set price
+     * Set cataloguePrice
      *
-     * @param float $price
+     * @param float $cataloguePrice
      *
      * @return Tariff
      */
-    public function setPrice($price)
+    public function setCataloguePrice($cataloguePrice)
     {
-        $this->price = $price;
+        $this->catalogue_price = $cataloguePrice;
 
         return $this;
     }
 
     /**
-     * Get price
+     * Get cataloguePrice
      *
      * @return float
      */
-    public function getPrice()
+    public function getCataloguePrice()
     {
-        return $this->price;
+        return $this->catalogue_price;
+    }
+
+    /**
+     * Set deliveryPrice
+     *
+     * @param float $deliveryPrice
+     *
+     * @return Tariff
+     */
+    public function setDeliveryPrice($deliveryPrice)
+    {
+        $this->delivery_price = $deliveryPrice;
+
+        return $this;
+    }
+
+    /**
+     * Get deliveryPrice
+     *
+     * @return float
+     */
+    public function getDeliveryPrice()
+    {
+        return $this->delivery_price;
     }
 
     /**
@@ -243,3 +272,4 @@ class Tariff
         return $this->medium;
     }
 }
+

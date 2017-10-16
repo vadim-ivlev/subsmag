@@ -193,7 +193,7 @@ class CartController extends Controller implements SessionHasCartController
                     'medium' => $medium->getName(),
                     'delivery' => $delivery->getName(),
                     'quantity' => $cart_item->getQuantity(),
-                    'price' => $tariff->getPrice(),
+                    'price' => ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice()),
                     'cost' => $cost,
                 ];
             },

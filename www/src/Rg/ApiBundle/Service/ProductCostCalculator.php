@@ -24,7 +24,7 @@ class ProductCostCalculator
 
         // вычислить стоимость единицы позиции по формуле
         // cost = tu_amount * tariff.price
-        $cost = $timeunit_amount * $tariff->getPrice();
+        $cost = $timeunit_amount * ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice());
 
         return $cost;
     }

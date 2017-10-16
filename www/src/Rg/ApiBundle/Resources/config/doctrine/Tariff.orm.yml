@@ -9,9 +9,12 @@ Rg\ApiBundle\Entity\Tariff:
             generator:
                 strategy: AUTO
     fields:
-        price:
+        catalogue_price:
             type: float
-            column: price
+            column: catalogue_price
+        delivery_price:
+            type: float
+            column: delivery_price
     oneToMany:
         items:
             targetEntity: Item
