@@ -198,6 +198,25 @@ class ProductController extends Controller
                     function (Tariff $tariff) use ($area) {
                         $criterion = ($tariff->getZone()->getId() == $area->getZone()->getId());
 
+                        // есть два типа тарифов -- месячные и {полугодовые-годовые}
+                        // год тарифа д.б. не меньше текущего года.
+                        // первый месяц тарифа, если не нулевой (это месячный), д.б. не меньше текущего месяца.
+                        /** @var \DateTime $time */
+                        $time = $this->current_time;
+                        $current_month = (int) $time->format('m');
+                        $current_year = (int) $time->format('Y');
+
+                        // если больший год, то месяца не фильтруем
+                        $tariff_year = (int)$tariff->getTimeunit()->getYear();
+                        if ( $tariff_year < $current_year ) return false;
+                        if ( $tariff_year > $current_year ) return $criterion;
+
+                        // если текущий год, то первый месяц тарифа д.б. не меньше текущего месяца.
+                        $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
+                        if ($tariff_first_month > 0) {
+                            $criterion = $criterion && ($tariff_first_month >= $current_month );
+                        }
+
                         return $criterion;
                     }
                 );
