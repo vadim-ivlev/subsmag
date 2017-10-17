@@ -76,7 +76,7 @@ class PatriaController extends Controller
 
                                 $issue['patriff'] = $patriff->getId();
 
-                                $issue['price'] = $patriff->getPrice();
+                                $issue['price'] = ($patriff->getCataloguePrice() + $patriff->getDeliveryPrice());
 
                                 return $issue;
                             },

@@ -334,7 +334,7 @@ class OrderController extends Controller
                 $patritem->setPatriff($patriff);
 
                 // стоимость единицы архивной позиции
-                $cost = $patriff->getPrice();
+                $cost = ($patriff->getCataloguePrice() + $patriff->getDeliveryPrice());
                 $patritem->setCost($cost);
 
                 // к какому заказу относится
@@ -427,58 +427,96 @@ class OrderController extends Controller
         $price = new \stdClass();
         $price->total = number_format($order_price, 2, ',', '');
         $price->integer = floor($order_price);
-//            $price->decimal = fmod($price->total, 1); // bad idea cause of float division tricks!!!
         $price->decimal = floor( ( $order_price - $price->integer ) * 100);
-
-        $price_for_nds = number_format($order_price, 2, '.', '');
-
-        $nds_float = $order_price - ($order_price / 1.18);
-        $ndsless_price_float = $price_for_nds - $nds_float;
-
-        $nds = number_format($nds_float, 2, '.', '');
-        $ndsless_price = number_format($ndsless_price_float, 2, '.', '');
-//        $nds = bcsub($price_for_nds, bcdiv($price_for_nds, '1.18', 2), 2);
-//        $ndsless_price = bcsub($price_for_nds, $nds, 2);
 
         $due_date = $order->getDate()->add(
             new \DateInterval('P7D')
         );
 
-        ## the names of ordered items
-        $goods = [];
+        $ndsless_total = 0;
+        $nds_total = 0;
 
-        /** @var Item $item */
-        foreach ($items as $item) {
-            $product = $item->getTariff()->getProduct();
+        $invoice_items = array_map(
+            function (Item $item) use (&$nds_total, &$ndsless_total) {
+                $tariff = $item->getTariff();
 
-            $month = $item->getMonth();
-            $first_month = $month->getNumber();
-            $last_month = $first_month + $item->getDuration();
+                $delivery_cost = $item->getQuantity() * $item->getCost() * $tariff->getDeliveryPrice() / ($tariff->getDeliveryPrice() + $tariff->getCataloguePrice());
 
-            $short_descr = $product->getName() .
-                ' ' .
-                $first_month .
-                '-' .
-                $last_month .
-                "'" .
-                $month->getYear();
+                $del_nds_float = round($delivery_cost - ($delivery_cost / 1.18), 2, PHP_ROUND_HALF_DOWN);
+                $del_ndsless_float = $delivery_cost - $del_nds_float;
 
-            $goods[] = $short_descr;
-        }
+                $del_nds = number_format($del_nds_float, 2, '.', '');
+                $del_ndsless = number_format($del_ndsless_float, 2, '.', '');
 
-        /** @var Patritem $patritem */
-        foreach ($patritems as $patritem) {
-            $issue = $patritem->getPatriff()->getIssue();
+                $catalogue_cost = $item->getQuantity() * $item->getCost() * $tariff->getCataloguePrice() / ($tariff->getDeliveryPrice() + $tariff->getCataloguePrice());
 
-            $patria = 'Родина №' .
-                $issue->getMonth() .
-                "'" .
-                $issue->getYear();
+                $cat_nds_float = round($catalogue_cost - ($catalogue_cost / 1.10), 2, PHP_ROUND_HALF_DOWN);
+                $cat_ndsless_float = $catalogue_cost - $cat_nds_float;
 
-            $goods[] = $patria;
-        }
+                $cat_nds = number_format($cat_nds_float, 2, '.', '');
+                $cat_ndsless = number_format($cat_ndsless_float, 2, '.', '');
 
-//        $names_list = join(', ', $goods);
+                $ndsless_total += $cat_ndsless_float + $del_ndsless_float;
+                $nds_total += $cat_nds_float + $del_nds_float;
+
+                return [
+                    'name' => $tariff->getProduct()->getName(),
+                    'quantity' => $item->getQuantity(),
+                    'cat_cost' => $catalogue_cost,
+                    'cat_nds' => $cat_nds,
+                    'cat_ndsless' => $cat_ndsless,
+                    'del_cost' => $delivery_cost,
+                    'del_nds' => $del_nds,
+                    'del_ndsless' => $del_ndsless,
+                ];
+            },
+            $items
+        );
+
+        $invoice_patritems = array_map(
+            function (Patritem $patritem) use (&$nds_total, &$ndsless_total) {
+                $patriff = $patritem->getPatriff();
+                $name = "Родина №" . $patriff->getIssue()->getMonth() . "'" . $patriff->getIssue()->getYear();
+
+                $patriff = $patritem->getPatriff();
+
+//                $delivery_cost = $patriff->getDeliveryPrice() * $patritem->getQuantity();
+                $delivery_cost = $patritem->getQuantity() * $patritem->getCost() * $patriff->getDeliveryPrice() / ($patriff->getDeliveryPrice() + $patriff->getCataloguePrice());
+
+                $del_nds_float = round($delivery_cost - ($delivery_cost / 1.18), 2, PHP_ROUND_HALF_DOWN);
+                $del_ndsless_float = $delivery_cost - $del_nds_float;
+
+                $del_nds = number_format($del_nds_float, 2, '.', '');
+                $del_ndsless = number_format($del_ndsless_float, 2, '.', '');
+
+//                $catalogue_cost = $patriff->getCataloguePrice() * $patritem->getQuantity();
+                $catalogue_cost = $patritem->getQuantity() * $patritem->getCost() * $patriff->getCataloguePrice() / ($patriff->getDeliveryPrice() + $patriff->getCataloguePrice());
+
+                $cat_nds_float = round($catalogue_cost - ($catalogue_cost / 1.10), 2, PHP_ROUND_HALF_DOWN);
+                $cat_ndsless_float = $catalogue_cost - $cat_nds_float;
+
+                $cat_nds = number_format($cat_nds_float, 2, '.', '');
+                $cat_ndsless = number_format($cat_ndsless_float, 2, '.', '');
+
+                $ndsless_total += $cat_ndsless_float + $del_ndsless_float;
+                $nds_total += $cat_nds_float + $del_nds_float;
+
+                return [
+                    'name' => $name,
+                    'quantity' => $patritem->getQuantity(),
+                    'cat_cost' => $patriff->getCataloguePrice() * $patritem->getQuantity(),
+                    'cat_nds' => $cat_nds,
+                    'cat_ndsless' => $cat_ndsless,
+                    'del_cost' => $delivery_cost,
+                    'del_nds' => $del_nds,
+                    'del_ndsless' => $del_ndsless,
+                ];
+            },
+            $patritems
+        );
+
+        $nds = number_format($nds_total, 2, '.', '');
+        $ndsless = number_format($ndsless_total, 2, '.', '');
 
         $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
 
@@ -488,11 +526,11 @@ class OrderController extends Controller
             'legal' => $order->getLegal(),
             'price' => $price,
             'nds' => $nds,
-            'ndsless_price' => $ndsless_price,
+            'ndsless' => $ndsless,
             'text_price' => $this->get('rg_api.price_to_text_converter')->convert($price->integer, $price->decimal),
             'due_date' => $due_date,
-//            'goods' => $names_list,
-            'goods' => $goods,
+            'items' => $invoice_items,
+            'patritems' => $invoice_patritems,
             'permalink_id' => $permalink_id,
         ]);
 

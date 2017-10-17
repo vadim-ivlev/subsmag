@@ -217,7 +217,7 @@ class CartController extends Controller implements SessionHasCartController
                 /** @var Delivery $delivery */
                 $delivery = $patriff->getDelivery();
 
-                $price = $patriff->getPrice();
+                $price = ($patriff->getCataloguePrice() + $patriff->getDeliveryPrice());
                 $quantity = $cart_patritem->getQuantity();
                 $cost = $price * $quantity;
 

@@ -129,7 +129,7 @@ li.ie-safari a {background-position:-400px 0}
             <div style="width: 130mm;">Плательщик и его адрес</div>
 			
 			<div style="width: 130mm;">ИНН&nbsp;{{ legal.inn }}&nbsp;&nbsp;КПП&nbsp;{{ legal.kpp }}&nbsp;{{ legal.name }}<br>
-            {{ legal.postcode }}, {{ legal.city.area.name }}, {{ legal.city.name }},&nbsp;ул.&nbsp;{{ legal.street }},&nbsp;д.&nbsp;{{ legal.buildingSubnumber }}{{ legal.buildingPart }}{{ legal.appartment }}<br>
+            {{ legal.postcode }}, {{ legal.city.area.name }}, {{ legal.city.name }},&nbsp;ул.&nbsp;{{ legal.street }},&nbsp;д.&nbsp;{{ legal.buildingSubnumber }},{{ legal.buildingPart }},{{ legal.appartment }}<br>
 			Расч.&nbsp;счет:&nbsp;{{ legal.bankAccount }}<br>
 			Банк:&nbsp;{{ legal.bankName }}<br>
 			</div>
@@ -230,11 +230,11 @@ li.ie-safari a {background-position:-400px 0}
     </thead>
     <tbody>
 
-    {% for good in goods %}
+    {% for item in items %}
     <tr>
         <td style="width:10mm;">{{ loop.index }}</td>
-        <td>{{ good }}</td>
-        <td style="width:13mm;">[invoice_tariff_count]</td>
+        <td>Подписка {{ item.name }}</td>
+        <td style="width:13mm;">{{ item.quantity }}</td>
         <td style="width:17mm;">Комплект</td>
         <td style="width:22mm;"><!--111222--></td>
         <td style="width:18mm;">&nbsp;</td>
@@ -246,21 +246,53 @@ li.ie-safari a {background-position:-400px 0}
         <td>каталожная стоимость</td>
         <td style="width:13mm;">&nbsp;</td>
         <td style="width:17mm;">&nbsp;</td>
-        <td style="width:22mm;">[invoice_tariff_catalog]</td>
+        <td style="width:22mm;">{{ item.cat_ndsless }}</td>
         <td style="width:18mm;">10</td>
-        <td style="width:22mm;">[invoice_tariff_catalog_only_nds]</td>
-        <td style="width:22mm;">[invoice_tariff_catalog_plus_nds]</td>
+        <td style="width:22mm;">{{ item.cat_nds }}</td>
+        <td style="width:22mm;">{{ item.cat_cost }}</td>
     </tr>
     <tr>
         <td style="width:10mm;">&nbsp;</td>
         <td>доставочная стоимость</td>
         <td style="width:13mm;">&nbsp;</td>
         <td style="width:17mm;">&nbsp;</td>
-        <td style="width:22mm;">[invoice_tariff_delivery]</td>
+        <td style="width:22mm;">{{ item.del_ndsless }}</td>
         <td style="width:18mm;">18</td>
-        <td style="width:22mm;">[invoice_tariff_delivery_only_nds]</td>
-        <td style="width:22mm;">[invoice_tariff_delivery_plus_nds]</td>
+        <td style="width:22mm;">{{ item.del_nds }}</td>
+        <td style="width:22mm;">{{ item.del_cost }}</td>
     </tr>
+    {% endfor %}
+    {% for patritem in patritems %}
+        <tr>
+            <td style="width:10mm;">{{ loop.index }}</td>
+            <td>Архив журнала {{ patritem.name }}</td>
+            <td style="width:13mm;">{{ patritem.quantity }}</td>
+            <td style="width:17mm;">Комплект</td>
+            <td style="width:22mm;"><!--111222--></td>
+            <td style="width:18mm;">&nbsp;</td>
+            <td style="width:22mm;">&nbsp;</td>
+            <td style="width:22mm;">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width:10mm;">&nbsp;</td>
+            <td>каталожная стоимость</td>
+            <td style="width:13mm;">&nbsp;</td>
+            <td style="width:17mm;">&nbsp;</td>
+            <td style="width:22mm;">{{ patritem.cat_ndsless }}</td>
+            <td style="width:18mm;">10</td>
+            <td style="width:22mm;">{{ patritem.cat_nds }}</td>
+            <td style="width:22mm;">{{ patritem.cat_cost }}</td>
+        </tr>
+        <tr>
+            <td style="width:10mm;">&nbsp;</td>
+            <td>доставочная стоимость</td>
+            <td style="width:13mm;">&nbsp;</td>
+            <td style="width:17mm;">&nbsp;</td>
+            <td style="width:22mm;">{{ patritem.del_ndsless }}</td>
+            <td style="width:18mm;">18</td>
+            <td style="width:22mm;">{{ patritem.del_nds }}</td>
+            <td style="width:22mm;">{{ patritem.del_cost }}</td>
+        </tr>
     {% endfor %}
 
     </tbody>
@@ -270,7 +302,7 @@ li.ie-safari a {background-position:-400px 0}
 <table border="0" cellpadding="3" cellspacing="0" width="100%">
     <tbody><tr>
         <td style="width:140mm; text-align:right; font-size: 14px;">Сумма без НДС:</td>
-        <td style="width:30mm; text-align:right; font-size: 14px;">{{ ndsless_price }}</td>
+        <td style="width:30mm; text-align:right; font-size: 14px;">{{ ndsless }}</td>
         <td></td>        
     </tr>
     <tr>
