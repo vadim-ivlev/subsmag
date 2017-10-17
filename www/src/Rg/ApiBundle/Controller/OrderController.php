@@ -423,6 +423,8 @@ class OrderController extends Controller
             function (Item $item) use (&$nds_total, &$ndsless_total) {
                 $tariff = $item->getTariff();
 
+                $name = $this->get('rg_api.item_name')->form($item);
+
                 $delivery_cost = $item->getQuantity() * $item->getCost() * $tariff->getDeliveryPrice() / ($tariff->getDeliveryPrice() + $tariff->getCataloguePrice());
 
                 $del_nds_float = round($delivery_cost - ($delivery_cost / 1.18), 2, PHP_ROUND_HALF_DOWN);
@@ -443,7 +445,7 @@ class OrderController extends Controller
                 $nds_total += $cat_nds_float + $del_nds_float;
 
                 return [
-                    'name' => $tariff->getProduct()->getName(),
+                    'name' => $name,
                     'quantity' => $item->getQuantity(),
                     'cat_cost' => $catalogue_cost,
                     'cat_nds' => $cat_nds,
