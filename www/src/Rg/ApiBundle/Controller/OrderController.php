@@ -11,6 +11,7 @@ use Rg\ApiBundle\Entity\Legal;
 use Rg\ApiBundle\Entity\Notification;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Entity\Patritem;
+use Rg\ApiBundle\Exception\OrderException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -44,43 +45,12 @@ class OrderController extends Controller
 
         if ($order_details->is_legal) {
             // заказывает ЮЛ
-            $legal = new Legal();
-
-            $legal->setName($order_details->org_name);
-            $legal->setInn($order_details->inn);
-            $legal->setKpp($order_details->kpp);
-            $legal->setBankName($order_details->bank_name);
-            $legal->setBankAccount($order_details->bank_account);
-            $legal->setBankCorrAccount($order_details->bank_corr);
-            $legal->setBik($order_details->bik);
-
-//            $city = $doctrine->getRepository('RgApiBundle:City')
-//                ->findOneBy(['id' => $order_details->city_id]);
-
-            $legal->setCity($order_details->city);
-
-            $legal->setPostcode($order_details->postcode);
-            $legal->setStreet($order_details->street);
-            $legal->setBuildingNumber($order_details->building_number);
-            $legal->setBuildingSubnumber($order_details->building_subnumber);
-            $legal->setBuildingPart($order_details->building_part);
-            $legal->setAppartment($order_details->appartment);
-
-            $legal->setContactName($order_details->contact_name);
-            $legal->setContactPhone($order_details->contact_phone);
-            $legal->setContactFax($order_details->contact_fax ?? '');
-            $legal->setContactEmail($order_details->contact_email);
-
-            $delivery_city = $doctrine->getRepository('RgApiBundle:City')
-                ->findOneBy(['id' => $order_details->delivery_city_id]);
-            $legal->setDeliveryCity($delivery_city);
-
-            $legal->setDeliveryPostcode($order_details->delivery_postcode);
-            $legal->setDeliveryStreet($order_details->delivery_street);
-            $legal->setDeliveryBuildingNumber($order_details->delivery_building_number);
-            $legal->setDeliveryBuildingSubnumber($order_details->delivery_building_subnumber);
-            $legal->setDeliveryBuildingPart($order_details->delivery_building_part);
-            $legal->setDeliveryAppartment($order_details->delivery_appartment);
+            try {
+                $legal = $this->constructLegalFromJson($order_details);
+            } catch (OrderException $e) {
+                $error = 'Not valid data given.';
+                return (new Out())->json(['error' => $error, 'debug' => $e->getMessage(),]);
+            }
 
             $em = $doctrine->getManager();
             $em->persist($legal);
@@ -100,7 +70,14 @@ class OrderController extends Controller
             // заказывает ФЛ
             ### обработать контактные данные
 
-            $order->setAddress($order_details->address);
+            $city = $this->getDoctrine()->getRepository('RgApiBundle:City')
+                ->findOneBy(['id' => $order_details->city_id]);
+            if (is_null($city)) {
+                $error = 'City with id ' . $order_details->delivery_city_id . ' not found.';
+                return (new Out())->json(['error' => $error]);
+            }
+
+            $order->setAddress($order_details->address . ", " . $city->getName() . ", " . $city->getArea()->getName());
             #### фио
             $order->setName($order_details->name);
             #### телефон
@@ -552,5 +529,62 @@ class OrderController extends Controller
         ];
 
         return join(' ', $del);
+    }
+
+    private function constructLegalFromJson(\stdClass $order_details): Legal
+    {
+        $legal = new Legal();
+
+        $this->validateLegalDetails($order_details);
+
+        $legal->setName($order_details->org_name);
+
+        $legal->setInn($order_details->inn ?? '');
+        $legal->setKpp($order_details->kpp ?? '');
+        $legal->setBankName($order_details->bank_name ?? '');
+        $legal->setBankAccount($order_details->bank_account ?? '');
+        $legal->setBankCorrAccount($order_details->bank_corr ?? '');
+        $legal->setBik($order_details->bik ?? '');
+
+//            $city = $doctrine->getRepository('RgApiBundle:City')
+//                ->findOneBy(['id' => $order_details->city_id]);
+
+        $legal->setCity($order_details->city ?? '');
+
+        $legal->setPostcode($order_details->postcode ?? '');
+        $legal->setStreet($order_details->street ?? '');
+        $legal->setBuildingNumber($order_details->building_number ?? '');
+        $legal->setBuildingSubnumber($order_details->building_subnumber ?? '');
+        $legal->setBuildingPart($order_details->building_part ?? '');
+        $legal->setAppartment($order_details->appartment ?? '');
+
+        $legal->setContactName($order_details->contact_name);
+        $legal->setContactPhone($order_details->contact_phone);
+        $legal->setContactFax($order_details->contact_fax ?? '');
+        $legal->setContactEmail($order_details->contact_email);
+
+        $delivery_city = $this->getDoctrine()->getRepository('RgApiBundle:City')
+            ->findOneBy(['id' => $order_details->delivery_city_id]);
+        if (is_null($delivery_city)) throw new OrderException('City with id ' . $order_details->delivery_city_id . ' not found.');
+
+        $legal->setDeliveryCity($delivery_city);
+
+        $legal->setDeliveryPostcode($order_details->delivery_postcode ?? '');
+        $legal->setDeliveryStreet($order_details->delivery_street ?? '');
+        $legal->setDeliveryBuildingNumber($order_details->delivery_building_number ?? '');
+        $legal->setDeliveryBuildingSubnumber($order_details->delivery_building_subnumber ?? '');
+        $legal->setDeliveryBuildingPart($order_details->delivery_building_part ?? '');
+        $legal->setDeliveryAppartment($order_details->delivery_appartment ?? '');
+
+        return $legal;
+    }
+
+    private function validateLegalDetails(\stdClass $order_details)
+    {
+        if (empty($order_details->org_name)) throw new OrderException('empty organization name');
+
+        if (empty($order_details->contact_name)) throw new OrderException('empty contact name');
+        if (empty($order_details->contact_phone)) throw new OrderException('empty contact phone');
+        if (empty($order_details->contact_email)) throw new OrderException('empty contact email');
     }
 }
