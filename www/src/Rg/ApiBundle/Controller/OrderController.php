@@ -12,6 +12,7 @@ use Rg\ApiBundle\Entity\Notification;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Entity\Patritem;
 use Rg\ApiBundle\Exception\OrderException;
+use Rg\ApiBundle\Exception\PlatronException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -73,7 +74,7 @@ class OrderController extends Controller
             $city = $this->getDoctrine()->getRepository('RgApiBundle:City')
                 ->findOneBy(['id' => $order_details->city_id]);
             if (is_null($city)) {
-                $error = 'City with id ' . $order_details->delivery_city_id . ' not found.';
+                $error = 'City with id ' . $order_details->city_id . ' not found.';
                 return (new Out())->json(['error' => $error]);
             }
 
@@ -128,9 +129,6 @@ class OrderController extends Controller
         }
         $em->flush();
 
-        ## очищаем корзину
-        $this->get('rg_api.cart_controller')->emptyAction($session);
-
         ## переход к оплате
         $payment_name = $order->getPayment()->getName();
 
@@ -139,20 +137,25 @@ class OrderController extends Controller
                 # передать данные о платеже,
                 # получить №транзакции и урл для редиректа
             /** @var \SimpleXMLElement $platron_response */
-            $platron_response = $this->get('rg_api.platron')->init($order);
-            if ($platron_response === null) {
+            try {
+                $platron_response = $this->get('rg_api.platron')->init($order);
+            } catch (PlatronException $e) {
                 $error = [
                     'error' => 'Platron: unparseable response',
-                    'description' => 'Order has been created, but an unparseable response received from Platron.',
+                    'description' => 'Order created, but Platron returned an unparseable response.',
                 ];
                 return (new Out())->json($error);
             }
+
             $redirect_url = (string) $platron_response->pg_redirect_url;
             $pg_payment_id = (string) $platron_response->pg_payment_id;
 
             ## сохранить id транзакции Платрона
             $order->setPgPaymentId($pg_payment_id);
             $em->persist($order);
+
+            ## с платроном всё в порядке, очищаем корзину
+            $this->get('rg_api.cart_controller')->emptyAction($session);
 
             ## подготовить запись для почтового уведомления
             $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
@@ -168,6 +171,8 @@ class OrderController extends Controller
             ];
 
         } elseif ($payment_name == 'receipt') {
+            ## очищаем корзину
+            $this->get('rg_api.cart_controller')->emptyAction($session);
 
             ## записать в очередь почтовое уведомление
             $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));

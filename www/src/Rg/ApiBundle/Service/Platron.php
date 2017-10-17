@@ -4,6 +4,7 @@ namespace Rg\ApiBundle\Service;
 
 
 use Rg\ApiBundle\Entity\Order;
+use Rg\ApiBundle\Exception\PlatronException;
 
 class Platron
 {
@@ -28,7 +29,7 @@ class Platron
         try {
             $response_simple_xml = new \SimpleXMLElement($response_xml_str);
         } catch (\Exception $e) {
-            return null;
+            throw new PlatronException('Unparseable response from Platron.');
         }
 
         if (!$this->simpleValidateInit($response_simple_xml)) {
