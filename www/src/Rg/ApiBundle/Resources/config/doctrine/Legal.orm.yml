@@ -33,6 +33,9 @@ Rg\ApiBundle\Entity\Legal:
         postcode:
             type: string
             column: postcode
+        city:
+            type: string
+            column: city
         street:
             type: string
             column: street
@@ -79,9 +82,9 @@ Rg\ApiBundle\Entity\Legal:
             type: string
             column: delivery_appartment
     manyToOne:
-        city:
-            targetEntity: City
-            inversedBy: legal_addresses
+#        city:
+#            targetEntity: City
+#            inversedBy: legal_addresses
         delivery_city:
             targetEntity: City
             inversedBy: legal_deliveries

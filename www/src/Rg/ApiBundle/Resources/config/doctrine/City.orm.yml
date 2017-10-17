@@ -25,9 +25,9 @@ Rg\ApiBundle\Entity\City:
             targetEntity: Area
             inversedBy: cities
     oneToMany:
-        legal_addresses:
-            targetEntity: Legal
-            mappedBy: city
+#        legal_addresses:
+#            targetEntity: Legal
+#            mappedBy: city
         legal_deliveries:
             targetEntity: Legal
             mappedBy: delivery_city

@@ -40,12 +40,22 @@ class Legal
     /**
      * @var string
      */
+    private $bank_corr_account;
+
+    /**
+     * @var string
+     */
     private $bik;
 
     /**
      * @var string
      */
     private $postcode;
+
+    /**
+     * @var string
+     */
+    private $city;
 
     /**
      * @var string
@@ -81,6 +91,11 @@ class Legal
      * @var string
      */
     private $contact_phone;
+
+    /**
+     * @var string
+     */
+    private $contact_fax;
 
     /**
      * @var string
@@ -121,11 +136,6 @@ class Legal
      * @var \Doctrine\Common\Collections\Collection
      */
     private $orders;
-
-    /**
-     * @var \Rg\ApiBundle\Entity\City
-     */
-    private $city;
 
     /**
      * @var \Rg\ApiBundle\Entity\City
@@ -271,6 +281,30 @@ class Legal
     }
 
     /**
+     * Set bankCorrAccount
+     *
+     * @param string $bankCorrAccount
+     *
+     * @return Legal
+     */
+    public function setBankCorrAccount($bankCorrAccount)
+    {
+        $this->bank_corr_account = $bankCorrAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get bankCorrAccount
+     *
+     * @return string
+     */
+    public function getBankCorrAccount()
+    {
+        return $this->bank_corr_account;
+    }
+
+    /**
      * Set bik
      *
      * @param string $bik
@@ -316,6 +350,30 @@ class Legal
     public function getPostcode()
     {
         return $this->postcode;
+    }
+
+    /**
+     * Set city
+     *
+     * @param string $city
+     *
+     * @return Legal
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * Get city
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
     }
 
     /**
@@ -484,6 +542,30 @@ class Legal
     public function getContactPhone()
     {
         return $this->contact_phone;
+    }
+
+    /**
+     * Set contactFax
+     *
+     * @param string $contactFax
+     *
+     * @return Legal
+     */
+    public function setContactFax($contactFax)
+    {
+        $this->contact_fax = $contactFax;
+
+        return $this;
+    }
+
+    /**
+     * Get contactFax
+     *
+     * @return string
+     */
+    public function getContactFax()
+    {
+        return $this->contact_fax;
     }
 
     /**
@@ -689,30 +771,6 @@ class Legal
     }
 
     /**
-     * Set city
-     *
-     * @param \Rg\ApiBundle\Entity\City $city
-     *
-     * @return Legal
-     */
-    public function setCity(\Rg\ApiBundle\Entity\City $city = null)
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * Get city
-     *
-     * @return \Rg\ApiBundle\Entity\City
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
      * Set deliveryCity
      *
      * @param \Rg\ApiBundle\Entity\City $deliveryCity
@@ -735,62 +793,5 @@ class Legal
     {
         return $this->delivery_city;
     }
-    /**
-     * @var string
-     */
-    private $bank_corr_account;
-
-
-    /**
-     * Set bankCorrAccount
-     *
-     * @param string $bankCorrAccount
-     *
-     * @return Legal
-     */
-    public function setBankCorrAccount($bankCorrAccount)
-    {
-        $this->bank_corr_account = $bankCorrAccount;
-
-        return $this;
-    }
-
-    /**
-     * Get bankCorrAccount
-     *
-     * @return string
-     */
-    public function getBankCorrAccount()
-    {
-        return $this->bank_corr_account;
-    }
-    /**
-     * @var string
-     */
-    private $contact_fax;
-
-
-    /**
-     * Set contactFax
-     *
-     * @param string $contactFax
-     *
-     * @return Legal
-     */
-    public function setContactFax($contactFax)
-    {
-        $this->contact_fax = $contactFax;
-
-        return $this;
-    }
-
-    /**
-     * Get contactFax
-     *
-     * @return string
-     */
-    public function getContactFax()
-    {
-        return $this->contact_fax;
-    }
 }
+

@@ -54,9 +54,10 @@ class OrderController extends Controller
             $legal->setBankCorrAccount($order_details->bank_corr);
             $legal->setBik($order_details->bik);
 
-            $city = $doctrine->getRepository('RgApiBundle:City')
-                ->findOneBy(['id' => $order_details->city_id]);
-            $legal->setCity($city);
+//            $city = $doctrine->getRepository('RgApiBundle:City')
+//                ->findOneBy(['id' => $order_details->city_id]);
+
+            $legal->setCity($order_details->city);
 
             $legal->setPostcode($order_details->postcode);
             $legal->setStreet($order_details->street);
