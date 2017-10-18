@@ -34,3 +34,5 @@ services:
 #        class: Rg\ApiBundle\Listeners\OrderExceptionListener
 #        tags:
 #            - { name: kernel.event_listener, event: kernel.exception }
+    rg_api.item_name:
+        class: Rg\ApiBundle\Service\ItemName
