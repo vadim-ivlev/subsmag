@@ -21,6 +21,9 @@ Rg\ApiBundle\Entity\Delivery:
             type: text
             length: '500'
             column: description
+        sort:
+            type: smallint
+            column: sort
     oneToMany:
         tariffs:
             targetEntity: Tariff

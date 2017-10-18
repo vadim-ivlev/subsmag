@@ -195,4 +195,33 @@ class Delivery
     {
         return $this->patriffs;
     }
+    /**
+     * @var integer
+     */
+    private $sort;
+
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     *
+     * @return Delivery
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
 }
