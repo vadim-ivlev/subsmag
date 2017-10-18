@@ -794,4 +794,3 @@ class Legal
         return $this->delivery_city;
     }
 }
-

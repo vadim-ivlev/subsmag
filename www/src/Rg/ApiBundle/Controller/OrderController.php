@@ -98,12 +98,14 @@ class OrderController extends Controller
             ];
             return (new Out())->json($resp);
         }
+        // запрещаем юрлицу платить квитанцией
         if (!is_null($order->getLegal()) && $payment->getName() == 'receipt') {
             $resp = [
                 'error' => 'Payment type not available for legal entity.',
             ];
             return (new Out())->json($resp);
         }
+
         $order->setPayment($payment);
 
         ### подготовим массив подписных позиций

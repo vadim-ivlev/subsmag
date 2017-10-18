@@ -242,4 +242,33 @@ class Sale
     {
         return $this->area;
     }
+    /**
+     * @var boolean
+     */
+    private $is_main;
+
+
+    /**
+     * Set isMain
+     *
+     * @param boolean $isMain
+     *
+     * @return Sale
+     */
+    public function setIsMain($isMain)
+    {
+        $this->is_main = $isMain;
+
+        return $this;
+    }
+
+    /**
+     * Get isMain
+     *
+     * @return boolean
+     */
+    public function getIsMain()
+    {
+        return $this->is_main;
+    }
 }

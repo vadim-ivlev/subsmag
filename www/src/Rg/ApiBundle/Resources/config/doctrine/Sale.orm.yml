@@ -18,6 +18,9 @@ Rg\ApiBundle\Entity\Sale:
         is_regional:
             type: boolean
             column: is_regional
+        is_main:
+            type: boolean
+            column: is_main
     manyToOne:
         product:
             targetEntity: Product
