@@ -16,8 +16,10 @@ class Platron
 
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
 
-    const API_URL = 'https://subsmag.rg.ru/api';
-    const BASE_URL = 'https://subsmag.rg.ru';
+//    const API_URL = 'https://subsmag.rg.ru/api';
+//    const BASE_URL = 'https://subsmag.rg.ru';
+    const API_URL = 'https://rg.ru/subsmag/api';
+    const BASE_URL = 'https://rg.ru/subsmag';
 
     public function init(Order $order)
     {
