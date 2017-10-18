@@ -137,6 +137,7 @@ class ProductController extends Controller
                                     'alias' => $delivery->getAlias(),
                                     'description' => $delivery->getDescription(),
                                     'name' => $delivery->getName(),
+                                    'sort' => $delivery->getSort(),
                                 ]);
                             }
                         );
@@ -145,6 +146,7 @@ class ProductController extends Controller
                             function($item) { return unserialize($item); },
                             array_values(array_unique($all_deliveries->toArray()))
                         );
+                        usort($unique_delivs, function($a, $b) { return $a['sort'] <=> $b['sort']; });
 
                         $unique_medium['deliveries'] = $unique_delivs;
 
