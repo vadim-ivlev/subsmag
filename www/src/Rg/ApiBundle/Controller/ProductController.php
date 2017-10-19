@@ -322,9 +322,13 @@ class ProductController extends Controller
         );
     }
 
-    private function fetchFilteredSales(Product $product, Area $area)
+    private function fetchFilteredSales(Product $product, Area $area, int $delivery_id)
     {
-        $sales = $product->getSales();
+        $sales = $product->getSales()->filter(
+            function (Sale $sale) use ($delivery_id) {
+                return $sale->getDelivery()->getId() == $delivery_id;
+            }
+        );
 
         ############
         /**
@@ -365,6 +369,7 @@ class ProductController extends Controller
                 return $sale;
             }
         );
+
 //                                dump($filtered_by_area_sales);
 //                                die;
         ############
@@ -404,7 +409,7 @@ class ProductController extends Controller
     private function appendDeliveries(Product $product, $area, $medium)
     {
         return function (array $delivery) use ($product, $area, $medium) {
-            $delivery['sales'] = $this->fetchFilteredSales($product, $area);
+            $delivery['sales'] = $this->fetchFilteredSales($product, $area, $delivery['id']);
 
             #######
             /**
