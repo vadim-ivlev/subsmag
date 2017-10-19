@@ -31,4 +31,7 @@ Rg\ApiBundle\Entity\Sale:
         area:
             targetEntity: Area
             inversedBy: sales
+        delivery:
+            targetEntity: Delivery
+            inversedBy: sales
     lifecycleCallbacks: {  }

@@ -224,4 +224,43 @@ class Delivery
     {
         return $this->sort;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $sales;
+
+
+    /**
+     * Add sale
+     *
+     * @param \Rg\ApiBundle\Entity\Sale $sale
+     *
+     * @return Delivery
+     */
+    public function addSale(\Rg\ApiBundle\Entity\Sale $sale)
+    {
+        $this->sales[] = $sale;
+
+        return $this;
+    }
+
+    /**
+     * Remove sale
+     *
+     * @param \Rg\ApiBundle\Entity\Sale $sale
+     */
+    public function removeSale(\Rg\ApiBundle\Entity\Sale $sale)
+    {
+        $this->sales->removeElement($sale);
+    }
+
+    /**
+     * Get sales
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSales()
+    {
+        return $this->sales;
+    }
 }

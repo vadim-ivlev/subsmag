@@ -31,4 +31,7 @@ Rg\ApiBundle\Entity\Delivery:
         patriffs:
             targetEntity: Patriff
             mappedBy: delivery
+        sales:
+            targetEntity: Sale
+            mappedBy: delivery
     lifecycleCallbacks: {  }

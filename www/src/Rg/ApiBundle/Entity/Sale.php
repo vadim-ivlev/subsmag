@@ -271,4 +271,33 @@ class Sale
     {
         return $this->is_main;
     }
+    /**
+     * @var \Rg\ApiBundle\Entity\Delivery
+     */
+    private $delivery;
+
+
+    /**
+     * Set delivery
+     *
+     * @param \Rg\ApiBundle\Entity\Delivery $delivery
+     *
+     * @return Sale
+     */
+    public function setDelivery(\Rg\ApiBundle\Entity\Delivery $delivery = null)
+    {
+        $this->delivery = $delivery;
+
+        return $this;
+    }
+
+    /**
+     * Get delivery
+     *
+     * @return \Rg\ApiBundle\Entity\Delivery
+     */
+    public function getDelivery()
+    {
+        return $this->delivery;
+    }
 }
