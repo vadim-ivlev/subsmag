@@ -409,4 +409,33 @@ class Product
     {
         return $this->editions;
     }
+    /**
+     * @var boolean
+     */
+    private $is_popular;
+
+
+    /**
+     * Set isPopular
+     *
+     * @param boolean $isPopular
+     *
+     * @return Product
+     */
+    public function setIsPopular($isPopular)
+    {
+        $this->is_popular = $isPopular;
+
+        return $this;
+    }
+
+    /**
+     * Get isPopular
+     *
+     * @return boolean
+     */
+    public function getIsPopular()
+    {
+        return $this->is_popular;
+    }
 }

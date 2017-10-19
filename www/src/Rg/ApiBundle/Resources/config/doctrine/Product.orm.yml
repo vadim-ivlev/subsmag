@@ -35,6 +35,9 @@ Rg\ApiBundle\Entity\Product:
         is_kit:
             type: boolean
             column: is_kit
+        is_popular:
+            type: boolean
+            column: is_popular
         sort:
             type: smallint
             column: sort
