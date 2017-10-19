@@ -49,6 +49,7 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
                 p.is_kit,
                 p.is_archive,
                 p.outer_link,
+                p.is_popular,
                 p.sort
             ')
             ->addSelect('s,t,d,m,z,a,e,month')
