@@ -20,8 +20,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OrderController extends Controller
 {
-    const MONTH = 2048; //100000'000000
-
     public function createAction(Request $request, SessionInterface $session)
     {
         $doctrine = $this->getDoctrine();

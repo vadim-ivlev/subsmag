@@ -7,12 +7,12 @@ use Rg\ApiBundle\Entity\Tariff;
 
 class ProductCostCalculator
 {
-    const MONTH = 2048;
+    const MONTH = [2048, 32];
 
     public function calculateTimeunitAmount(Tariff $tariff, int $duration) {
         $bitmask = $tariff->getTimeunit()->getBitmask();
 
-        if ($bitmask == self::MONTH) {
+        if (in_array($bitmask, self::MONTH)) {
             return $duration;
         }
         return 1;

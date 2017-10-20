@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CartController extends Controller implements SessionHasCartController
 {
-    const MONTH = 2048;
     public function indexAction(Request $request, SessionInterface $session)
     {
         /** @var Cart $cart */
