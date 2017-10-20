@@ -198,6 +198,9 @@ class ProductController extends Controller
 
                 $filtered_tariffs = $tariffs->filter(
                     function (Tariff $tariff) use ($area) {
+                        $price = $tariff->getCataloguePrice() + $tariff->getDeliveryPrice();
+                        if ($price == 0) return false;
+
                         $criterion = ($tariff->getZone()->getId() == $area->getZone()->getId());
 
                         // есть два типа тарифов -- месячные и {полугодовые-годовые}
