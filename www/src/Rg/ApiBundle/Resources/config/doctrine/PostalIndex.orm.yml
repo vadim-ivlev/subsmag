@@ -12,7 +12,7 @@ Rg\ApiBundle\Entity\PostalIndex:
         value:
             type: string
             length: '255'
-            column: name
+            column: value
     manyToOne:
         product:
             targetEntity: Product
