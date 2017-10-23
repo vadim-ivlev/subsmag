@@ -1,0 +1,20 @@
+Rg\ApiBundle\Entity\Timeblock:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\TimeblockRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: '255'
+            column: name
+    oneToMany:
+        postal_indexes:
+            targetEntity: PostalIndex
+            mappedBy: timeblock
+    lifecycleCallbacks: {  }

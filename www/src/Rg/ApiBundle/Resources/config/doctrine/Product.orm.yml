@@ -19,10 +19,6 @@ Rg\ApiBundle\Entity\Product:
         text:
             type: text
             column: "`text`"
-        postal_index:
-            type: string
-            length: '10'
-            column: postal_index
         is_active:
             type: boolean
             column: is_active
@@ -44,6 +40,9 @@ Rg\ApiBundle\Entity\Product:
     oneToMany:
         tariffs:
             targetEntity: Tariff
+            mappedBy: product
+        postal_indexes:
+            targetEntity: PostalIndex
             mappedBy: product
         sales:
             targetEntity: Sale

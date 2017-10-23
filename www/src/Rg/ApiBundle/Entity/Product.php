@@ -28,11 +28,6 @@ class Product
     private $text;
 
     /**
-     * @var string
-     */
-    private $postal_index;
-
-    /**
      * @var boolean
      */
     private $is_active;
@@ -53,6 +48,11 @@ class Product
     private $is_kit;
 
     /**
+     * @var boolean
+     */
+    private $is_popular;
+
+    /**
      * @var integer
      */
     private $sort;
@@ -61,6 +61,11 @@ class Product
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tariffs;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $postal_indexes;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -78,6 +83,7 @@ class Product
     public function __construct()
     {
         $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->postal_indexes = new \Doctrine\Common\Collections\ArrayCollection();
         $this->sales = new \Doctrine\Common\Collections\ArrayCollection();
         $this->editions = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -162,30 +168,6 @@ class Product
     public function getText()
     {
         return $this->text;
-    }
-
-    /**
-     * Set postalIndex
-     *
-     * @param string $postalIndex
-     *
-     * @return Product
-     */
-    public function setPostalIndex($postalIndex)
-    {
-        $this->postal_index = $postalIndex;
-
-        return $this;
-    }
-
-    /**
-     * Get postalIndex
-     *
-     * @return string
-     */
-    public function getPostalIndex()
-    {
-        return $this->postal_index;
     }
 
     /**
@@ -285,6 +267,30 @@ class Product
     }
 
     /**
+     * Set isPopular
+     *
+     * @param boolean $isPopular
+     *
+     * @return Product
+     */
+    public function setIsPopular($isPopular)
+    {
+        $this->is_popular = $isPopular;
+
+        return $this;
+    }
+
+    /**
+     * Get isPopular
+     *
+     * @return boolean
+     */
+    public function getIsPopular()
+    {
+        return $this->is_popular;
+    }
+
+    /**
      * Set sort
      *
      * @param integer $sort
@@ -340,6 +346,40 @@ class Product
     public function getTariffs()
     {
         return $this->tariffs;
+    }
+
+    /**
+     * Add postalIndex
+     *
+     * @param \Rg\ApiBundle\Entity\PostalIndex $postalIndex
+     *
+     * @return Product
+     */
+    public function addPostalIndex(\Rg\ApiBundle\Entity\PostalIndex $postalIndex)
+    {
+        $this->postal_indexes[] = $postalIndex;
+
+        return $this;
+    }
+
+    /**
+     * Remove postalIndex
+     *
+     * @param \Rg\ApiBundle\Entity\PostalIndex $postalIndex
+     */
+    public function removePostalIndex(\Rg\ApiBundle\Entity\PostalIndex $postalIndex)
+    {
+        $this->postal_indexes->removeElement($postalIndex);
+    }
+
+    /**
+     * Get postalIndexes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPostalIndexes()
+    {
+        return $this->postal_indexes;
     }
 
     /**
@@ -409,33 +449,5 @@ class Product
     {
         return $this->editions;
     }
-    /**
-     * @var boolean
-     */
-    private $is_popular;
-
-
-    /**
-     * Set isPopular
-     *
-     * @param boolean $isPopular
-     *
-     * @return Product
-     */
-    public function setIsPopular($isPopular)
-    {
-        $this->is_popular = $isPopular;
-
-        return $this;
-    }
-
-    /**
-     * Get isPopular
-     *
-     * @return boolean
-     */
-    public function getIsPopular()
-    {
-        return $this->is_popular;
-    }
 }
+

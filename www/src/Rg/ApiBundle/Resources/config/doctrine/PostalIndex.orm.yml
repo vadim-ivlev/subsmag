@@ -1,0 +1,23 @@
+Rg\ApiBundle\Entity\PostalIndex:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\PostalIndexRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        value:
+            type: string
+            length: '255'
+            column: name
+    manyToOne:
+        product:
+            targetEntity: Product
+            inversedBy: postal_indexes
+        timeblock:
+            targetEntity: Timeblock
+            inversedBy: postal_indexes
+    lifecycleCallbacks: {  }
