@@ -217,9 +217,10 @@ class ProductController extends Controller
                         if ( $tariff_year > $current_year ) return $criterion;
 
                         // если текущий год, то полугодие месячного/полугодового тарифа д.б. не меньше полугодия текущего месяца.
-                        $current_semiyear = $current_month < 7 ? 1 : 2;
+                        $current_semiyear = ($current_month < 7) ? 1 : 2;
                         $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
-                        $tariff_semiyear = $tariff_first_month < 7 ? 1 : 2;
+                        $tariff_semiyear = ($tariff_first_month < 7) ? 1 : 2;
+
                         if ($tariff_semiyear < $current_semiyear) return false;
 
                         return $criterion;
@@ -296,31 +297,32 @@ class ProductController extends Controller
     {
         return $tariffs->filter(
             function (Tariff $tariff) use ($product, $medium, $delivery, $area) {
-                    $criterion = ($tariff->getMedium()->getId() == $medium['id']);
-                    $criterion = $criterion && ($tariff->getDelivery()->getId() == $delivery['id']);
-                    $criterion = $criterion && ($tariff->getZone()->getId() == $area->getZone()->getId());
+                $criterion = ($tariff->getMedium()->getId() == $medium['id']);
+                $criterion = $criterion && ($tariff->getDelivery()->getId() == $delivery['id']);
+                $criterion = $criterion && ($tariff->getZone()->getId() == $area->getZone()->getId());
 
 
-                    // есть два типа тарифов -- месячные и {полугодовые-годовые}
-                    // год тарифа д.б. не меньше текущего года.
-                    // первый месяц тарифа, если не нулевой (это месячный), д.б. не меньше текущего месяца.
-                    /** @var \DateTime $time */
-                    $time = $this->current_time;
-                    $current_month = (int) $time->format('m');
-                    $current_year = (int) $time->format('Y');
+                // есть два типа тарифов -- месячные и {полугодовые-годовые}
+                // год тарифа д.б. не меньше текущего года.
+                // первый месяц тарифа, если не нулевой (это месячный), д.б. не меньше текущего месяца.
+                /** @var \DateTime $time */
+                $time = $this->current_time;
+                $current_month = (int) $time->format('m');
+                $current_year = (int) $time->format('Y');
 
-                    // если больший год, то месяца не фильтруем
-                    $tariff_year = (int)$tariff->getTimeunit()->getYear();
-                    if ( $tariff_year < $current_year ) return false;
-                    if ( $tariff_year > $current_year ) return $criterion;
+                // если больший год, то месяца не фильтруем
+                $tariff_year = (int)$tariff->getTimeunit()->getYear();
+                if ( $tariff_year < $current_year ) return false;
+                if ( $tariff_year > $current_year ) return $criterion;
 
-                    // если текущий год, то первый месяц тарифа д.б. не меньше текущего месяца.
-                    $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
-                    if ($tariff_first_month > 0) {
-                        $criterion = $criterion && ($tariff_first_month >= $current_month );
-                    }
+                // если текущий год, то полугодие месячного/полугодового тарифа д.б. не меньше полугодия текущего месяца.
+                $current_semiyear = ($current_month < 7) ? 1 : 2;
+                $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
+                $tariff_semiyear = ($tariff_first_month < 7) ? 1 : 2;
 
-                    return $criterion;
+                if ($tariff_semiyear < $current_semiyear) return false;
+
+                return $criterion;
             }
         );
     }
