@@ -13,6 +13,9 @@ Rg\ApiBundle\Entity\Timeblock:
             type: string
             length: '255'
             column: name
+        duration:
+            type: integer
+            column: duration
     oneToMany:
         postal_indexes:
             targetEntity: PostalIndex

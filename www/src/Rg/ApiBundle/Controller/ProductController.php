@@ -433,7 +433,11 @@ class ProductController extends Controller
 
             $timeunits_with_prices = $this->appendPrices($filtered_tariffs);
 
-            $delivery['tariffs'] = array_values($timeunits_with_prices->toArray());
+            $tars = array_values($timeunits_with_prices->toArray());
+
+            usort($tars, function($a, $b) { return $a['timeunit']['year'] <=> $b['timeunit']['year']; });
+
+            $delivery['tariffs'] = $tars;
             #######
             #######
 

@@ -97,4 +97,33 @@ class Timeblock
     {
         return $this->postal_indexes;
     }
+    /**
+     * @var integer
+     */
+    private $duration;
+
+
+    /**
+     * Set duration
+     *
+     * @param integer $duration
+     *
+     * @return Timeblock
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return integer
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
 }

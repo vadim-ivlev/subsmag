@@ -450,4 +450,3 @@ class Product
         return $this->editions;
     }
 }
-
