@@ -45,7 +45,6 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
                 p.name,
                 p.description,
                 p.text,
-                p.postal_index,
                 p.is_kit,
                 p.is_archive,
                 p.outer_link,
