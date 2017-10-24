@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderController extends Controller
 {
@@ -46,7 +48,7 @@ class OrderController extends Controller
                 $legal = $this->constructLegalFromJson($order_details);
             } catch (OrderException $e) {
                 $error = 'Not valid data given.';
-                return (new Out())->json(['error' => $error, 'debug' => $e->getMessage(),]);
+                return (new Out())->json(['error' => $error, 'description' => $e->getMessage(),]);
             }
 
             $em = $doctrine->getManager();
@@ -80,7 +82,12 @@ class OrderController extends Controller
             #### телефон
             $order->setPhone($order_details->phone);
             #### mail
-            $order->setEmail($order_details->email);
+            $email = $order_details->email;
+            if (!$this->isValidEmail($email)){
+                $error = 'Not valid data given.';
+                return (new Out())->json(['error' => $error, 'description' => 'Email ' . $email . ' is not valid.',]);
+            }
+            $order->setEmail($email);
         }
 
         $order->setIsPaid(false);
@@ -566,7 +573,10 @@ class OrderController extends Controller
         $legal->setContactName($order_details->contact_name);
         $legal->setContactPhone($order_details->contact_phone);
         $legal->setContactFax($order_details->contact_fax ?? '');
-        $legal->setContactEmail($order_details->contact_email);
+
+        $contactEmail = $order_details->contact_email;
+        if (!$this->isValidEmail($contactEmail)) throw new OrderException('Email ' . $order_details->contact_email . ' is not valid.');
+        $legal->setContactEmail($contactEmail);
 
         $delivery_city = $this->getDoctrine()->getRepository('RgApiBundle:City')
             ->findOneBy(['id' => $order_details->delivery_city_id]);
@@ -591,5 +601,16 @@ class OrderController extends Controller
         if (empty($order_details->contact_name)) throw new OrderException('empty contact name');
         if (empty($order_details->contact_phone)) throw new OrderException('empty contact phone');
         if (empty($order_details->contact_email)) throw new OrderException('empty contact email');
+    }
+
+    private function isValidEmail(string $email)
+    {
+        $validator = $this->get('validator');
+        $constraints = [
+            new Email(),
+            new NotBlank(),
+        ];
+        $error = $validator->validate($email, $constraints);
+        return !(count($error) > 0);
     }
 }

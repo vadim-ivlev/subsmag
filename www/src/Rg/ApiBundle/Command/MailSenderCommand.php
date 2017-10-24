@@ -73,6 +73,8 @@ class MailSenderCommand extends ContainerAwareCommand
             ->getQueueOfCreated()
         ;
 
+        //TODO: filter invalid email addresses
+
         $swift_sender = function (Notification $notification) use ($em, $output) {
             $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
             $mailer = new \Swift_Mailer($transport);
