@@ -273,7 +273,8 @@ class ProductController extends Controller
                 $price = ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice());
                 $id = $tariff->getId();
 
-                $discount = $tariff->getDiscount() ?? 0;
+                // скидка рассчитывается на фронте!
+//                $discount = $tariff->getDiscount() ?? 0;
 
                 $norm = [
                     'timeunit' => [
@@ -286,7 +287,7 @@ class ProductController extends Controller
                     'id' => $id,
                     'price' => $price,
 
-                    'discount' => $discount,
+//                    'discount' => $discount,
                 ];
                 return $norm;
             }
