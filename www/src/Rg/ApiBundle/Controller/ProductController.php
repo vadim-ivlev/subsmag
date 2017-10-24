@@ -435,7 +435,24 @@ class ProductController extends Controller
 
             $tars = array_values($timeunits_with_prices->toArray());
 
-            usort($tars, function($a, $b) { return $a['timeunit']['year'] <=> $b['timeunit']['year']; });
+            // сортируем по возрастанию в порядке, указанном в fields
+            $fields = ['year', 'duration', 'first_month'];
+
+            usort(
+                $tars,
+                function($a, $b) use ($fields) {
+                    $i = 0;
+                    $c = count($fields);
+                    $cmp = 0;
+
+                    while ($cmp == 0 && $i < $c) {
+                        $cmp = $a['timeunit'][$fields[$i]] <=> $b['timeunit'][$fields[$i]];
+                        $i++;
+                    }
+
+                    return $cmp;
+                }
+            );
 
             $delivery['tariffs'] = $tars;
             #######

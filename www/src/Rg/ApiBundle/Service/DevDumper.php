@@ -13,6 +13,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DevDumper
 {
+    public function printR($var) {
+        ob_start();
+
+        echo "<pre>";
+        print_r($var);
+        echo "</pre>";
+
+        $content = ob_get_clean();
+
+        return new Response($content);
+    }
     public function varDump($var) {
         ob_start();
 
