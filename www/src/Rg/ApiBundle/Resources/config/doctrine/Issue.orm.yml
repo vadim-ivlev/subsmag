@@ -25,6 +25,9 @@ Rg\ApiBundle\Entity\Issue:
         image:
             type: string
             column: image
+        is_active:
+            type: smallint
+            column: is_active
         image_base64:
             type: text
             column: "image_base64"

@@ -282,4 +282,33 @@ class Issue
     {
         return $this->image_base64;
     }
+    /**
+     * @var integer
+     */
+    private $is_active;
+
+
+    /**
+     * Set isActive
+     *
+     * @param integer $isActive
+     *
+     * @return Issue
+     */
+    public function setIsActive($isActive)
+    {
+        $this->is_active = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return integer
+     */
+    public function getIsActive()
+    {
+        return $this->is_active;
+    }
 }
