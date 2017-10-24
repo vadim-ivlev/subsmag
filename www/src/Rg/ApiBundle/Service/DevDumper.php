@@ -22,7 +22,7 @@ class DevDumper
 
         $content = ob_get_clean();
 
-        return new Response($content);
+        return $content;
     }
     public function varDump($var) {
         ob_start();

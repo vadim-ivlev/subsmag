@@ -15,6 +15,9 @@ Rg\ApiBundle\Entity\Tariff:
         delivery_price:
             type: float
             column: delivery_price
+        discount:
+            type: float
+            column: discount
     oneToMany:
         items:
             targetEntity: Item

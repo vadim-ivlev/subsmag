@@ -271,4 +271,33 @@ class Tariff
     {
         return $this->medium;
     }
+    /**
+     * @var float
+     */
+    private $discount;
+
+
+    /**
+     * Set discount
+     *
+     * @param float $discount
+     *
+     * @return Tariff
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Get discount
+     *
+     * @return float
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
 }

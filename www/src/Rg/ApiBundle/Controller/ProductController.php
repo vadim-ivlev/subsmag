@@ -273,7 +273,7 @@ class ProductController extends Controller
                 $price = ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice());
                 $id = $tariff->getId();
 
-                $fake_discount = $timeunit->getDuration() == 1 ? 0 : 5.5;
+                $discount = $tariff->getDiscount() ?? 0;
 
                 $norm = [
                     'timeunit' => [
@@ -286,7 +286,7 @@ class ProductController extends Controller
                     'id' => $id,
                     'price' => $price,
 
-                    'discount' => $fake_discount,
+                    'discount' => $discount,
                 ];
                 return $norm;
             }
