@@ -20,6 +20,10 @@ services:
         class: Rg\ApiBundle\Service\ProductCostCalculator
     rg_api.platron:
         class: Rg\ApiBundle\Service\Platron
+        arguments:
+            - "@monolog.logger"
+        tags:
+            - { name: monolog.logger, channel: platron }
     rg_api.encryptor:
         class: Rg\ApiBundle\Service\Encryptor
     rg_api.notification_queue:

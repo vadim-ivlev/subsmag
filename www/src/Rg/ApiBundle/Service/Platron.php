@@ -3,6 +3,7 @@
 namespace Rg\ApiBundle\Service;
 
 
+use Monolog\Logger;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Exception\PlatronException;
 
@@ -19,6 +20,13 @@ class Platron
     const API_URL = 'https://rg.ru/subsmag/api';
     const BASE_URL = 'https://rg.ru/subsmag';
 
+    private $logger;
+
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function init(Order $order)
     {
 
@@ -26,13 +34,18 @@ class Platron
 
         $response_xml_str = $this->sendRequest($request);
 
+        $this->logger->info('Platron init for order ' . $order->getId());
         try {
             $response_simple_xml = new \SimpleXMLElement($response_xml_str);
         } catch (\Exception $e) {
+            $message = 'Error. Response: ' . $response_xml_str . ", >>>" . $e->getMessage();
+            $this->logger->error($message);
             throw new PlatronException('Unparseable response from Platron.');
         }
 
         if (!$this->simpleValidateInit($response_simple_xml)) {
+            $message = 'Error. Invalide response: ' . $response_xml_str;
+            $this->logger->error($message);
             throw new \Exception('Invalid response from Platron');
         }
 

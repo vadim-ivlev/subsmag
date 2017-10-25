@@ -116,3 +116,6 @@ nelmio_cors:
 #    session:
 #        client: session
 #        ttl: 86400
+
+monolog:
+    channels: ['platron']

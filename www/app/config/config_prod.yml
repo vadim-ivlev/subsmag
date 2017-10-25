@@ -19,3 +19,8 @@ monolog:
             level: debug
         console:
             type: console
+        platron:
+            type: stream
+            path: '%kernel.logs_dir%/platron.log'
+            level: debug
+            channels: [platron]
