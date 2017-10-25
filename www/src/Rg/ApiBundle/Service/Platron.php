@@ -286,10 +286,10 @@ RESPONSE_REJECT;
         $params->pg_request_method = 'XML';
 
         # put your attention here. Success url works after Platron redirects the browser.
-        $params->pg_success_url = self::BASE_URL . '/platron/success';
+        $params->pg_success_url = self::BASE_URL . '/payment/success';
         $params->pg_success_url_method = 'AUTOGET';
 
-        $params->pg_failure_url = self::BASE_URL . '/platron/failure';
+        $params->pg_failure_url = self::BASE_URL . '/payment/failure';
         $params->pg_failure_url_method = 'GET';
 
         $params->pg_description = "Оплата подписки. Заказ №" . $order->getId();
