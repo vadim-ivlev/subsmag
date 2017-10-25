@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class MailSenderCommand extends ContainerAwareCommand
 {
-    const HOST = 'subsmag.rg.ru';
+    const HOST = 'rg.ru/subsmag';
     const SCHEME = 'https';
 
     // для локальной разработки, можно удалить
