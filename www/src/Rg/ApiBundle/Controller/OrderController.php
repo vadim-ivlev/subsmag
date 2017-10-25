@@ -2,6 +2,7 @@
 
 namespace Rg\ApiBundle\Controller;
 
+use Doctrine\Common\Collections\Collection;
 use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
@@ -424,6 +425,7 @@ class OrderController extends Controller
         $ndsless_total = 0;
         $nds_total = 0;
 
+        if ($items instanceof Collection) $items = $items->toArray();
         $invoice_items = array_map(
             function (Item $item) use (&$nds_total, &$ndsless_total) {
                 $tariff = $item->getTariff();
@@ -463,6 +465,7 @@ class OrderController extends Controller
             $items
         );
 
+        if ($patritems instanceof Collection) $patritems = $patritems->toArray();
         $invoice_patritems = array_map(
             function (Patritem $patritem) use (&$nds_total, &$ndsless_total) {
                 $patriff = $patritem->getPatriff();
