@@ -217,8 +217,7 @@ class OrderController extends Controller
                 'https://rg.ru/subsmag',
                 $this->generateUrl(
                     'rg_api_get_invoice_by_order',
-                    ['enc_id' => $permalink_id],
-                    UrlGeneratorInterface::ABSOLUTE_URL
+                    ['enc_id' => $permalink_id]
                 ),
             ]);
             $resp = [
