@@ -21,9 +21,7 @@ services:
     rg_api.platron:
         class: Rg\ApiBundle\Service\Platron
         arguments:
-            - "@monolog.logger"
-        tags:
-            - { name: monolog.logger, channel: platron }
+            - "@monolog.logger.platron"
     rg_api.encryptor:
         class: Rg\ApiBundle\Service\Encryptor
     rg_api.notification_queue:
