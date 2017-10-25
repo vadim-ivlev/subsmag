@@ -379,9 +379,7 @@ li.ie-safari a {background-position:-400px 0}
 </div>
 
 <div class="link_to_invoice">
-    {% set permalink = url('rg_api_get_invoice_by_order', {'enc_id': permalink_id}) %}
-
-    <a href="{{ permalink }}">Ссылка на платёжное поручение: {{ permalink }}</a>
+    <a href="{{ invoice_url }}">Ссылка на платёжное поручение: {{ invoice_url }}</a>
 </div>
 
 </body></html>

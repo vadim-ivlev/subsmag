@@ -424,6 +424,13 @@ class OrderController extends Controller
         $names_list = join(', ', $goods);
 
         $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
+        $url = join('', [
+            'https://rg.ru/subsmag',
+            $this->generateUrl(
+                'rg_api_get_receipt_by_order',
+                ['enc_id' => $permalink_id]
+            ),
+        ]);
 
         $rendered_response = $this->render('@RgApi/order/receipt.html.twig', [
             'vendor' => $vendor,
@@ -432,6 +439,7 @@ class OrderController extends Controller
             'due_date' => $due_date,
             'goods' => $names_list,
             'permalink_id' => $permalink_id,
+            'receipt_url' => $url,
         ]);
 
         return $rendered_response;
@@ -546,6 +554,13 @@ class OrderController extends Controller
         $ndsless = number_format($ndsless_total, 2, '.', '');
 
         $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
+        $url = join('', [
+            'https://rg.ru/subsmag',
+            $this->generateUrl(
+                'rg_api_get_invoice_by_order',
+                ['enc_id' => $permalink_id]
+            ),
+        ]);
 
         $rendered_response = $this->render('@RgApi/order/invoice.html.twig', [
             'vendor' => $vendor,
@@ -559,6 +574,7 @@ class OrderController extends Controller
             'items' => $invoice_items,
             'patritems' => $invoice_patritems,
             'permalink_id' => $permalink_id,
+            'invoice_url' => $url,
         ]);
 
         return $rendered_response;
