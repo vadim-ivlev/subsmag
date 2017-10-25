@@ -19,8 +19,6 @@ use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderController extends Controller
 {
@@ -85,7 +83,8 @@ class OrderController extends Controller
             $order->setPhone($order_details->phone);
             #### mail
             $email = $order_details->email;
-            if (!$this->isValidEmail($email)){
+//            if (!$this->isValidEmail($email)){
+            if (!$this->get('rg_api.legal_validator')->isValidEmail($email)){
                 $error = 'Not valid data given.';
                 return (new Out())->json(['error' => $error, 'description' => 'Email ' . $email . ' is not valid.',]);
             }
@@ -207,7 +206,7 @@ class OrderController extends Controller
             $em->flush();
 
             /*
-             * То же, что с квитанцией. Только ссылка.
+             * То же, что с квитанцией. Только ссылку на фронт.
              */
 //            return $this->createInvoice($order, $items, $patritems);
             $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
@@ -579,12 +578,22 @@ class OrderController extends Controller
     {
         $legal = new Legal();
 
-        $this->validateLegalDetails($order_details);
+        $this->get('rg_api.legal_validator')->validateLegal($order_details);
 
+        ############# валидируются
         $legal->setName($order_details->org_name);
+        $legal->setInn($order_details->inn);
+        $legal->setKpp($order_details->kpp);
+        $legal->setPostcode($order_details->postcode);
+        $legal->setContactPhone($order_details->contact_phone);
 
-        $legal->setInn($order_details->inn ?? '');
-        $legal->setKpp($order_details->kpp ?? '');
+        $contactEmail = $order_details->contact_email;
+        $legal->setContactEmail($contactEmail);
+
+        $legal->setDeliveryPostcode($order_details->delivery_postcode);
+        #############
+
+        //не валидируются
         $legal->setBankName($order_details->bank_name ?? '');
         $legal->setBankAccount($order_details->bank_account ?? '');
         $legal->setBankCorrAccount($order_details->bank_corr ?? '');
@@ -595,28 +604,22 @@ class OrderController extends Controller
 
         $legal->setCity($order_details->city ?? '');
 
-        $legal->setPostcode($order_details->postcode ?? '');
         $legal->setStreet($order_details->street ?? '');
         $legal->setBuildingNumber($order_details->building_number ?? '');
         $legal->setBuildingSubnumber($order_details->building_subnumber ?? '');
         $legal->setBuildingPart($order_details->building_part ?? '');
         $legal->setAppartment($order_details->appartment ?? '');
 
-        $legal->setContactName($order_details->contact_name);
-        $legal->setContactPhone($order_details->contact_phone);
+        $legal->setContactName($order_details->contact_name ?? '');
         $legal->setContactFax($order_details->contact_fax ?? '');
-
-        $contactEmail = $order_details->contact_email;
-        if (!$this->isValidEmail($contactEmail)) throw new OrderException('Email ' . $order_details->contact_email . ' is not valid.');
-        $legal->setContactEmail($contactEmail);
 
         $delivery_city = $this->getDoctrine()->getRepository('RgApiBundle:City')
             ->findOneBy(['id' => $order_details->delivery_city_id]);
-        if (is_null($delivery_city)) throw new OrderException('City with id ' . $order_details->delivery_city_id . ' not found.');
+        if (is_null($delivery_city))
+            throw new OrderException('City with id ' . $order_details->delivery_city_id . ' not found.');
 
         $legal->setDeliveryCity($delivery_city);
 
-        $legal->setDeliveryPostcode($order_details->delivery_postcode ?? '');
         $legal->setDeliveryStreet($order_details->delivery_street ?? '');
         $legal->setDeliveryBuildingNumber($order_details->delivery_building_number ?? '');
         $legal->setDeliveryBuildingSubnumber($order_details->delivery_building_subnumber ?? '');
@@ -624,25 +627,5 @@ class OrderController extends Controller
         $legal->setDeliveryAppartment($order_details->delivery_appartment ?? '');
 
         return $legal;
-    }
-
-    private function validateLegalDetails(\stdClass $order_details)
-    {
-        if (empty($order_details->org_name)) throw new OrderException('empty organization name');
-
-        if (empty($order_details->contact_name)) throw new OrderException('empty contact name');
-        if (empty($order_details->contact_phone)) throw new OrderException('empty contact phone');
-        if (empty($order_details->contact_email)) throw new OrderException('empty contact email');
-    }
-
-    private function isValidEmail(string $email)
-    {
-        $validator = $this->get('validator');
-        $constraints = [
-            new Email(),
-            new NotBlank(),
-        ];
-        $error = $validator->validate($email, $constraints);
-        return !(count($error) > 0);
     }
 }
