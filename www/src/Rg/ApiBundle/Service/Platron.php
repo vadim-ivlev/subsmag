@@ -35,6 +35,7 @@ class Platron
         $response_xml_str = $this->sendRequest($request);
 
         $this->logger->info('Platron init for order ' . $order->getId());
+        $this->logger->info(join(', ', $request));
         try {
             $response_simple_xml = new \SimpleXMLElement($response_xml_str);
         } catch (\Exception $e) {
