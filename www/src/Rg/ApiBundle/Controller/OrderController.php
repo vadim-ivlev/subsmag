@@ -140,8 +140,8 @@ class OrderController extends Controller
 
         if ($payment_name == 'platron') {
             ## инициализировать платёж:
-                # передать данные о платеже,
-                # получить №транзакции и урл для редиректа
+            # передать данные о платеже,
+            # получить №транзакции и урл для редиректа
             /** @var \SimpleXMLElement $platron_response */
             try {
                 $platron_response = $this->get('rg_api.platron')->init($order);
@@ -168,7 +168,7 @@ class OrderController extends Controller
 
             $em->flush();
 
-                # отправить пользователя на платрон (на фронте)
+            # отправить пользователя на платрон (на фронте)
             $resp = [
                 'order' => $order->getId(),
                 'total' => $order->getTotal(),
@@ -189,13 +189,16 @@ class OrderController extends Controller
              */
 //            return $this->createReceipt($order, $items, $patritems);
             $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
+            $url = join('', [
+                'https://rg.ru/subsmag',
+                $this->generateUrl(
+                    'rg_api_get_receipt_by_order',
+                    ['enc_id' => $permalink_id]
+                ),
+            ]);
             $resp = [
                 'order_id' => $order->getId(),
-                'url' => $this->generateUrl(
-                    'rg_api_get_receipt_by_order',
-                    ['enc_id' => $permalink_id],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
+                'url' => $url,
             ];
         } elseif ($payment_name == 'invoice') {
             ## очищаем корзину
@@ -210,13 +213,17 @@ class OrderController extends Controller
              */
 //            return $this->createInvoice($order, $items, $patritems);
             $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
-            $resp = [
-                'order_id' => $order->getId(),
-                'url' => $this->generateUrl(
+            $url = join('', [
+                'https://rg.ru/subsmag',
+                $this->generateUrl(
                     'rg_api_get_invoice_by_order',
                     ['enc_id' => $permalink_id],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
+            ]);
+            $resp = [
+                'order_id' => $order->getId(),
+                'url' => $url,
             ];
         } else {
             $resp = [
@@ -433,7 +440,7 @@ class OrderController extends Controller
 
     private function createInvoice(Order $order, $items, $patritems)
     {
-         $doctrine = $this->getDoctrine();
+        $doctrine = $this->getDoctrine();
 
         # подготовить платёжное поручение
         $vendor = $doctrine->getRepository('RgApiBundle:Vendor')
@@ -625,3 +632,4 @@ class OrderController extends Controller
         return $legal;
     }
 }
+
