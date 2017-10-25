@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -184,12 +185,37 @@ class OrderController extends Controller
             $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
             $em->flush();
 
-            return $this->createReceipt($order, $items, $patritems);
+            /*
+             * Максим: возвратим на фронт не готовую квитанцию, а ссылку на неё.
+             */
+//            return $this->createReceipt($order, $items, $patritems);
+            $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
+            $resp = [
+                'order_id' => $order->getId(),
+                'url' => $this->generateUrl(
+                    'rg_api_get_receipt_by_order',
+                    ['enc_id' => $permalink_id],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
+            ];
         } elseif ($payment_name == 'invoice') {
             ## записать в очередь почтовое уведомление
             $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
             $em->flush();
-            return $this->createInvoice($order, $items, $patritems);
+
+            /*
+             * То же, что с квитанцией. Только ссылка.
+             */
+//            return $this->createInvoice($order, $items, $patritems);
+            $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
+            $resp = [
+                'order_id' => $order->getId(),
+                'url' => $this->generateUrl(
+                    'rg_api_get_invoice_by_order',
+                    ['enc_id' => $permalink_id],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
+            ];
         } else {
             $resp = [
                 'error' => 'Wrong payment type received.'
