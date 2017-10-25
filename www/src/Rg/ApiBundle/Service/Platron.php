@@ -43,10 +43,13 @@ class Platron
             throw new PlatronException('Unparseable response from Platron.');
         }
 
-        if (!$this->simpleValidateInit($response_simple_xml)) {
-            $message = 'Error. Invalide response: ' . $response_xml_str;
+        if (!$this->isOkInit($response_simple_xml)) {
+            $description = $this->parseErrorOnInit($response_simple_xml);
+
+            $message = 'Not ok response for order ' . $order->getId() . ': ' . $response_xml_str;
             $this->logger->error($message);
-            throw new \Exception('Invalid response from Platron');
+
+            throw new PlatronException('Error response from Platron: ' . $description);
         }
 
         return $response_simple_xml;
@@ -285,6 +288,7 @@ RESPONSE_REJECT;
 
     private function prepareRequest(Order $order)
     {
+
         $params = new \stdClass();
         $params->pg_merchant_id = self::MERCHANT_ID;
         $params->pg_order_id = $order->getId();
@@ -346,7 +350,7 @@ RESPONSE_REJECT;
         return $result;
     }
 
-    private function simpleValidateInit(\SimpleXMLElement $xml)
+    private function isOkInit(\SimpleXMLElement $xml)
     {
         $condition = (string) $xml->pg_status == 'ok'
             && ( (string) $xml->pg_salt == $this->salt)
@@ -355,6 +359,19 @@ RESPONSE_REJECT;
         ;
 
         return $condition;
+    }
+
+    private function parseErrorOnInit(\SimpleXMLElement $xml)
+    {
+        $condition = (string) $xml->pg_status == 'error'
+            && ( (string) $xml->pg_salt == $this->salt)
+        ;
+        if (!$condition) {
+            $message = 'Unknown error from Platron';
+            $this->logger->error($message . ': ' . $xml->asXML());
+            throw new \Exception($message);
+        }
+        return (string) $xml->pg_error_description;
     }
 
     private function generateSalt()

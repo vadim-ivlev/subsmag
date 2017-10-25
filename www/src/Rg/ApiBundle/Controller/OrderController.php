@@ -147,8 +147,14 @@ class OrderController extends Controller
                 $platron_response = $this->get('rg_api.platron')->init($order);
             } catch (PlatronException $e) {
                 $error = [
-                    'error' => 'Platron: unparseable response',
-                    'description' => 'Order created, but Platron returned an unparseable response.',
+                    'error' => 'Platron: error',
+                    'description' => $e->getMessage(),
+                ];
+                return (new Out())->json($error);
+            } catch (\Exception $e) {
+                $error = [
+                    'error' => 'Platron: error',
+                    'description' => 'Platron returned an unparseable response.',
                 ];
                 return (new Out())->json($error);
             }
