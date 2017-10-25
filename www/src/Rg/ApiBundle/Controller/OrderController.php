@@ -199,6 +199,9 @@ class OrderController extends Controller
                 ),
             ];
         } elseif ($payment_name == 'invoice') {
+            ## очищаем корзину
+            $this->get('rg_api.cart_controller')->emptyAction($session);
+
             ## записать в очередь почтовое уведомление
             $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
             $em->flush();
