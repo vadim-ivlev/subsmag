@@ -2,8 +2,10 @@
 
 namespace Rg\ApiBundle\Command;
 
+use Rg\ApiBundle\Entity\Item;
 use Rg\ApiBundle\Entity\Notification;
 use Rg\ApiBundle\Entity\Order;
+use Rg\ApiBundle\Entity\Patritem;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,43 +77,75 @@ class MailSenderCommand extends ContainerAwareCommand
 
         //TODO: filter invalid email addresses
 
-        $swift_sender = function (Notification $notification) use ($em, $output) {
+        $swift_sender = function (Notification $notification) use ($em, $output, $container) {
             $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
             $mailer = new \Swift_Mailer($transport);
 
             // Create a message
             $order = $notification->getOrder();
 
-            $subject = 'Заказ №'. $order->getId() . ' создан';
 
-            $from = ['subsmag@rg.ru' => 'Отдел подписки Российской газеты'];
+            $from = ['subsmag@rg.ru' => 'Российская газета'];
             $to = [$order->getEmail() => $order->getName()];
 
-            $body = [];
-            $body[] = 'Уважаемая (уважаемый) ' . $order->getName() . '!';
-            $body[] = '';
-            $body[] = 'Ваш заказ №' . $order->getId() . ' создан.';
             $payment_type = $order->getPayment()->getName();
 
-            if ($payment_type == 'platron') {
-                $body[] = 'Вы выбрали для оплаты сервис Платрон. Пожалуйста, следуйте инструкциям на сайте Platron.';
+            // список позиций
+            $goods = [];
+
+            foreach ($order->getItems() as $item) {
+                $name = $container->get('rg_api.item_name')->form($item);
+
+                $goods[] = [
+                    'name' => $name,
+                    'qty' => $item->getQuantity(),
+                    'cost' => $item->getCost() * $item->getQuantity(),
+                ];
             }
-            if ($payment_type == 'receipt') {
-                $body[] = 'Вы выбрали оплату по банковской квитанции.';
-                $body[] = 'Образец квитанции вы можете получить по ссылке ';
-                $body[] = $this->generateUrl($order);
+
+            /** @var Patritem $patritem */
+            foreach ($order->getPatritems() as $patritem) {
+                $patriff = $patritem->getPatriff();
+                $name = "Родина №" . $patriff->getIssue()->getMonth() . "'" . $patriff->getIssue()->getYear();
+
+                $goods[] = [
+                    'name' => $name,
+                    'qty' => $patritem->getQuantity(),
+                    'cost' => $patritem->getCost() * $patritem->getQuantity(),
+                ];
             }
-            if ($payment_type == 'invoice') {
-                $body[] = 'Вы выбрали оплату по платёжному поручению.';
-                $body[] = 'Образец платёжного поручения вы можете получить по ссылке ';
-                $body[] = $this->generateUrl($order);
+
+            $params = [
+                'order' => $order,
+                'goods' => $goods,
+            ];
+
+            $subject = "Не забудьте оплатить подписку. Номер заказа " . $order->getId();
+
+            switch ($payment_type) {
+                case 'platron':
+                    $body = $container->get('templating')->render('RgApiBundle:Emails:order_created_platron.html.twig', $params);
+                    break;
+                case 'receipt':
+                    $params['permalink'] = $this->generateUrl($order);
+                    $body = $container->get('templating')->render('RgApiBundle:Emails:order_created_receipt.html.twig', $params);
+                    break;
+                case 'invoice':
+                    $params['permalink'] = $this->generateUrl($order);
+                    $body = $container->get('templating')->render('RgApiBundle:Emails:order_created_invoice.html.twig', $params);
+                    break;
+                default:
+                    $notification->setState('error');
+                    $notification->setError('Unknown payment type.');
+                    $em->persist($notification);
+                    $em->flush();
+                    return true;
             }
-            $body_text = join("\r\n", $body);
 
             $message = (new \Swift_Message($subject))
                 ->setFrom($from)
                 ->setTo($to)
-                ->setBody($body_text)
+                ->setBody($body, 'text/html')
             ;
 
             $output->writeln($message->getBody());
@@ -132,6 +166,8 @@ class MailSenderCommand extends ContainerAwareCommand
 
             $em->persist($notification);
             $em->flush();
+
+            return true;
         };
 
         array_walk(
@@ -202,6 +238,7 @@ class MailSenderCommand extends ContainerAwareCommand
             $swift_sender
         );
     }
+
     private function printHeader(OutputInterface $output)
     {
         $format = "Y-m-d H:i:s";
@@ -231,11 +268,13 @@ class MailSenderCommand extends ContainerAwareCommand
             $name = 'rg_api_get_receipt_by_order';
         }
 
-        $url = $generator->generate(
-            $name,
-            ['enc_id' => $container->get('rg_api.encryptor')->encryptOrderId($order->getId())],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        $url = join('', [
+            'https://rg.ru/subsmag',
+            $generator->generate(
+                $name,
+                ['enc_id' => $container->get('rg_api.encryptor')->encryptOrderId($order->getId())]
+            ),
+        ]);
 
         return $url;
     }
