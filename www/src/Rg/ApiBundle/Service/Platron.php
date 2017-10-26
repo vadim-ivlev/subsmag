@@ -32,28 +32,40 @@ class Platron
 
         $request = $this->prepareRequest($order);
 
-        $response_xml_str = $this->sendRequest($request);
+        $resp = $this->sendRequest($request);
 
-        $this->logger->info('Platron init for order ' . $order->getId());
-        $this->logger->info(join(', ', $request));
+        $this->logger->info('-> Platron init for order ' . $order->getId() . $request['pg_amount'] . ' RUB');
+
         try {
-            $response_simple_xml = new \SimpleXMLElement($response_xml_str);
+            $xml = new \SimpleXMLElement($resp);
         } catch (\Exception $e) {
-            $message = 'Error. Response: ' . $response_xml_str . ", >>>" . $e->getMessage();
+            $message = '<- Error. Response: _' . $resp . "_, >>>" . $e->getMessage();
             $this->logger->error($message);
-            throw new PlatronException('Unparseable response from Platron.');
+
+            # если платрон ответил непонятно чем, попробуем ещё раз.
+            $resp = $this->sendRequest($request);
+            $this->logger->info('-> Bad try. Sent once again: ' . $order->getId() . $request['pg_amount'] . ' RUB');
+
+            try {
+                $xml = new \SimpleXMLElement($resp);
+            } catch (\Exception $e) {
+                $message = '<- Error. Second response failed: _' . $resp . "_, >>>" . $e->getMessage();
+                $this->logger->error($message);
+
+                throw new PlatronException('Unparseable response from Platron.');
+            }
         }
 
-        if (!$this->isOkInit($response_simple_xml)) {
-            $description = $this->parseErrorOnInit($response_simple_xml);
+        if (!$this->isOkInit($xml)) {
+            $description = $this->parseErrorOnInit($xml);
 
-            $message = 'Not ok response for order ' . $order->getId() . ': ' . $response_xml_str;
+            $message = 'Not ok response for order ' . $order->getId() . ': ' . $resp;
             $this->logger->error($message);
 
             throw new PlatronException('Error response from Platron: ' . $description);
         }
 
-        return $response_simple_xml;
+        return $xml;
     }
 
     /**
