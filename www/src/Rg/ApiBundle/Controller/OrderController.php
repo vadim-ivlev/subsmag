@@ -146,15 +146,16 @@ class OrderController extends Controller
             try {
                 $platron_response = $this->get('rg_api.platron')->init($order);
             } catch (PlatronException $e) {
+                // платрон дважды вернул пустую строку, или у нас с заказом что-то не то.
+
+                // аннулировать заказ
+                $em->remove($order);
+                $em->flush();
+
+                //сообщить об ошибке
                 $error = [
                     'error' => 'Platron: error',
                     'description' => $e->getMessage(),
-                ];
-                return (new Out())->json($error);
-            } catch (\Exception $e) {
-                $error = [
-                    'error' => 'Platron: error',
-                    'description' => 'Platron returned an unparseable response.',
                 ];
                 return (new Out())->json($error);
             }
