@@ -42,7 +42,3 @@ services:
         class: Rg\ApiBundle\Service\FieldsValidator
         arguments:
             - "@validator"
-    rg_api.twig_render:
-        class: Rg\ApiBundle\Service\TwigRender
-        arguments:
-            - "@twig"
