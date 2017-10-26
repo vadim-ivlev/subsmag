@@ -22,6 +22,7 @@ class MailSenderCommand extends ContainerAwareCommand
 {
     const HOST = 'rg.ru/subsmag';
     const SCHEME = 'https';
+    const FROM = ['subsmag@rg.ru' => 'Российская газета'];
 
     // для локальной разработки, можно удалить
 //    const HOST = 'subsmag.loc';
@@ -84,55 +85,27 @@ class MailSenderCommand extends ContainerAwareCommand
             // Create a message
             $order = $notification->getOrder();
 
-
-            $from = ['subsmag@rg.ru' => 'Российская газета'];
             $to = [$order->getEmail() => $order->getName()];
-
-            $payment_type = $order->getPayment()->getName();
-
-            // список позиций
-            $goods = [];
-
-            foreach ($order->getItems() as $item) {
-                $name = $container->get('rg_api.item_name')->form($item);
-
-                $goods[] = [
-                    'name' => $name,
-                    'qty' => $item->getQuantity(),
-                    'cost' => $item->getCost() * $item->getQuantity(),
-                ];
-            }
-
-            /** @var Patritem $patritem */
-            foreach ($order->getPatritems() as $patritem) {
-                $patriff = $patritem->getPatriff();
-                $name = "Родина №" . $patriff->getIssue()->getMonth() . "'" . $patriff->getIssue()->getYear();
-
-                $goods[] = [
-                    'name' => $name,
-                    'qty' => $patritem->getQuantity(),
-                    'cost' => $patritem->getCost() * $patritem->getQuantity(),
-                ];
-            }
 
             $params = [
                 'order' => $order,
-                'goods' => $goods,
+                'goods' => $this->concatGoods($order),
             ];
 
             $subject = "Не забудьте оплатить подписку. Номер заказа " . $order->getId();
 
+            $payment_type = $order->getPayment()->getName();
             switch ($payment_type) {
                 case 'platron':
-                    $body = $container->get('templating')->render('RgApiBundle:Emails:order_created_platron.html.twig', $params);
+                    $body = $container->get('templating')->render('@RgApi/Emails/order/created/platron.html.twig', $params);
                     break;
                 case 'receipt':
                     $params['permalink'] = $this->generateUrl($order);
-                    $body = $container->get('templating')->render('RgApiBundle:Emails:order_created_receipt.html.twig', $params);
+                    $body = $container->get('templating')->render('@RgApi/Emails/order/created/receipt.html.twig', $params);
                     break;
                 case 'invoice':
                     $params['permalink'] = $this->generateUrl($order);
-                    $body = $container->get('templating')->render('RgApiBundle:Emails:order_created_invoice.html.twig', $params);
+                    $body = $container->get('templating')->render('@RgApi/Emails/order/created/invoice.html.twig', $params);
                     break;
                 default:
                     $notification->setState('error');
@@ -143,7 +116,7 @@ class MailSenderCommand extends ContainerAwareCommand
             }
 
             $message = (new \Swift_Message($subject))
-                ->setFrom($from)
+                ->setFrom(self::FROM)
                 ->setTo($to)
                 ->setBody($body, 'text/html')
             ;
@@ -188,29 +161,28 @@ class MailSenderCommand extends ContainerAwareCommand
             ->getQueueOfPaid()
         ;
 
-        $swift_sender = function (Notification $notification) use ($em, $output) {
+        $swift_sender = function (Notification $notification) use ($em, $output, $container) {
             $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -bs');
             $mailer = new \Swift_Mailer($transport);
 
-            // Create a message
+            // Create message
             $order = $notification->getOrder();
 
-            $subject = 'Заказ №'. $order->getId() . ' оплачен';
+            $subject = 'Подписка оформлена. Номер заказа '. $order->getId();
 
-            $from = ['subsmag@rg.ru' => 'Отдел подписки Российской газеты'];
             $to = [$order->getEmail() => $order->getName()];
 
-            $body = [];
-            $body[] = 'Уважаемая (уважаемый) ' . $order->getName() . '!';
-            $body[] = '';
-            $body[] = 'Заказ №' . $order->getId() . ' оплачен.';
+            $params = [
+                'order' => $order,
+                'goods' => $this->concatGoods($order),
+            ];
 
-            $body_text = join("\r\n", $body);
+            $body = $container->get('templating')->render('@RgApi/Emails/order/paid/common.html.twig', $params);
 
             $message = (new \Swift_Message($subject))
-                ->setFrom($from)
+                ->setFrom(self::FROM)
                 ->setTo($to)
-                ->setBody($body_text)
+                ->setBody($body, 'text/html')
             ;
 
             $output->writeln($message->getBody());
@@ -277,5 +249,38 @@ class MailSenderCommand extends ContainerAwareCommand
         ]);
 
         return $url;
+    }
+
+    private function concatGoods(Order $order)
+    {
+        /** @var Container $container */
+        $container = $this->getContainer();
+
+        // список позиций
+        $goods = [];
+
+        foreach ($order->getItems() as $item) {
+            $name = $container->get('rg_api.item_name')->form($item);
+
+            $goods[] = [
+                'name' => $name,
+                'qty' => $item->getQuantity(),
+                'cost' => $item->getCost() * $item->getQuantity(),
+            ];
+        }
+
+        /** @var Patritem $patritem */
+        foreach ($order->getPatritems() as $patritem) {
+            $patriff = $patritem->getPatriff();
+            $name = "Родина №" . $patriff->getIssue()->getMonth() . "'" . $patriff->getIssue()->getYear();
+
+            $goods[] = [
+                'name' => $name,
+                'qty' => $patritem->getQuantity(),
+                'cost' => $patritem->getCost() * $patritem->getQuantity(),
+            ];
+        }
+
+        return $goods;
     }
 }
