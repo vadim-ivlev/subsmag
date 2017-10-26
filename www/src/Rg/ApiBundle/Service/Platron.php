@@ -32,9 +32,10 @@ class Platron
 
         $request = $this->prepareRequest($order);
 
+        $id = $order->getId();
         $resp = $this->sendRequest($request);
 
-        $this->logger->info('-> Platron init for order ' . $order->getId() . $request['pg_amount'] . ' RUB');
+        $this->logger->info('-> Platron init for order ' . $id . $request['pg_amount'] . ' RUB');
 
         try {
             $xml = new \SimpleXMLElement($resp);
@@ -44,12 +45,12 @@ class Platron
 
             # если платрон ответил непонятно чем, попробуем ещё раз.
             $resp = $this->sendRequest($request);
-            $this->logger->info('-> Bad try. Sent once again: ' . $order->getId() . $request['pg_amount'] . ' RUB');
+            $this->logger->info('-> Bad try. Sent once again: ' . $id );
 
             try {
                 $xml = new \SimpleXMLElement($resp);
             } catch (\Exception $e) {
-                $message = '<- Error. Second response failed: _' . $resp . "_, >>>" . $e->getMessage();
+                $message = '<- Error. Second response for ' . $id . ' failed: _' . $resp . "_, >>>" . $e->getMessage();
                 $this->logger->error($message);
 
                 throw new PlatronException('Unparseable response from Platron.');
@@ -59,7 +60,7 @@ class Platron
         if (!$this->isOkInit($xml)) {
             $description = $this->parseErrorOnInit($xml);
 
-            $message = 'Not ok response for order ' . $order->getId() . ': ' . $resp;
+            $message = 'Not ok response for order ' . $id . ': ' . $resp;
             $this->logger->error($message);
 
             throw new PlatronException('Error response from Platron: ' . $description);
