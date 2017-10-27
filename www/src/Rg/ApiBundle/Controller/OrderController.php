@@ -70,11 +70,12 @@ class OrderController extends Controller
             ### обработать контактные данные
 
             # адрес
+            $city_id = $order_details->city_id;
             $city = $this->getDoctrine()->getRepository('RgApiBundle:City')
-                ->findOneBy(['id' => $order_details->city_id]);
+                ->findOneBy(['id' => $city_id]);
             if (is_null($city)) {
                 $error = 'City with id ' . $order_details->city_id . ' not found.';
-                return (new Out())->json(['error' => $error]);
+                return (new Out())->json(['error' => $error, 'description' => 'City with id ' . $city_id . ' not found',]);
             }                                         //                                          x_x
                                                       //                                   x_x
             // не добавляю регион и нас.пункт, они уже приходят с фронта ==> =/>     =>/

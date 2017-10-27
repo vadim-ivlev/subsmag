@@ -17,12 +17,10 @@ class CorsAllowListener
     {
         $responseHeaders = $event->getResponse()->headers;
 
-        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : NULL;
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? null;
 
-//        $check_origin = strpos($origin, 'rg.ru') !== false;
-        $check_origin = true;
-
-        if($check_origin) {
+//        if($this->checkOrigin($origin)) {
+        if($this->checkHost()) {
             $responseHeaders->set('Access-Control-Allow-Headers', 'origin, content-type, accept');
             $responseHeaders->set('Access-Control-Allow-Credentials', 'true');
             $responseHeaders->set('Access-Control-Allow-Origin', $origin);
@@ -30,4 +28,24 @@ class CorsAllowListener
         }
     }
 
+    private function checkOrigin($origin)
+    {
+
+        $check_origin = strpos($origin, 'rg.ru') !== false;
+
+//        $check_origin = strpos($origin, 'subsmag.loc') !== false;
+
+//        $check_origin = true;
+
+        return $check_origin;
+    }
+
+    private function checkHost()
+    {
+        $host = $_SERVER['HTTP_HOST'];
+
+        $me = strpos($host, 'subsmag.loc') !== false;
+
+        return $me;
+    }
 }
