@@ -75,11 +75,12 @@ class OrderController extends Controller
             if (is_null($city)) {
                 $error = 'City with id ' . $order_details->city_id . ' not found.';
                 return (new Out())->json(['error' => $error]);
-            }
-
-            $address_components = [
-                $city->getArea()->getName(),
-                $city->getName(),
+            }                                         //                                          x_x
+                                                      //                                   x_x
+            // не добавляю регион и нас.пункт, они уже приходят с фронта ==> =/>     =>/
+            $address_components = [                  //                      /|\   /|\
+//                $city->getArea()->getName(),       //                     /  \  /  \
+//                $city->getName(),
                 $order_details->address,
             ];
             $order->setAddress(join(', ', $address_components));
