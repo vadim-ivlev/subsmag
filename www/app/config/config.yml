@@ -108,8 +108,7 @@ snc_redis:
         default:
             type: predis
             alias: default
-            dsn: 'redis://localhost'
-#            dsn: "%redis_server%" # на фронте -- в параметрах
+            dsn: "%redis_server%" # как на фронте -- в параметрах
 #        session:
 #            type: predis
 #            alias: session
