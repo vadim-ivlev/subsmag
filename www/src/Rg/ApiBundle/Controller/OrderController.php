@@ -69,6 +69,7 @@ class OrderController extends Controller
             // заказывает ФЛ
             ### обработать контактные данные
 
+            # адрес
             $city = $this->getDoctrine()->getRepository('RgApiBundle:City')
                 ->findOneBy(['id' => $order_details->city_id]);
             if (is_null($city)) {
@@ -76,15 +77,22 @@ class OrderController extends Controller
                 return (new Out())->json(['error' => $error]);
             }
 
-            $order->setAddress($order_details->address . ", " . $city->getName() . ", " . $city->getArea()->getName());
+            $address_components = [
+                $city->getArea()->getName(),
+                $city->getName(),
+                $order_details->address,
+            ];
+            $order->setAddress(join(', ', $address_components));
+
             #### фио
             $order->setName($order_details->name);
+
             #### телефон
             $order->setPhone($order_details->phone);
+
             #### mail
             $email = $order_details->email;
-//            if (!$this->isValidEmail($email)){
-            if (!$this->get('rg_api.legal_validator')->isValidEmail($email)){
+            if (!$this->get('rg_api.legal_validator')->isValidEmail($email)) {
                 $error = 'Not valid data given.';
                 return (new Out())->json(['error' => $error, 'description' => 'Email ' . $email . ' is not valid.',]);
             }
