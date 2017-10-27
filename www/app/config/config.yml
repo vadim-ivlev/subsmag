@@ -103,12 +103,13 @@ nelmio_cors:
         hosts: []
 
 # Redis Configuration
-#snc_redis:
-#    clients:
-#        default:
-#            type: predis
-#            alias: default
-#            dsn: 'redis://localhost'
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: 'redis://localhost'
+#            dsn: "%redis_server%" # на фронте -- в параметрах
 #        session:
 #            type: predis
 #            alias: session
