@@ -70,16 +70,16 @@ class CartItemValidator
         $bitmask = $tariff->getTimeunit()->getBitmask();
         switch ($bitmask) {
             case self::FULLYEAR:
-                if ( !($first_month == 1 && $duration == 1) )
+                if ( !($first_month == 1 and $duration == 12) )
                     throw new CartException('Первый месяц годового тарифа должен быть 1, продолжительность 1');
                 break;
             case self::FIRSTHALF:
-                if (!($first_month == 1 && $duration == 1))
-                    throw new CartException('Первый месяц тарифа первого полугодия должен быть 1, продолжительность 1');
+                if (!($first_month == 1 and $duration == 6))
+                    throw new CartException('Первый месяц тарифа первого полугодия должен быть 1, продолжительность 6');
                 break;
             case self::SECONDHALF:
-                if (!($first_month == 7 && $duration == 1))
-                    throw new CartException('Первый месяц тарифа второго полугодия должен быть 7, продолжительность 1');
+                if (!($first_month == 7 and $duration == 1))
+                    throw new CartException('Первый месяц тарифа второго полугодия должен быть 7, продолжительность 6');
                 break;
             case self::MONTHFIRSTHALF:
                 if ( !in_array($first_month, range(1, 6)) )
