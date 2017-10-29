@@ -44,7 +44,7 @@ class CartItemValidator
         $this->validateFirstMonthAndDuration($tariff, $product->first_month, $product->duration);
     }
 
-    public function validateId($id)
+    public function validateId(int $id)
     {
         $options = [
             'options' => [

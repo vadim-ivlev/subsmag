@@ -67,7 +67,7 @@ class CartController extends Controller implements SessionHasCartController
                     // превратить анонима в продуктовую позицию корзины
                     $cartItemValidator = $this->get('rg_api.cartitem_validator');
 
-                    if (!($tariff_id = $cartItemValidator->validateId($product->tariff))) {
+                    if (!($tariff_id = $cartItemValidator->validateId((int) $product->tariff))) {
                         throw new CartException('Tariff id should be an integer greater than 0');
                     }
 
