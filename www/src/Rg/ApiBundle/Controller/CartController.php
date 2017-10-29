@@ -3,6 +3,7 @@
 namespace Rg\ApiBundle\Controller;
 
 use Rg\ApiBundle\Cart\Cart;
+use Rg\ApiBundle\Cart\CartException;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
 use Rg\ApiBundle\Entity\Delivery;
@@ -48,25 +49,73 @@ class CartController extends Controller implements SessionHasCartController
         $input_items = json_decode(
             $request->getContent()
         );
+        if (is_null($input_items)) {
+            $error = [
+                'error' => 'Not valid JSON given.',
+//                'description' => $e->getMessage(),
+            ];
+
+            return (new Out())->json($error);
+        }
 
         // создать итемсы для каждого продукта
         $products = $input_items->products;
 
-        $cart_items = array_map(
-            function (\stdClass $product) {
-                // превратить анонима в продуктовую позицию корзины
-                $cart_item = new CartItem(
-                    $product->first_month,
-                    $product->duration,
-                    $product->year,
-                    $product->tariff,
-                    $product->quantity
-                );
+        try {
+            $cart_items = array_map(
+                function (\stdClass $product) {
+                    // превратить анонима в продуктовую позицию корзины
+                    $cartItemValidator = $this->get('rg_api.cartitem_validator');
 
-                return $cart_item;
-            },
-            $products
-        );
+                    if (!($tariff_id = $cartItemValidator->validateId($product->tariff))) {
+                                                                                               $error = [
+                                                                                               'error' => 'Not valid cart item given.',
+                                                                                               'description' => 'Tariff id should be an integer greater than 0',
+                                                                                               ];
+
+                                                                                               return (new Out())->json($error);
+                                                                                                  }
+
+                    $doctrine = $this->getDoctrine();
+                    $tariff = $doctrine
+                        ->getRepository('RgApiBundle:Tariff')
+                        ->findOneBy(
+                            [
+                                'id' => $tariff_id
+                            ]);
+
+                    if (is_null($tariff)) {
+                                               $error = [
+                                               'error' => 'Not valid cart item given.',
+                                               'description' => 'Tariff not found.',
+                                               ];
+
+                                               return (new Out())->json($error);
+                                                  }
+
+                    // используем сервис валидации
+                    $cartItemValidator->validateProduct($product, $tariff);
+
+                    $cart_item = new CartItem(
+                        $product->first_month,
+                        $product->duration,
+                        $product->year,
+                        $product->tariff,
+                        $product->quantity
+                    );
+
+                    return $cart_item;
+                },
+                $products
+            );
+        } catch (CartException $e) {
+            $error = [
+                'error' => 'Not valid cart item given.',
+                'description' => $e->getMessage(),
+            ];
+
+            return (new Out())->json($error);
+        }
 
         // создать патритемсы для каждого архива
         $archives = $input_items->archives;

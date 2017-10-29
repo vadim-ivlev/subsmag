@@ -333,10 +333,11 @@ class OrderController extends Controller
                 $item->setTariff($tariff);
 
                 $calculator = $this->get('rg_api.product_cost_calculator');
-                $timeunit_amount = $calculator->calculateTimeunitAmount($tariff, $cart_item->getDuration());
+                $duration = $cart_item->getDuration();
+                $timeunit_amount = $calculator->calculateTimeunitAmount($tariff, $duration);
                 $item->setTimeunitAmount($timeunit_amount);
 
-                $cost = $calculator->calculateItemCost($tariff, $cart_item->getDuration());
+                $cost = $calculator->calculateItemCost($tariff, $duration);
                 $item->setCost($cost);
 
                 $month = $doctrine
@@ -347,7 +348,7 @@ class OrderController extends Controller
                     ]);
                 $item->setMonth($month);
 
-                $item->setDuration($cart_item->getDuration());
+                $item->setDuration($duration);
 
                 $item->setOrder($order);
 

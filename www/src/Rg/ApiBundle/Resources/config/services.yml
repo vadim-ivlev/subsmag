@@ -43,3 +43,7 @@ services:
         class: Rg\ApiBundle\Service\FieldsValidator
         arguments:
             - "@validator"
+    rg_api.cartitem_validator:
+        class: Rg\ApiBundle\Service\CartItemValidator
+        arguments:
+            - "@validator"
