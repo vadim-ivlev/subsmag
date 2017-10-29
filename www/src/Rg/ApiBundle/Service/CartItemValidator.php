@@ -41,22 +41,25 @@ class CartItemValidator
         if (!$this->validateQty($product->quantity))
             throw new CartException('Количество должно быть целым положительным ненулевым числом.');
 
-        $this->validateFirstMonthAndDuration($tariff, $product->first_month, $product->duration);
+        try {
+            $this->validateFirstMonthAndDuration($tariff, $product);
+        } catch (CartException $e) {
+            throw new CartException($e->getMessage() . join(', ', (array) $product));
+        }
     }
 
     public function validateId(int $id)
     {
-        $options = [
-            'options' => [
-                'min_range' => 1
-            ],
-        ];
+        $options = [ 'options' => [ 'min_range' => 1 ], ];
 
         return filter_var($id, FILTER_VALIDATE_INT, $options);
     }
 
-    private function validateFirstMonthAndDuration(Tariff $tariff, int $first_month, int $duration)
+    private function validateFirstMonthAndDuration(Tariff $tariff, \stdClass $product)
     {
+        $first_month = $product->first_month;
+        $duration = $product->duration;
+
         $options = [
             'options' => [
                 'min_range' => 1,
