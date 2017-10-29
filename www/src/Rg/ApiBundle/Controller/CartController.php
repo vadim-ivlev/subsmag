@@ -68,13 +68,8 @@ class CartController extends Controller implements SessionHasCartController
                     $cartItemValidator = $this->get('rg_api.cartitem_validator');
 
                     if (!($tariff_id = $cartItemValidator->validateId($product->tariff))) {
-                                                                                               $error = [
-                                                                                               'error' => 'Not valid cart item given.',
-                                                                                               'description' => 'Tariff id should be an integer greater than 0',
-                                                                                               ];
-
-                                                                                               return (new Out())->json($error);
-                                                                                                  }
+                        throw new CartException('Tariff id should be an integer greater than 0');
+                    }
 
                     $doctrine = $this->getDoctrine();
                     $tariff = $doctrine
@@ -85,13 +80,8 @@ class CartController extends Controller implements SessionHasCartController
                             ]);
 
                     if (is_null($tariff)) {
-                                               $error = [
-                                               'error' => 'Not valid cart item given.',
-                                               'description' => 'Tariff not found.',
-                                               ];
-
-                                               return (new Out())->json($error);
-                                                  }
+                        throw new CartException('Tariff not found.');
+                    }
 
                     // используем сервис валидации
                     $cartItemValidator->validateProduct($product, $tariff);
