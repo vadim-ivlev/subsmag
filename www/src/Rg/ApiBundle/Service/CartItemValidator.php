@@ -44,7 +44,7 @@ class CartItemValidator
         try {
             $this->validateFirstMonthAndDuration($tariff, $product);
         } catch (CartException $e) {
-            throw new CartException($e->getMessage() . join(', ', (array) $product));
+            throw new CartException($e->getMessage(), ', :' . join(', ', (array) $product));
         }
     }
 
