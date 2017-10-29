@@ -9,19 +9,20 @@ use Rg\ApiBundle\Exception\PlatronException;
 
 class Platron
 {
-//    const MERCHANT_ID = 3716;
-//    const SECRET_KEY = 'wowakedalapadasy';
+    // тестовый магаз, взятый с библиотеки
+//    const MERCHANT_ID = 8888;
+//    const SECRET_KEY = 'xywoxelepejepowi';
+
+    const MERCHANT_ID = 3716;
+    const SECRET_KEY = 'wowakedalapadasy';
+
     private $salt;
-    const MERCHANT_ID = 8888;
-    const SECRET_KEY = 'xywoxelepejepowi';
 
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
 
     private $logger;
 
-//    BASE_URL 'https://rg.ru/subs';
     private $base_url;
-//    API_URL 'https://rg.ru/subs/api';
     private $api_url;
 
     public function __construct(Logger $logger, $base_url)
@@ -308,6 +309,7 @@ RESPONSE_REJECT;
     {
 
         $params = new \stdClass();
+
         $params->pg_merchant_id = self::MERCHANT_ID;
         $params->pg_order_id = $order->getId();
         $params->pg_amount = $order->getTotal();
@@ -327,7 +329,10 @@ RESPONSE_REJECT;
 
         $params->pg_description = "Оплата подписки. Заказ №" . $order->getId();
 
+        #######
+        ## тестовый режим одной транзакции
         $params->pg_testing_mode = 1;
+        #######
 
         $this->salt = $this->generateSalt();
         $params->pg_salt = $this->salt;
@@ -397,3 +402,4 @@ RESPONSE_REJECT;
         return md5(time());
     }
 }
+
