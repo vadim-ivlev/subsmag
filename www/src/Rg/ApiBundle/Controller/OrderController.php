@@ -414,7 +414,7 @@ class OrderController extends Controller
 
             $month = $item->getMonth();
             $first_month = $month->getNumber();
-            $last_month = $first_month + $item->getDuration();
+            $last_month = $first_month + $item->getDuration() - 1;
 
             $short_descr = $product->getName() .
                 ' ' .
