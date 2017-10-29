@@ -71,7 +71,7 @@ class CartItemValidator
         switch ($bitmask) {
             case self::FULLYEAR:
                 if ( !($first_month == 1 and $duration == 12) )
-                    throw new CartException('Первый месяц годового тарифа должен быть 1, продолжительность 1');
+                    throw new CartException('Первый месяц годового тарифа должен быть 1, продолжительность 12');
                 break;
             case self::FIRSTHALF:
                 if (!($first_month == 1 and $duration == 6))
