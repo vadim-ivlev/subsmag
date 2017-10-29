@@ -68,7 +68,9 @@ class CartController extends Controller implements SessionHasCartController
                     $cartItemValidator = $this->get('rg_api.cartitem_validator');
 
                     if (!($tariff_id = $cartItemValidator->validateId((int) $product->tariff))) {
-                        throw new CartException('Tariff id should be an integer greater than 0');
+                        $message = 'Tariff id should be an integer greater than 0, ' . $tariff_id . ' given in ';
+                        $dump = join(', ', (array) $product);
+                        throw new CartException($message . $dump);
                     }
 
                     $doctrine = $this->getDoctrine();
@@ -279,3 +281,4 @@ class CartController extends Controller implements SessionHasCartController
     }
 
 }
+
