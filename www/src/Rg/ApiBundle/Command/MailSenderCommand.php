@@ -20,13 +20,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class MailSenderCommand extends ContainerAwareCommand
 {
-    const HOST = 'rg.ru/subsmag';
-    const SCHEME = 'https';
     const FROM = ['subsmag@rg.ru' => 'Российская газета'];
-
-    // для локальной разработки, можно удалить
-//    const HOST = 'subsmag.loc';
-//    const SCHEME = 'http';
 
     /**
      * @return null
@@ -115,8 +109,9 @@ class MailSenderCommand extends ContainerAwareCommand
                     return true;
             }
 
+            $from = [ $container->getParameter('from_email') => $container->getParameter('from_name') ];
             $message = (new \Swift_Message($subject))
-                ->setFrom(self::FROM)
+                ->setFrom($from)
                 ->setTo($to)
                 ->setBody($body, 'text/html')
             ;
@@ -179,8 +174,9 @@ class MailSenderCommand extends ContainerAwareCommand
 
             $body = $container->get('templating')->render('@RgApi/Emails/order/paid/common.html.twig', $params);
 
+            $from = [ $container->getParameter('from_email') => $container->getParameter('from_name') ];
             $message = (new \Swift_Message($subject))
-                ->setFrom(self::FROM)
+                ->setFrom($from)
                 ->setTo($to)
                 ->setBody($body, 'text/html')
             ;
@@ -227,12 +223,7 @@ class MailSenderCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
 
-        $context = $container->get('router')->getContext();
-        $context->setHost(self::HOST);
-        $context->setScheme(self::SCHEME);
-
-        $generator = $this->getContainer()->get('router')->getGenerator();
-        $generator->setContext($context);
+        $generator = $container->get('router')->getGenerator();
 
         if (!is_null($order->getLegal())) {
             $name = 'rg_api_get_invoice_by_order';
@@ -240,8 +231,11 @@ class MailSenderCommand extends ContainerAwareCommand
             $name = 'rg_api_get_receipt_by_order';
         }
 
+        $host = $container->getParameter('host');
+        $scheme = $container->getParameter('scheme');
+
         $url = join('', [
-            'https://rg.ru/subsmag',
+            $scheme . '://' . $host,
             $generator->generate(
                 $name,
                 ['enc_id' => $container->get('rg_api.encryptor')->encryptOrderId($order->getId())]

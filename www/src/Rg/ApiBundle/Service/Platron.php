@@ -17,14 +17,18 @@ class Platron
 
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
 
-    const API_URL = 'https://rg.ru/subsmag/api';
-    const BASE_URL = 'https://rg.ru/subsmag';
-
     private $logger;
 
-    public function __construct(Logger $logger)
+//    BASE_URL 'https://rg.ru/subs';
+    private $base_url;
+//    API_URL 'https://rg.ru/subs/api';
+    private $api_url;
+
+    public function __construct(Logger $logger, $base_url)
     {
         $this->logger = $logger;
+        $this->base_url = $base_url;
+        $this->api_url = $base_url . '/api';
     }
 
     public function init(Order $order)
@@ -309,16 +313,16 @@ RESPONSE_REJECT;
         $params->pg_amount = $order->getTotal();
         $params->pg_currency = 'RUB';
 
-        $params->pg_check_url = self::API_URL . '/platron/check';
-        $params->pg_result_url = self::API_URL . '/platron/result';
+        $params->pg_check_url = $this->api_url . '/platron/check';
+        $params->pg_result_url = $this->api_url . '/platron/result';
 
         $params->pg_request_method = 'XML';
 
         # put your attention here. Success url works after Platron redirects the browser.
-        $params->pg_success_url = self::BASE_URL . '/payment/success';
+        $params->pg_success_url = $this->base_url . '/payment/success';
         $params->pg_success_url_method = 'AUTOGET';
 
-        $params->pg_failure_url = self::BASE_URL . '/payment/failure';
+        $params->pg_failure_url = $this->base_url . '/payment/failure';
         $params->pg_failure_url_method = 'GET';
 
         $params->pg_description = "Оплата подписки. Заказ №" . $order->getId();

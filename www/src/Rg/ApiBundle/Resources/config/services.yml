@@ -22,6 +22,7 @@ services:
         class: Rg\ApiBundle\Service\Platron
         arguments:
             - "@monolog.logger.platron"
+            - "%domain%"
     rg_api.encryptor:
         class: Rg\ApiBundle\Service\Encryptor
     rg_api.notification_queue:

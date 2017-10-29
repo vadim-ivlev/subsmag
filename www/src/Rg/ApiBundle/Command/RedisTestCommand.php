@@ -102,8 +102,7 @@ class RedisTestCommand extends ContainerAwareCommand
             $output->writeln($l);
         }
 
-
-        $output->writeln($t5 = ' >>>start!!!'.'test:5:zset');
+        $output->writeln($t5 = 'test:5:zset');
         $output->writeln($r->zadd($t5, ['vasya' => 1985]));
         $output->writeln($r->zadd($t5, ['petya' => 1987]));
         $output->writeln($r->zadd($t5, ['rimma' => 1967]));
@@ -116,6 +115,7 @@ class RedisTestCommand extends ContainerAwareCommand
 
         $output->writeln('');
         $output->writeln("Done!");
+
 
         return;
     }

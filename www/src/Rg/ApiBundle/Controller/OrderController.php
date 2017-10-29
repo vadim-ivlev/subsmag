@@ -207,7 +207,7 @@ class OrderController extends Controller
 //            return $this->createReceipt($order, $items, $patritems);
             $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
             $url = join('', [
-                'https://rg.ru/subsmag',
+                $this->getParameter('domain'),
                 $this->generateUrl(
                     'rg_api_get_receipt_by_order',
                     ['enc_id' => $permalink_id]
@@ -231,7 +231,7 @@ class OrderController extends Controller
 //            return $this->createInvoice($order, $items, $patritems);
             $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
             $url = join('', [
-                'https://rg.ru/subsmag',
+                $this->getParameter('domain'),
                 $this->generateUrl(
                     'rg_api_get_invoice_by_order',
                     ['enc_id' => $permalink_id]
@@ -442,7 +442,7 @@ class OrderController extends Controller
 
         $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
         $url = join('', [
-            'https://rg.ru/subsmag',
+            $this->getParameter('domain'),
             $this->generateUrl(
                 'rg_api_get_receipt_by_order',
                 ['enc_id' => $permalink_id]
@@ -572,7 +572,7 @@ class OrderController extends Controller
 
         $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
         $url = join('', [
-            'https://rg.ru/subsmag',
+            $this->getParameter('domain'),
             $this->generateUrl(
                 'rg_api_get_invoice_by_order',
                 ['enc_id' => $permalink_id]

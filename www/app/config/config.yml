@@ -14,12 +14,17 @@ imports:
 parameters:
     locale: en
     periods:
-            1: 'ОСНОВНАЯ I полугодие'
-            2: 'ТЕКУЩАЯ I полугодие'
-            3: 'ОСНОВНАЯ II полугодие'
-            4: 'ТЕКУЩАЯ II полугодие'
+        1: 'ОСНОВНАЯ I полугодие'
+        2: 'ТЕКУЩАЯ I полугодие'
+        3: 'ОСНОВНАЯ II полугодие'
+        4: 'ТЕКУЩАЯ II полугодие'
     # Moscow
     area: 201
+    domain: 'https://rg.ru/subsmag'
+    host: 'rg.ru/subsmag'
+    scheme: 'https'
+    from_email: 'subsmag@rg.ru'
+    from_name: 'Российская газета'
 
 
 framework:
