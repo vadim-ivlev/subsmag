@@ -78,7 +78,7 @@ class CartItemValidator
                     throw new CartException('Первый месяц тарифа первого полугодия должен быть 1, продолжительность 6');
                 break;
             case self::SECONDHALF:
-                if (!($first_month == 7 and $duration == 1))
+                if (!($first_month == 7 and $duration == 6))
                     throw new CartException('Первый месяц тарифа второго полугодия должен быть 7, продолжительность 6');
                 break;
             case self::MONTHFIRSTHALF:
