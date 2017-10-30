@@ -20,8 +20,8 @@ parameters:
         4: 'ТЕКУЩАЯ II полугодие'
     # Moscow
     area: 201
-    domain: 'https://rg.ru/subsmag'
-    host: 'rg.ru/subsmag'
+    domain: 'https://rg.ru/subs'
+    host: 'rg.ru/subs'
     scheme: 'https'
     from_email: 'subsmag@rg.ru'
     from_name: 'Российская газета'
