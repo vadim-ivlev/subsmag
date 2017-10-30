@@ -16,6 +16,7 @@ use Rg\ApiBundle\Controller\Outer as Out;
 
 class ProductController extends Controller
 {
+    /** @var  \DateTime */
     private $current_time;
 
     public function indexAction(Request $request)
@@ -376,8 +377,6 @@ class ProductController extends Controller
             }
         );
 
-//                                dump($filtered_by_area_sales);
-//                                die;
         ############
         ############
 
@@ -387,10 +386,9 @@ class ProductController extends Controller
                 $end = $sale->getEnd();
 
                 ###
-                // TODO: test purpose!!! Remove.
-                $time = $this->current_time;
+                $date = new \DateTime(date('Y-m-d'));
                 ###
-                $criterion = (($time > $start) && ($time < $end));
+                $criterion = (($date >= $start) && ($date <= $end));
 
                 return $criterion;
             }
