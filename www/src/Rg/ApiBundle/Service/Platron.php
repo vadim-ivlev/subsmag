@@ -331,7 +331,7 @@ RESPONSE_REJECT;
 
         #######
         ## тестовый режим одной транзакции
-        $params->pg_testing_mode = 1;
+//        $params->pg_testing_mode = 1;
         #######
 
         $this->salt = $this->generateSalt();
