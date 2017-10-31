@@ -39,18 +39,23 @@ Rg\ApiBundle\Entity\Legal:
         street:
             type: string
             column: street
+            nullable: true
         building_number:
             type: string
             column: building_number
+            nullable: true
         building_subnumber:
             type: string
             column: building_subnumber
+            nullable: true
         building_part:
             type: string
             column: building_part
+            nullable: true
         appartment:
             type: string
             column: appartment
+            nullable: true
         contact_name:
             type: string
             column: contact_name
@@ -60,6 +65,7 @@ Rg\ApiBundle\Entity\Legal:
         contact_fax:
             type: string
             column: contact_fax
+            nullable: true
         contact_email:
             type: string
             column: contact_email
@@ -69,18 +75,27 @@ Rg\ApiBundle\Entity\Legal:
         delivery_street:
             type: string
             column: delivery_street
+            nullable: true
         delivery_building_number:
             type: string
             column: delivery_building_number
+            nullable: true
         delivery_building_subnumber:
             type: string
             column: delivery_building_subnumber
+            nullable: true
         delivery_building_part:
             type: string
             column: delivery_building_part
+            nullable: true
         delivery_appartment:
             type: string
             column: delivery_appartment
+            nullable: true
+        comment:
+            type: string
+            column: comment
+            nullable: true
     manyToOne:
 #        city:
 #            targetEntity: City
