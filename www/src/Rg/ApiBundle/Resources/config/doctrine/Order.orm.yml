@@ -34,6 +34,10 @@ Rg\ApiBundle\Entity\Order:
         pg_payment_id:
             type: string
             column: pg_payment_id
+        comment:
+            type: string
+            column: comment
+            nullable: true
     manyToOne:
         payment:
             targetEntity: Payment

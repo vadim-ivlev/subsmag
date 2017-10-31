@@ -103,6 +103,7 @@ class OrderController extends Controller
 
         $order->setIsPaid(false);
         $order->setPgPaymentId('');
+        $order->setComment($order_details->comment ?? '');
 
         ### способ оплаты
         $payment = $doctrine
