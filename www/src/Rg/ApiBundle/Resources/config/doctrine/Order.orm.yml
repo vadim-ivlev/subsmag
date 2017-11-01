@@ -38,6 +38,29 @@ Rg\ApiBundle\Entity\Order:
             type: string
             column: comment
             nullable: true
+        postcode:
+            type: string
+            column: postcode
+        street:
+            type: string
+            column: street
+            nullable: true
+        building_number:
+            type: string
+            column: building_number
+            nullable: true
+        building_subnumber:
+            type: string
+            column: building_subnumber
+            nullable: true
+        building_part:
+            type: string
+            column: building_part
+            nullable: true
+        appartment:
+            type: string
+            column: appartment
+            nullable: true
     manyToOne:
         payment:
             targetEntity: Payment
@@ -47,6 +70,9 @@ Rg\ApiBundle\Entity\Order:
             inversedBy: orders
         legal:
             targetEntity: Legal
+            inversedBy: orders
+        city:
+            targetEntity: City
             inversedBy: orders
     oneToMany:
         items:

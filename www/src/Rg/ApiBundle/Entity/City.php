@@ -184,4 +184,43 @@ class City
     {
         return $this->area;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $orders;
+
+
+    /**
+     * Add order
+     *
+     * @param \Rg\ApiBundle\Entity\Order $order
+     *
+     * @return City
+     */
+    public function addOrder(\Rg\ApiBundle\Entity\Order $order)
+    {
+        $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param \Rg\ApiBundle\Entity\Order $order
+     */
+    public function removeOrder(\Rg\ApiBundle\Entity\Order $order)
+    {
+        $this->orders->removeElement($order);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
 }

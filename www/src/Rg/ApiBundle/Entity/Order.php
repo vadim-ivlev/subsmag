@@ -495,4 +495,207 @@ class Order
     {
         return $this->comment;
     }
+    /**
+     * @var string
+     */
+    private $postcode;
+
+    /**
+     * @var string
+     */
+    private $street;
+
+    /**
+     * @var string
+     */
+    private $building_number;
+
+    /**
+     * @var string
+     */
+    private $building_subnumber;
+
+    /**
+     * @var string
+     */
+    private $building_part;
+
+    /**
+     * @var string
+     */
+    private $appartment;
+
+    /**
+     * @var \Rg\ApiBundle\Entity\City
+     */
+    private $city;
+
+
+    /**
+     * Set postcode
+     *
+     * @param string $postcode
+     *
+     * @return Order
+     */
+    public function setPostcode($postcode)
+    {
+        $this->postcode = $postcode;
+
+        return $this;
+    }
+
+    /**
+     * Get postcode
+     *
+     * @return string
+     */
+    public function getPostcode()
+    {
+        return $this->postcode;
+    }
+
+    /**
+     * Set street
+     *
+     * @param string $street
+     *
+     * @return Order
+     */
+    public function setStreet($street)
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+
+    /**
+     * Get street
+     *
+     * @return string
+     */
+    public function getStreet()
+    {
+        return $this->street;
+    }
+
+    /**
+     * Set buildingNumber
+     *
+     * @param string $buildingNumber
+     *
+     * @return Order
+     */
+    public function setBuildingNumber($buildingNumber)
+    {
+        $this->building_number = $buildingNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get buildingNumber
+     *
+     * @return string
+     */
+    public function getBuildingNumber()
+    {
+        return $this->building_number;
+    }
+
+    /**
+     * Set buildingSubnumber
+     *
+     * @param string $buildingSubnumber
+     *
+     * @return Order
+     */
+    public function setBuildingSubnumber($buildingSubnumber)
+    {
+        $this->building_subnumber = $buildingSubnumber;
+
+        return $this;
+    }
+
+    /**
+     * Get buildingSubnumber
+     *
+     * @return string
+     */
+    public function getBuildingSubnumber()
+    {
+        return $this->building_subnumber;
+    }
+
+    /**
+     * Set buildingPart
+     *
+     * @param string $buildingPart
+     *
+     * @return Order
+     */
+    public function setBuildingPart($buildingPart)
+    {
+        $this->building_part = $buildingPart;
+
+        return $this;
+    }
+
+    /**
+     * Get buildingPart
+     *
+     * @return string
+     */
+    public function getBuildingPart()
+    {
+        return $this->building_part;
+    }
+
+    /**
+     * Set appartment
+     *
+     * @param string $appartment
+     *
+     * @return Order
+     */
+    public function setAppartment($appartment)
+    {
+        $this->appartment = $appartment;
+
+        return $this;
+    }
+
+    /**
+     * Get appartment
+     *
+     * @return string
+     */
+    public function getAppartment()
+    {
+        return $this->appartment;
+    }
+
+    /**
+     * Set city
+     *
+     * @param \Rg\ApiBundle\Entity\City $city
+     *
+     * @return Order
+     */
+    public function setCity(\Rg\ApiBundle\Entity\City $city = null)
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * Get city
+     *
+     * @return \Rg\ApiBundle\Entity\City
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
 }
