@@ -67,7 +67,7 @@ class OrderController extends Controller
             $order->setEmail($order_details->contact_email);
 
             $order->setPostcode($order_details->delivery_postcode);
-
+            $order->setCity($legal->getDeliveryCity());
         } else {
             // заказывает ФЛ
             ### обработать контактные данные
