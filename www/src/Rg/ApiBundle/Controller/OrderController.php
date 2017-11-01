@@ -65,6 +65,9 @@ class OrderController extends Controller
             $order->setPhone($order_details->contact_phone);
             #### mail
             $order->setEmail($order_details->contact_email);
+
+            $order->setPostcode($order_details->delivery_postcode);
+
         } else {
             // заказывает ФЛ
             ### обработать контактные данные
@@ -76,15 +79,22 @@ class OrderController extends Controller
             if (is_null($city)) {
                 $error = 'City with id ' . $order_details->city_id . ' not found.';
                 return (new Out())->json(['error' => $error, 'description' => 'City with id ' . $city_id . ' not found',]);
-            }                                         //                                          x_x
-                                                      //                                   x_x
-            // не добавляю регион и нас.пункт, они уже приходят с фронта ==> =/>     =>/
-            $address_components = [                  //                      /|\   /|\
-//                $city->getArea()->getName(),       //                     /  \  /  \
-//                $city->getName(),
+            }
+
+            $order->setPostcode($order_details->postcode);
+            $order->setCity($city);
+            $order->setStreet($order_details->street);
+            $order->setBuildingNumber($order_details->building_number);
+            $order->setBuildingSubnumber($order_details->building_subnumber);
+            $order->setBuildingPart($order_details->building_part);
+            $order->setAppartment($order_details->appartment);
+
+            $address_components = [
                 $order_details->address,
             ];
             $order->setAddress(join(', ', $address_components));
+
+
 
             #### фио
             $order->setName($order_details->name);
