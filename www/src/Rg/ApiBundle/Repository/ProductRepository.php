@@ -79,4 +79,52 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
         return $result;
     }
 
+    public function getActiveProductsWithMinPricesByArea(int $from_front_id)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $result = $qb
+            ->select('
+                p,
+                p.id,
+                p.name,
+                p.description,
+                p.text,
+                p.is_kit,
+                p.is_archive,
+                p.outer_link,
+                p.is_popular,
+                p.sort
+            ')
+            ->addSelect('s,t,d,m,z,a,e,month')
+            ->leftJoin('p.sales', 's')
+            ->leftJoin('s.month', 'month')
+            ->leftJoin('p.tariffs', 't')
+            ->leftJoin('t.delivery', 'd')
+            ->leftJoin('t.medium', 'm')
+            ->leftJoin('t.zone', 'z')
+            ->leftJoin(
+                'z.areas',
+                'a',
+                Expr\Join::WITH,
+                $qb->expr()->orX(
+                    $qb->expr()->eq('a.from_front_id', ':from_front_id'),
+                    $qb->expr()->isNull('a.from_front_id')
+                )
+            )
+            ->join('p.editions', 'e')
+            ->orderBy('p.sort')
+            ->addOrderBy('month.year')
+            ->addOrderBy('month.number')
+            ->andWhere(
+                $qb->expr()->eq('p.is_active', ':active')
+            )
+            ->setParameter('from_front_id', $from_front_id)
+            ->setParameter('active', 1)
+            ->getQuery()
+//            ->getDQL(); echo $result;die; # for test purpose
+            ->getResult()
+        ;
+
+        return $result;
+    }
 }
