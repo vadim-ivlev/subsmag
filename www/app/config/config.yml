@@ -1,9 +1,6 @@
 imports:
     - { resource: parameters.yml }
-    #
-#    - { resource: parameters_db.yml }
-    - { resource: parameters_db_backend01.yml }
-    #
+    - { resource: parameters_db.yml }
     - { resource: security.yml }
     - { resource: services.yml }
     - { resource: doctrine_config.yml }
