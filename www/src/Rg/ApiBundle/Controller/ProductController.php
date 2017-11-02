@@ -45,7 +45,7 @@ class ProductController extends Controller
         }
 
         $product_container = $em->getRepository('RgApiBundle:Product')
-            ->getProductsWithMinPricesByArea($from_front_id);
+            ->getActiveProductsWithMinPricesByArea($from_front_id);
 
         if (!$product_container) {
             $arrError = [
