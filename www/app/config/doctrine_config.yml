@@ -10,11 +10,6 @@ doctrine:
                 dbname:   '%database_name%'
                 user:     '%database_user%'
                 password: '%database_password%'
-#                host:     "%database.subsmag.host%"
-#                port:     "%database.subsmag.port%"
-#                dbname:   "%database.subsmag.name%"
-#                user:     "%database.subsmag.user%"
-#                password: "%database.subsmag.password%"
                 charset:  UTF8
                 unix_socket: /var/run/mysqld/mysqld.sock
 
