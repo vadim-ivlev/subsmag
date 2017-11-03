@@ -83,6 +83,8 @@ WHERE d.id = :delivery_id AND i.year = :year AND z.id = :zone_id
                     $qb->expr()->eq('i.is_active', ':true')
                 )
             )
+            ->orderBy('i.year', 'ASC')
+            ->addOrderBy('i.month', 'ASC')
             ->setParameter(':delivery_id', $delivery_id)
             ->setParameter(':year', $year)
             ->setParameter(':zone_id', $zone_id)
