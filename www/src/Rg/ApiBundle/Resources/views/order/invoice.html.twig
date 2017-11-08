@@ -86,7 +86,7 @@ li.ie-safari a {background-position:-400px 0}
                 ул.&nbsp;{{ legal.deliveryStreet }},
                 д.&nbsp;{{ legal.deliveryBuildingNumber }}
                 {% if legal.deliveryBuildingSubnumber %}-{{ legal.deliveryBuildingSubnumber }}{% endif %}
-                {% if legal.deliveryBuildingPart %}-{{ legal.deliveryBuildingPart }}{% endif %},
+                {% if legal.deliveryBuildingPart %}/{{ legal.deliveryBuildingPart }}{% endif %},
                 кв. {{ legal.deliveryAppartment }}<br>
 				Расч.&nbsp;счет:&nbsp;{{ legal.bankAccount }}<br>
 				Банк:&nbsp;{{ legal.bankName }}
@@ -134,7 +134,10 @@ li.ie-safari a {background-position:-400px 0}
             <div style="width: 130mm;">Плательщик и его адрес</div>
 			
 			<div style="width: 130mm;">ИНН&nbsp;{{ legal.inn }}&nbsp;&nbsp;КПП&nbsp;{{ legal.kpp }}&nbsp;{{ legal.name }}<br>
-            {{ legal.postcode }}, {{ legal.city }},&nbsp;ул.&nbsp;{{ legal.street }},&nbsp;д.&nbsp;{{ legal.buildingSubnumber }},{{ legal.buildingPart }},{{ legal.appartment }}<br>
+            {{ legal.postcode }}, {{ legal.city }},&nbsp;ул.&nbsp;{{ legal.street }},&nbsp;д.&nbsp;{{ legal.buildingNumber }}
+                {% if legal.buildingSubnumber %}-{{ legal.buildingSubnumber }}{% endif %}
+                {% if legal.buildingPart %}/{{ legal.buildingPart }}{% endif %}
+                , оф. {{ legal.appartment }}<br>
 			Расч.&nbsp;счет:&nbsp;{{ legal.bankAccount }}<br>
 			Банк:&nbsp;{{ legal.bankName }}<br>
 			</div>
