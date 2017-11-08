@@ -82,7 +82,12 @@ li.ie-safari a {background-position:-400px 0}
         <td style="width: 170mm;">
             <div style="width:170mm;border-top:1px solid;">
             	Грузополучатель и его адрес: ИНН&nbsp;{{ legal.inn }}&nbsp;&nbsp;КПП&nbsp;{{ legal.kpp }}&nbsp;{{ legal.name }}<br>
-				{{ legal.deliveryPostcode }}, {{ legal.deliveryCity.area.name }}, {{ legal.deliveryCity.name }},&nbsp;ул.&nbsp;{{ legal.deliveryStreet }},&nbsp;д.&nbsp;{{ legal.deliveryBuildingSubnumber }}{{ legal.deliveryBuildingPart }}{{ legal.deliveryAppartment }}<br>
+				{{ legal.deliveryPostcode }}, {{ legal.deliveryCity.area.name }}, {{ legal.deliveryCity.name }},&nbsp;
+                ул.&nbsp;{{ legal.deliveryStreet }},
+                д.&nbsp;{{ legal.deliveryBuildingNumber }}
+                {% if legal.deliveryBuildingSubnumber %}-{{ legal.deliveryBuildingSubnumber }}{% endif %}
+                {% if legal.deliveryBuildingPart %}-{{ legal.deliveryBuildingPart }}{% endif %},
+                кв. {{ legal.deliveryAppartment }}<br>
 				Расч.&nbsp;счет:&nbsp;{{ legal.bankAccount }}<br>
 				Банк:&nbsp;{{ legal.bankName }}
 
