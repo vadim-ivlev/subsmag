@@ -40,17 +40,17 @@ class Platron
         $id = $order->getId();
         $resp = $this->sendRequest($request);
 
-        $this->logger->info('-> Platron init for order ' . $id . $request['pg_amount'] . ' RUB');
+        //$this->logger->info('-> Platron init for order ' . $id . $request['pg_amount'] . ' RUB');
 
         try {
             $xml = new \SimpleXMLElement($resp);
         } catch (\Exception $e) {
-            $message = '<- Error. Response: _' . $resp . "_, >>>" . $e->getMessage();
+            $message = '<- Error. Response for order ' . $id . ': _' . $resp . "_, >>>" . $e->getMessage();
             $this->logger->error($message);
 
             # если платрон ответил непонятно чем, попробуем ещё раз.
             $resp = $this->sendRequest($request);
-            $this->logger->info('-> Bad try. Sent once again: ' . $id );
+            //$this->logger->info('-> Bad try. Sent once again: ' . $id );
 
             try {
                 $xml = new \SimpleXMLElement($resp);
@@ -355,10 +355,10 @@ RESPONSE_REJECT;
 
     private function sendRequest(array $params)
     {
-        $ch = curl_init();
+        $ch = curl_init(self::HOST_TO_HOST);
         $query = http_build_query($params);
         $options = [
-            CURLOPT_URL => self::HOST_TO_HOST,
+            //CURLOPT_URL => self::HOST_TO_HOST,
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POSTFIELDS => $query,
@@ -367,6 +367,10 @@ RESPONSE_REJECT;
         curl_setopt_array($ch, $options);
 
         $result = curl_exec($ch);
+
+	if ($result == false) {
+		$result = curl_error($ch);
+	}
 
         curl_close($ch);
 
