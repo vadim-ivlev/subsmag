@@ -44,13 +44,13 @@ framework:
     trusted_proxies: ~
     session:
         cookie_lifetime: 31536000
-        # redis session
-#        handler_id:  snc_redis.session.handler
-        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        # redis session # https://github.com/snc/SncRedisBundle/blob/master/Resources/doc/index.md
+        handler_id:  snc_redis.session.handler
         # native file session
-        storage_id:  session.storage.native
-        handler_id:  session.handler.native_file
-        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+#        storage_id:  session.storage.native
+#        handler_id:  session.handler.native_file
+#        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
     fragments: ~
     http_method_override: true
     assets: ~
@@ -112,12 +112,12 @@ snc_redis:
             type: predis
             alias: default
             dsn: "%redis_server%" # как на фронте -- в параметрах
-#        session:
-#            type: predis
-#            alias: session
-#            dsn: 'redis://localhost'
-#    session:
-#        client: session
+        session:
+            type: predis
+            alias: session
+            dsn: '%redis_server%'
+    session:
+        client: session
 #        ttl: 86400
 
 monolog:
