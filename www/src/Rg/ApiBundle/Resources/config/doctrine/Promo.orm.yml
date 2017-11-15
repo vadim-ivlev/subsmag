@@ -1,0 +1,72 @@
+# наименование акции
+# первый день акции, если есть
+# последний день акции, если есть первый
+# может быть неактивна
+# промокод
+# скидка по акции в процентах
+# если ограниченное кол-во промокодов, то сколько
+Rg\ApiBundle\Entity\Promo:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\PromoRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            column: name
+            unique: true
+        start:
+            type: date
+            column: start
+            nullable: true
+        end:
+            type: date
+            column: end
+            nullable: true
+        is_active:
+            type: boolean
+            column: is_active
+        code:
+            type: string
+            column: code
+            unique: true
+        discount:
+            type: float
+            column: discount
+        amount:
+            type: integer
+            column: amount
+            nullable: true
+        description:
+            type: string
+            column: description
+        image:
+            type: string
+            column: image
+    manyToMany:
+        products:
+            targetEntity: Product
+            mappedBy: promos
+    manyToOne:
+        timeunit:
+            targetEntity: Timeunit
+            inversedBy: promos
+        area:
+            targetEntity: Area
+            inversedBy: promos
+        zone:
+            targetEntity: Zone
+            inversedBy: promos
+    oneToMany:
+        items:
+            targetEntity: Item
+            mappedBy: promo
+        pins:
+            targetEntity: Pin
+            mappedBy: promo
+    lifecycleCallbacks: {  }

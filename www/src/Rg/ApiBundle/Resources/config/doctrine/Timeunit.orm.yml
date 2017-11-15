@@ -29,4 +29,7 @@ Rg\ApiBundle\Entity\Timeunit:
         tariffs:
             targetEntity: Tariff
             mappedBy: timeunit
+        promos:
+            targetEntity: Promo
+            mappedBy: timeunit
     lifecycleCallbacks: {  }

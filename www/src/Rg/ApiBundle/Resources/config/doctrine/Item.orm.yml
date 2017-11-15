@@ -18,6 +18,9 @@ Rg\ApiBundle\Entity\Item:
         timeunit_amount:
             type: integer
             column: timeunit_amount
+        discount_coef:
+            type: float
+            column: discount_coef
         cost:
             type: float
             column: cost
@@ -30,5 +33,8 @@ Rg\ApiBundle\Entity\Item:
             inversedBy: items
         tariff:
             targetEntity: Tariff
+            inversedBy: items
+        promo:
+            targetEntity: Promo
             inversedBy: items
     lifecycleCallbacks: {  }

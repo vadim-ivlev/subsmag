@@ -51,4 +51,7 @@ Rg\ApiBundle\Entity\Product:
         editions:
             targetEntity: Edition
             inversedBy: products
+        promos:
+            targetEntity: Promo
+            inversedBy: products
     lifecycleCallbacks: {  }

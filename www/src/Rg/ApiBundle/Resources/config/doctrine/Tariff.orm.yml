@@ -38,4 +38,12 @@ Rg\ApiBundle\Entity\Tariff:
         medium:
             targetEntity: Medium
             inversedBy: tariffs
+    uniqueConstraints:
+        unique_tariff:
+            columns:
+                - 'product_id'
+                - 'timeunit_id'
+                - 'delivery_id'
+                - 'zone_id'
+                - 'medium_id'
     lifecycleCallbacks: {  }

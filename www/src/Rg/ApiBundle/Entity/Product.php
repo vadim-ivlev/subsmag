@@ -449,4 +449,43 @@ class Product
     {
         return $this->editions;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $promos;
+
+
+    /**
+     * Add promo
+     *
+     * @param \Rg\ApiBundle\Entity\Promo $promo
+     *
+     * @return Product
+     */
+    public function addPromo(\Rg\ApiBundle\Entity\Promo $promo)
+    {
+        $this->promos[] = $promo;
+
+        return $this;
+    }
+
+    /**
+     * Remove promo
+     *
+     * @param \Rg\ApiBundle\Entity\Promo $promo
+     */
+    public function removePromo(\Rg\ApiBundle\Entity\Promo $promo)
+    {
+        $this->promos->removeElement($promo);
+    }
+
+    /**
+     * Get promos
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPromos()
+    {
+        return $this->promos;
+    }
 }

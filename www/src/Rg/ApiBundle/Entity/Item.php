@@ -254,4 +254,62 @@ class Item
     {
         return $this->month;
     }
+    /**
+     * @var \Rg\ApiBundle\Entity\Promo
+     */
+    private $promo;
+
+
+    /**
+     * Set promo
+     *
+     * @param \Rg\ApiBundle\Entity\Promo $promo
+     *
+     * @return Item
+     */
+    public function setPromo(\Rg\ApiBundle\Entity\Promo $promo = null)
+    {
+        $this->promo = $promo;
+
+        return $this;
+    }
+
+    /**
+     * Get promo
+     *
+     * @return \Rg\ApiBundle\Entity\Promo
+     */
+    public function getPromo()
+    {
+        return $this->promo;
+    }
+    /**
+     * @var float
+     */
+    private $discount_coef;
+
+
+    /**
+     * Set discountCoef
+     *
+     * @param float $discountCoef
+     *
+     * @return Item
+     */
+    public function setDiscountCoef($discountCoef)
+    {
+        $this->discount_coef = $discountCoef;
+
+        return $this;
+    }
+
+    /**
+     * Get discountCoef
+     *
+     * @return float
+     */
+    public function getDiscountCoef()
+    {
+        return $this->discount_coef;
+    }
 }

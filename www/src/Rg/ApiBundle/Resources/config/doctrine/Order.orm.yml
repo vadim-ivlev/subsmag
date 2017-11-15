@@ -84,4 +84,8 @@ Rg\ApiBundle\Entity\Order:
         notifications:
             targetEntity: Notification
             mappedBy: order
+    oneToOne:
+        pin:
+            targetEntity: Pin
+            mappedBy: order
     lifecycleCallbacks: {  }

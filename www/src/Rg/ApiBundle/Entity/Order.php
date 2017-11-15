@@ -698,4 +698,33 @@ class Order
     {
         return $this->city;
     }
+    /**
+     * @var \Rg\ApiBundle\Entity\Pin
+     */
+    private $pin;
+
+
+    /**
+     * Set pin
+     *
+     * @param \Rg\ApiBundle\Entity\Pin $pin
+     *
+     * @return Order
+     */
+    public function setPin(\Rg\ApiBundle\Entity\Pin $pin = null)
+    {
+        $this->pin = $pin;
+
+        return $this;
+    }
+
+    /**
+     * Get pin
+     *
+     * @return \Rg\ApiBundle\Entity\Pin
+     */
+    public function getPin()
+    {
+        return $this->pin;
+    }
 }

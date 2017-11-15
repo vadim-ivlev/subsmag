@@ -45,4 +45,7 @@ Rg\ApiBundle\Entity\Area:
         sales:
             targetEntity: Sale
             mappedBy: area
+        promos:
+            targetEntity: Promo
+            mappedBy: area
     lifecycleCallbacks: {  }

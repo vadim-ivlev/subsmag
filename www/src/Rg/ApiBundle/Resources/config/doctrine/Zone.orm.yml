@@ -26,4 +26,7 @@ Rg\ApiBundle\Entity\Zone:
         patriffs:
             targetEntity: Patriff
             mappedBy: zone
+        promos:
+            targetEntity: Promo
+            mappedBy: zone
     lifecycleCallbacks: {  }

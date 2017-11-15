@@ -1,0 +1,31 @@
+Rg\ApiBundle\Entity\Pin:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\PinRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        value:
+            type: string
+            column: value
+        is_active:
+            type: boolean
+            column: is_active
+    manyToOne:
+        promo:
+            targetEntity: Promo
+            inversedBy: pins
+    oneToOne:
+        order:
+            targetEntity: Order
+            inversedBy: pin
+    uniqueConstraints:
+        unique_pins_inside_one_promo:
+            columns:
+                - 'promo_id'
+                - 'value'
+    lifecycleCallbacks: {  }
