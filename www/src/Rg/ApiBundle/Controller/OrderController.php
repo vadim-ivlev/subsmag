@@ -351,6 +351,9 @@ class OrderController extends Controller
                 $cost = $calculator->calculateItemCost($tariff, $duration);
                 $item->setCost($cost);
 
+                $discount_coef = 1;
+                $item->setDiscountCoef($discount_coef);
+
                 $month = $doctrine
                     ->getRepository('RgApiBundle:Month')
                     ->findOneBy([

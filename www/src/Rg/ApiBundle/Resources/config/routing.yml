@@ -95,3 +95,9 @@ rg_api_cart_empty:
     path:     /cart/
     defaults: { _controller: RgApiBundle:Cart:empty, _format:json }
     methods:  [PUT]
+
+# применить промокод к корзине
+rg_api_cart_apply_promo:
+    path:     /promo/
+    defaults: { _controller: RgApiBundle:Cart:applyPromo, _format:json }
+    methods:  [POST]

@@ -2,9 +2,11 @@
 # первый день акции, если есть
 # последний день акции, если есть первый
 # может быть неактивна
+# повсеместная или ограничена Москвой/зонами?
 # промокод
 # скидка по акции в процентах
 # если ограниченное кол-во промокодов, то сколько
+# если ограничено по количеству, то сколько уже активировано?
 Rg\ApiBundle\Entity\Promo:
     type: entity
     table: null
@@ -31,6 +33,9 @@ Rg\ApiBundle\Entity\Promo:
         is_active:
             type: boolean
             column: is_active
+        is_countrywide:
+            type: boolean
+            column: is_countrywide
         code:
             type: string
             column: code
@@ -41,6 +46,10 @@ Rg\ApiBundle\Entity\Promo:
         amount:
             type: integer
             column: amount
+            nullable: true
+        sold:
+            type: integer
+            column: sold
             nullable: true
         description:
             type: string

@@ -1,6 +1,7 @@
 <?php
 
 namespace Rg\ApiBundle\Repository;
+use Rg\ApiBundle\Entity\Promo;
 
 /**
  * PinRepository

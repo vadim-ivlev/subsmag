@@ -6,12 +6,16 @@ use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Cart\CartException;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
+use Rg\ApiBundle\Entity\Area;
 use Rg\ApiBundle\Entity\Delivery;
 use Rg\ApiBundle\Entity\Edition;
 use Rg\ApiBundle\Entity\Issue;
 use Rg\ApiBundle\Entity\Medium;
+use Rg\ApiBundle\Entity\Pin;
 use Rg\ApiBundle\Entity\Product;
+use Rg\ApiBundle\Entity\Promo;
 use Rg\ApiBundle\Entity\Tariff;
+use Rg\ApiBundle\Entity\Zone;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Cookie;
@@ -192,12 +196,190 @@ class CartController extends Controller implements SessionHasCartController
         return (new Out())->json($detailed_cart);
     }
 
-    private function detailCart(Cart $cart)
+    public function applyPromoAction(Request $request, SessionInterface $session)
     {
-        //
+        /** @var Cart $cart */
+        $cart = unserialize($session->get('cart'));
+
+        $data = json_decode(
+            $request->getContent()
+        );
+
+        if (!isset($data->promocode)) {
+            $error = 'no promocode given';
+            return (new Out())->json(['error' => $error,]);
+        }
+
+        $promocode = $data->promocode;
+
+        if (!$this->isValidPromocode($promocode)) {
+            $error = 'Промокод содержит недопустимые символы';
+            $description = 'Only 0-9A-z_-%/';
+            return (new Out())->json([
+                'error' => $error,
+                'description' => $description,
+            ]);
+        }
+
+        $raw_promo = explode('/', $promocode);
+        $code = $raw_promo[0];
+
+        /** @var Promo $promo */
+        $promo = $this->getDoctrine()->getRepository('RgApiBundle:Promo')
+            ->findOneBy(['code' => $code]);
+
+        if (is_null($promo)) {
+            return (new Out())->json([
+                'error' => 'Промокод не найден',
+                'promocode' => $promocode,
+            ]);
+        }
+
+        ## всё, что не так с промокодом -- объясняю подробно
+        // 0. Наш промокод с пин-кодами?
+        if ($promo->getPins()->count() > 0) {
+            // пользователь отправил пинкод?
+            if (count($raw_promo) < 2) {
+                return (new Out())->json([
+                    'error' => 'Пин-код промокода не передан.',
+                    'promocode' => $promocode,
+                ]);
+            }
+
+            // пин есть у нас в таблице?
+            $user_pin = trim($raw_promo[1]);
+
+            if (!$this->isValidPin($user_pin)) {
+                return (new Out())->json([
+                    'error' => 'Пин-код промокода не передан или неправильный.',
+                    'promocode' => $promocode,
+                ]);
+            }
+
+            $pins = $promo->getPins()->filter(
+                function (Pin $pin) use($user_pin) {
+                    return $pin->getValue() == $user_pin;
+                }
+            );
+
+            if ($pins->count() != 1) {
+                return (new Out())->json([
+                    'error' => 'Пин-код не найден.',
+                    'promocode' => $promocode,
+                    'pin' => $user_pin,
+                ]);
+            }
+
+            $pin = $pins->current();
+
+            // пин уже использован?
+            if ($pin->getOrder() != null) {
+                return (new Out())->json([
+                    'error' => 'Пин-код уже активирован.',
+                ]);
+            }
+        }
+
+        // 1. area, zone
+        if (!$promo->getIsCountrywide()) {
+            $from_front_id = $this->getFrontId($request);
+            if (is_null($from_front_id)) {
+                $error = [
+                    'error' => 'Регион не определён. Видимо, его нет в cookie.',
+                ];
+
+                return (new Out())->json($error);
+            }
+
+            /** @var null|Area $area */
+            $user_area = $this->getArea($from_front_id);
+            if (is_null($user_area)) {
+                $error = [
+                    'error' => 'В базе не найден регион с id ' . $from_front_id,
+                ];
+
+                return (new Out())->json($error);
+            }
+
+            /** @var Area $promo_area */
+            $promo_area = $promo->getArea();
+            if (!is_null($promo_area)) {
+                if ($user_area->getId() != $promo_area->getId()) {
+                    $error = [
+                        'error' => 'Промокод действителен только для ' . $promo_area->getName()
+                            . ', ваш регион определён как ' . $user_area->getName(),
+                    ];
+
+                    return (new Out())->json($error);
+                }
+            }
+
+            /** @var Zone $promo_zone */
+            $promo_zone = $promo->getZone();
+            if (!is_null($promo_zone)) {
+                /** @var Zone $user_zone */
+                $user_zone = $user_area->getZone();
+                if ($user_zone->getId() != $promo_zone->getId()) {
+                    $error = [
+                        'error' => 'Промокод действителен только для ' . $promo_zone->getName()
+                            . ', ваш регион определён как ' . $user_zone->getName(),
+                    ];
+
+                    return (new Out())->json($error);
+                }
+            }
+        }
+
+        // 2. is active?
+        if ($promo->getIsActive() == false) {
+            return (new Out())->json([
+                'error' => "Промокод не активен.",
+            ]);
+        }
+
+        // 3. has started, ended?
+        $start = $promo->getStart();
+        $end = $promo->getEnd();
+        if (!is_null($start) && !is_null($end)) {
+            $date = new \DateTime(date('Y-m-d'));
+            if ($date < $start) {
+                return (new Out())->json([
+                    'error' => "Период действия промокода ещё не начался.",
+                ]);
+            }
+            if ($date > $end) {
+                return (new Out())->json([
+                    'error' => "Период действия промокода уже закончился.",
+                ]);
+            }
+        }
+
+        // 4. amount is not exhausted?
+        $amount = $promo->getAmount();
+        if (!is_null($amount)) {
+            $sold = $promo->getSold();
+
+            if ($amount <= $sold) {
+                return (new Out())->json([
+                    'error' => "Достигнут лимит активаций по этому промокоду.",
+                ]);
+            }
+        }
+
+        ## с промокодом всё в порядке. Что делать?
+        // write it to session
+        $session->set('promocode', $promocode);
+
+        $detailed_cart = $this->detailCart($cart, $promo);
+
+        return (new Out())->json($detailed_cart);
+    }
+
+    private function detailCart(Cart $cart, Promo $promo = null)
+    {
         ### детализировать подписные позиции
         $detailed_products = array_map(
-            function (CartItem $cart_item) {
+            function (CartItem $cart_item) use($promo) {
                 $doctrine = $this->getDoctrine();
                 $tariff = $doctrine
                     ->getRepository('RgApiBundle:Tariff')
@@ -223,6 +405,22 @@ class CartController extends Controller implements SessionHasCartController
                 $cost = $this->get('rg_api.product_cost_calculator')
                     ->calculateItemCost($tariff, $duration);
 
+                ## работаем со скидкой
+                if (is_null($promo)) {
+                    $discount = 0;
+                } else {
+                    if ($this->doesPromoFitTariff($promo, $tariff)) {
+                        $discount = $promo->getDiscount();
+                    } else
+                        $discount = 0;
+                }
+
+                $discount_coef = (100 - $discount) / 100;
+
+                $price = $tariff->getCataloguePrice() + $tariff->getDeliveryPrice();
+
+                $new_cost = $cost * $discount_coef;
+
                 return [
                     'name' => $product->getName(),
                     'image' => $images,
@@ -233,8 +431,13 @@ class CartController extends Controller implements SessionHasCartController
                     'medium' => $medium->getName(),
                     'delivery' => $delivery->getName(),
                     'quantity' => $cart_item->getQuantity(),
-                    'price' => ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice()),
-                    'cost' => $cost,
+                    'price' => $price, // тарифная цена
+                    'cost' => $cost, // цена одной штуки позиции (тарифная * количество тайм-юнитов) без скидки
+                    'is_promoted' => true,
+                    'old_cost' => $cost,
+                    'discount' => $discount,
+                    'discount_coef' => $discount_coef,
+                    'new_cost' => $new_cost,
                 ];
             },
             $cart->getCartItems()
@@ -280,5 +483,56 @@ class CartController extends Controller implements SessionHasCartController
         ];
     }
 
-}
+    private function isValidPromocode(string $promocode)
+    {
+        if (strlen($promocode) > 255 or empty($promocode)) return false;
+        if (preg_match('#[^0-9A-Za-z_%/-]#', $promocode)) return false;
+        return true;
+    }
 
+    private function getFrontId($request): int
+    {
+        //TODO: works only on prod with cookies
+        $rg_geo_data = $request->cookies->get('rg_geo_data') ?? $request->cookies->get('rg_user_region');
+
+        // Test purposes only. Remove!
+        // московская кука
+        $rg_geo_data = "%7B%22id%22%3A201%2C%22rgId%22%3A3132%2C%22link%22%3A%22%5C%2Fregion%5C%2Fcfo%5C%2Fstolica%5C%2F%22%2C%22originName%22%3A%22%5Cu041c%5Cu043e%5Cu0441%5Cu043a%5Cu0432%5Cu0430%22%2C%22originPrepositionalName%22%3A%22%5Cu041c%5Cu043e%5Cu0441%5Cu043a%5Cu0432%5Cu0435%22%2C%22originGenitiveName%22%3A%22%5Cu041c%5Cu043e%5Cu0441%5Cu043a%5Cu0432%5Cu044b%22%2C%22rubricName%22%3A%22%5Cu041c%5Cu043e%5Cu0441%5Cu043a%5Cu0432%5Cu0430%22%2C%22rubricPrepositionalName%22%3A%22%5Cu041c%5Cu043e%5Cu0441%5Cu043a%5Cu0432%5Cu0435%22%2C%22rubricGenitiveName%22%3A%22%5Cu041c%5Cu043e%5Cu0441%5Cu043a%5Cu0432%5Cu044b%22%7D";
+        // владивостокская кука
+//        $rg_geo_data = "%7B%22id%22%3A96%2C%22rgId%22%3A3718%2C%22link%22%3A%22%5C%2Fregion%5C%2Fdfo%5C%2Fprimorie%5C%2Fvladivostok%5C%2F%22%2C%22originName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%22%2C%22originPrepositionalName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%5Cu0435%22%2C%22originGenitiveName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%5Cu0430%22%2C%22rubricName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%22%2C%22rubricPrepositionalName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%5Cu0435%22%2C%22rubricGenitiveName%22%3A%22%5Cu0412%5Cu043b%5Cu0430%5Cu0434%5Cu0438%5Cu0432%5Cu043e%5Cu0441%5Cu0442%5Cu043e%5Cu043a%5Cu0430%22%7D";
+
+        if (!$rg_geo_data) {
+            return null;
+        }
+
+        $from_front_id = (json_decode( urldecode($rg_geo_data) ))->id;
+
+        return $from_front_id;
+    }
+
+    private function getArea($from_front_id)
+    {
+        $area = $this->getDoctrine()->getRepository('RgApiBundle:Area')
+            ->findOneBy(['from_front_id' => $from_front_id]);
+
+        return $area;
+    }
+
+    private function isValidPin($pin)
+    {
+        if (strlen($pin) < 1) return false;
+
+        return true;
+    }
+
+    private function doesPromoFitTariff(Promo $p, Tariff $t)
+    {
+        if ($p->getZone()->getId() != $t->getZone()->getId()) return false;
+
+        if ($p->getTimeunit()->getId() != $t->getTimeunit()->getId()) return false;
+
+        if (!$p->getProducts()->contains($t->getProduct())) return false;
+
+        return true;
+    }
+}

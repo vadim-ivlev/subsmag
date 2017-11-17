@@ -525,4 +525,62 @@ class Promo
     {
         return $this->zone;
     }
+    /**
+     * @var integer
+     */
+    private $sold;
+
+
+    /**
+     * Set sold
+     *
+     * @param integer $sold
+     *
+     * @return Promo
+     */
+    public function setSold($sold)
+    {
+        $this->sold = $sold;
+
+        return $this;
+    }
+
+    /**
+     * Get sold
+     *
+     * @return integer
+     */
+    public function getSold()
+    {
+        return $this->sold;
+    }
+    /**
+     * @var boolean
+     */
+    private $is_countrywide;
+
+
+    /**
+     * Set isCountrywide
+     *
+     * @param boolean $isCountrywide
+     *
+     * @return Promo
+     */
+    public function setIsCountrywide($isCountrywide)
+    {
+        $this->is_countrywide = $isCountrywide;
+
+        return $this;
+    }
+
+    /**
+     * Get isCountrywide
+     *
+     * @return boolean
+     */
+    public function getIsCountrywide()
+    {
+        return $this->is_countrywide;
+    }
 }
