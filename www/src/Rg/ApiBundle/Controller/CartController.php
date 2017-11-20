@@ -30,7 +30,9 @@ class CartController extends Controller implements SessionHasCartController
         /** @var Cart $cart */
         $cart = unserialize($session->get('cart'));
 
-        $detailed_cart = $this->detailCart($cart);
+        $promo = $this->getPromoOrNull($request, $session);
+
+        $detailed_cart = $this->detailCart($cart, $promo);
 
         return (new Out())->json($detailed_cart);
     }
@@ -142,7 +144,9 @@ class CartController extends Controller implements SessionHasCartController
 
         $session->set('cart', serialize($cart));
 
-        $detailed_cart = $this->detailCart($cart);
+        $promo = $this->getPromoOrNull($request, $session);
+
+        $detailed_cart = $this->detailCart($cart, $promo);
 
         return (new Out())->json($detailed_cart);
     }
@@ -167,7 +171,9 @@ class CartController extends Controller implements SessionHasCartController
 
         $session->set('cart', serialize($cart));
 
-        $detailed_cart = $this->detailCart($cart);
+        $promo = $this->getPromoOrNull($request, $session);
+
+        $detailed_cart = $this->detailCart($cart, $promo);
 
         return (new Out())->json($detailed_cart);
     }
@@ -191,16 +197,15 @@ class CartController extends Controller implements SessionHasCartController
 
         $session->set('cart', serialize($cart));
 
-        $detailed_cart = $this->detailCart($cart);
+        $promo = $this->getPromoOrNull($request, $session);
+
+        $detailed_cart = $this->detailCart($cart, $promo);
 
         return (new Out())->json($detailed_cart);
     }
 
     public function applyPromoAction(Request $request, SessionInterface $session)
     {
-        /** @var Cart $cart */
-        $cart = unserialize($session->get('cart'));
-
         $data = json_decode(
             $request->getContent()
         );
@@ -213,14 +218,30 @@ class CartController extends Controller implements SessionHasCartController
         $promocode = $data->promocode;
 
         if (!$this->isValidPromocode($promocode)) {
-            $error = 'Промокод содержит недопустимые символы';
-            $description = 'Only 0-9A-z_-%/';
-            return (new Out())->json([
-                'error' => $error,
-                'description' => $description,
-            ]);
+            $error = 'Промокод содержит недопустимые символы. Допускаются 0-9A-z_-%/';
+            return (new Out())->json(['error' => $error,]);
         }
 
+        try {
+            $promo = $this->fetchPromoFromDB($promocode, $request);
+        } catch (\Exception $e) {
+            return (new Out())->json(['error' => $e->getMessage(),]);
+        }
+
+        ## с промокодом, видимо, всё в порядке.
+        // write it to session for next generations
+        $session->set('promocode', $promocode);
+
+        /** @var Cart $cart */
+        $cart = unserialize($session->get('cart'));
+
+        $detailed_cart = $this->detailCart($cart, $promo);
+
+        return (new Out())->json($detailed_cart);
+    }
+
+    private function fetchPromoFromDB(string $promocode, Request $request)
+    {
         $raw_promo = explode('/', $promocode);
         $code = $raw_promo[0];
 
@@ -229,10 +250,8 @@ class CartController extends Controller implements SessionHasCartController
             ->findOneBy(['code' => $code]);
 
         if (is_null($promo)) {
-            return (new Out())->json([
-                'error' => 'Промокод не найден',
-                'promocode' => $promocode,
-            ]);
+            $error = 'Промокод не найден';
+            throw new \Exception($error);
         }
 
         ## всё, что не так с промокодом -- объясняю подробно
@@ -240,20 +259,16 @@ class CartController extends Controller implements SessionHasCartController
         if ($promo->getPins()->count() > 0) {
             // пользователь отправил пинкод?
             if (count($raw_promo) < 2) {
-                return (new Out())->json([
-                    'error' => 'Пин-код промокода не передан.',
-                    'promocode' => $promocode,
-                ]);
+                $error = 'Пин-код промокода не передан.';
+                throw new \Exception($error);
             }
 
             // пин есть у нас в таблице?
             $user_pin = trim($raw_promo[1]);
 
             if (!$this->isValidPin($user_pin)) {
-                return (new Out())->json([
-                    'error' => 'Пин-код промокода не передан или неправильный.',
-                    'promocode' => $promocode,
-                ]);
+                $error = 'Пин-код промокода не передан или неправильный.';
+                throw new \Exception($error);
             }
 
             $pins = $promo->getPins()->filter(
@@ -263,20 +278,16 @@ class CartController extends Controller implements SessionHasCartController
             );
 
             if ($pins->count() != 1) {
-                return (new Out())->json([
-                    'error' => 'Пин-код не найден.',
-                    'promocode' => $promocode,
-                    'pin' => $user_pin,
-                ]);
+                $error = 'Пин-код не найден.';
+                throw new \Exception($error);
             }
 
             $pin = $pins->current();
 
             // пин уже использован?
             if ($pin->getOrder() != null) {
-                return (new Out())->json([
-                    'error' => 'Пин-код уже активирован.',
-                ]);
+                $error = 'Пин-код уже активирован.';
+                throw new \Exception($error);
             }
         }
 
@@ -284,33 +295,24 @@ class CartController extends Controller implements SessionHasCartController
         if (!$promo->getIsCountrywide()) {
             $from_front_id = $this->getFrontId($request);
             if (is_null($from_front_id)) {
-                $error = [
-                    'error' => 'Регион не определён. Видимо, его нет в cookie.',
-                ];
-
-                return (new Out())->json($error);
+                $error = 'Регион не определён. Видимо, его нет в cookie.';
+                throw new \Exception($error);
             }
 
             /** @var null|Area $area */
             $user_area = $this->getArea($from_front_id);
             if (is_null($user_area)) {
-                $error = [
-                    'error' => 'В базе не найден регион с id ' . $from_front_id,
-                ];
-
-                return (new Out())->json($error);
+                $error = 'В базе не найден регион с id ' . $from_front_id;
+                throw new \Exception($error);
             }
 
             /** @var Area $promo_area */
             $promo_area = $promo->getArea();
             if (!is_null($promo_area)) {
                 if ($user_area->getId() != $promo_area->getId()) {
-                    $error = [
-                        'error' => 'Промокод действителен только для ' . $promo_area->getName()
-                            . ', ваш регион определён как ' . $user_area->getName(),
-                    ];
-
-                    return (new Out())->json($error);
+                    $error = 'Промокод действителен только для ' . $promo_area->getName()
+                        . ', ваш регион определён как ' . $user_area->getName();
+                    throw new \Exception($error);
                 }
             }
 
@@ -320,21 +322,17 @@ class CartController extends Controller implements SessionHasCartController
                 /** @var Zone $user_zone */
                 $user_zone = $user_area->getZone();
                 if ($user_zone->getId() != $promo_zone->getId()) {
-                    $error = [
-                        'error' => 'Промокод действителен только для ' . $promo_zone->getName()
-                            . ', ваш регион определён как ' . $user_zone->getName(),
-                    ];
-
-                    return (new Out())->json($error);
+                    $error = 'Промокод действителен только для ' . $promo_zone->getName()
+                        . ', ваш регион определён как ' . $user_zone->getName();
+                    throw new \Exception($error);
                 }
             }
         }
 
         // 2. is active?
         if ($promo->getIsActive() == false) {
-            return (new Out())->json([
-                'error' => "Промокод не активен.",
-            ]);
+            $error = "Промокод не активен.";
+            throw new \Exception($error);
         }
 
         // 3. has started, ended?
@@ -343,14 +341,12 @@ class CartController extends Controller implements SessionHasCartController
         if (!is_null($start) && !is_null($end)) {
             $date = new \DateTime(date('Y-m-d'));
             if ($date < $start) {
-                return (new Out())->json([
-                    'error' => "Период действия промокода ещё не начался.",
-                ]);
+                $error = "Период действия промокода ещё не начался.";
+                throw new \Exception($error);
             }
             if ($date > $end) {
-                return (new Out())->json([
-                    'error' => "Период действия промокода уже закончился.",
-                ]);
+                $error = "Период действия промокода уже закончился.";
+                throw new \Exception($error);
             }
         }
 
@@ -360,23 +356,17 @@ class CartController extends Controller implements SessionHasCartController
             $sold = $promo->getSold();
 
             if ($amount <= $sold) {
-                return (new Out())->json([
-                    'error' => "Достигнут лимит активаций по этому промокоду.",
-                ]);
+                $error = "Достигнут лимит активаций по этому промокоду.";
+                throw new \Exception($error);
             }
         }
 
-        ## с промокодом всё в порядке. Что делать?
-        // write it to session
-        $session->set('promocode', $promocode);
-
-        $detailed_cart = $this->detailCart($cart, $promo);
-
-        return (new Out())->json($detailed_cart);
+        return $promo;
     }
 
     private function detailCart(Cart $cart, Promo $promo = null)
     {
+
         ### детализировать подписные позиции
         $detailed_products = array_map(
             function (CartItem $cart_item) use($promo) {
@@ -406,11 +396,13 @@ class CartController extends Controller implements SessionHasCartController
                     ->calculateItemCost($tariff, $duration);
 
                 ## работаем со скидкой
+                $is_promoted = false;
                 if (is_null($promo)) {
                     $discount = 0;
                 } else {
                     if ($this->doesPromoFitTariff($promo, $tariff)) {
                         $discount = $promo->getDiscount();
+                        $is_promoted = true;
                     } else
                         $discount = 0;
                 }
@@ -433,11 +425,16 @@ class CartController extends Controller implements SessionHasCartController
                     'quantity' => $cart_item->getQuantity(),
                     'price' => $price, // тарифная цена
                     'cost' => $cost, // цена одной штуки позиции (тарифная * количество тайм-юнитов) без скидки
-                    'is_promoted' => true,
+                    'is_promoted' => $is_promoted,
                     'old_cost' => $cost,
                     'discount' => $discount,
                     'discount_coef' => $discount_coef,
                     'new_cost' => $new_cost,
+                    'debug' => [
+                        'tu' => $tariff->getTimeunit()->getId(),
+                        'p' => $product->getId(),
+                        'zone' => $tariff->getZone()->getId(),
+                    ],
                 ];
             },
             $cart->getCartItems()
@@ -534,5 +531,28 @@ class CartController extends Controller implements SessionHasCartController
         if (!$p->getProducts()->contains($t->getProduct())) return false;
 
         return true;
+    }
+
+    /**
+     * Вернёт null, если промокод либо протух, либо ещё не добавлен
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return null|Promo
+     */
+    private function getPromoOrNull(Request $request, SessionInterface $session)
+    {
+        $promocode = $session->get('promocode');
+        if (is_null($promocode)) return null;
+
+        $promo = null;
+
+        try {
+            $promo = $this->fetchPromoFromDB($promocode, $request);
+        } catch (\Exception $e) {
+            // промокод протух, наверное?
+            $session->remove('promocode');
+        }
+
+        return $promo;
     }
 }
