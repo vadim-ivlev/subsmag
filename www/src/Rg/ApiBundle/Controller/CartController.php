@@ -524,7 +524,7 @@ class CartController extends Controller implements SessionHasCartController
 
     private function doesPromoFitTariff(Promo $p, Tariff $t)
     {
-        if ($p->getZone()->getId() != $t->getZone()->getId()) return false;
+        if (!$p->getZones()->contains($t->getZone())) return false;
 
         if ($p->getTimeunit()->getId() != $t->getTimeunit()->getId()) return false;
 
