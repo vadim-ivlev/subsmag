@@ -23,6 +23,11 @@ class Tariff
     private $delivery_price;
 
     /**
+     * @var float
+     */
+    private $discount;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $items;
@@ -116,6 +121,30 @@ class Tariff
     public function getDeliveryPrice()
     {
         return $this->delivery_price;
+    }
+
+    /**
+     * Set discount
+     *
+     * @param float $discount
+     *
+     * @return Tariff
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Get discount
+     *
+     * @return float
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
     }
 
     /**
@@ -271,33 +300,5 @@ class Tariff
     {
         return $this->medium;
     }
-    /**
-     * @var float
-     */
-    private $discount;
-
-
-    /**
-     * Set discount
-     *
-     * @param float $discount
-     *
-     * @return Tariff
-     */
-    public function setDiscount($discount)
-    {
-        $this->discount = $discount;
-
-        return $this;
-    }
-
-    /**
-     * Get discount
-     *
-     * @return float
-     */
-    public function getDiscount()
-    {
-        return $this->discount;
-    }
 }
+

@@ -15,12 +15,22 @@ class Item
     /**
      * @var integer
      */
+    private $duration;
+
+    /**
+     * @var integer
+     */
     private $quantity;
 
     /**
      * @var integer
      */
     private $timeunit_amount;
+
+    /**
+     * @var float
+     */
+    private $discount_coef;
 
     /**
      * @var float
@@ -33,14 +43,19 @@ class Item
     private $order;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Sale
+     * @var \Rg\ApiBundle\Entity\Month
      */
-    private $sale;
+    private $month;
 
     /**
      * @var \Rg\ApiBundle\Entity\Tariff
      */
     private $tariff;
+
+    /**
+     * @var \Rg\ApiBundle\Entity\Promo
+     */
+    private $promo;
 
 
     /**
@@ -51,6 +66,30 @@ class Item
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set duration
+     *
+     * @param integer $duration
+     *
+     * @return Item
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return integer
+     */
+    public function getDuration()
+    {
+        return $this->duration;
     }
 
     /**
@@ -102,6 +141,30 @@ class Item
     }
 
     /**
+     * Set discountCoef
+     *
+     * @param float $discountCoef
+     *
+     * @return Item
+     */
+    public function setDiscountCoef($discountCoef)
+    {
+        $this->discount_coef = $discountCoef;
+
+        return $this;
+    }
+
+    /**
+     * Get discountCoef
+     *
+     * @return float
+     */
+    public function getDiscountCoef()
+    {
+        return $this->discount_coef;
+    }
+
+    /**
      * Set cost
      *
      * @param float $cost
@@ -150,27 +213,27 @@ class Item
     }
 
     /**
-     * Set sale
+     * Set month
      *
-     * @param \Rg\ApiBundle\Entity\Sale $sale
+     * @param \Rg\ApiBundle\Entity\Month $month
      *
      * @return Item
      */
-    public function setSale(\Rg\ApiBundle\Entity\Sale $sale = null)
+    public function setMonth(\Rg\ApiBundle\Entity\Month $month = null)
     {
-        $this->sale = $sale;
+        $this->month = $month;
 
         return $this;
     }
 
     /**
-     * Get sale
+     * Get month
      *
-     * @return \Rg\ApiBundle\Entity\Sale
+     * @return \Rg\ApiBundle\Entity\Month
      */
-    public function getSale()
+    public function getMonth()
     {
-        return $this->sale;
+        return $this->month;
     }
 
     /**
@@ -196,69 +259,6 @@ class Item
     {
         return $this->tariff;
     }
-    /**
-     * @var integer
-     */
-    private $duration;
-
-    /**
-     * @var \Rg\ApiBundle\Entity\Month
-     */
-    private $month;
-
-
-    /**
-     * Set duration
-     *
-     * @param integer $duration
-     *
-     * @return Item
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    /**
-     * Get duration
-     *
-     * @return integer
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * Set month
-     *
-     * @param \Rg\ApiBundle\Entity\Month $month
-     *
-     * @return Item
-     */
-    public function setMonth(\Rg\ApiBundle\Entity\Month $month = null)
-    {
-        $this->month = $month;
-
-        return $this;
-    }
-
-    /**
-     * Get month
-     *
-     * @return \Rg\ApiBundle\Entity\Month
-     */
-    public function getMonth()
-    {
-        return $this->month;
-    }
-    /**
-     * @var \Rg\ApiBundle\Entity\Promo
-     */
-    private $promo;
-
 
     /**
      * Set promo
@@ -283,33 +283,5 @@ class Item
     {
         return $this->promo;
     }
-    /**
-     * @var float
-     */
-    private $discount_coef;
-
-
-    /**
-     * Set discountCoef
-     *
-     * @param float $discountCoef
-     *
-     * @return Item
-     */
-    public function setDiscountCoef($discountCoef)
-    {
-        $this->discount_coef = $discountCoef;
-
-        return $this;
-    }
-
-    /**
-     * Get discountCoef
-     *
-     * @return float
-     */
-    public function getDiscountCoef()
-    {
-        return $this->discount_coef;
-    }
 }
+

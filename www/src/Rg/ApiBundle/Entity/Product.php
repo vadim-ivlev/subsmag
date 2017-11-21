@@ -78,6 +78,11 @@ class Product
     private $editions;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $promos;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -86,6 +91,7 @@ class Product
         $this->postal_indexes = new \Doctrine\Common\Collections\ArrayCollection();
         $this->sales = new \Doctrine\Common\Collections\ArrayCollection();
         $this->editions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->promos = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -449,11 +455,6 @@ class Product
     {
         return $this->editions;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $promos;
-
 
     /**
      * Add promo
@@ -489,3 +490,4 @@ class Product
         return $this->promos;
     }
 }
+

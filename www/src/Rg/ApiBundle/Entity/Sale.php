@@ -28,9 +28,9 @@ class Sale
     private $is_regional;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var boolean
      */
-    private $items;
+    private $is_main;
 
     /**
      * @var \Rg\ApiBundle\Entity\Product
@@ -48,12 +48,10 @@ class Sale
     private $area;
 
     /**
-     * Constructor
+     * @var \Rg\ApiBundle\Entity\Delivery
      */
-    public function __construct()
-    {
-        $this->items = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+    private $delivery;
+
 
     /**
      * Get id
@@ -138,37 +136,27 @@ class Sale
     }
 
     /**
-     * Add item
+     * Set isMain
      *
-     * @param \Rg\ApiBundle\Entity\Item $item
+     * @param boolean $isMain
      *
      * @return Sale
      */
-    public function addItem(\Rg\ApiBundle\Entity\Item $item)
+    public function setIsMain($isMain)
     {
-        $this->items[] = $item;
+        $this->is_main = $isMain;
 
         return $this;
     }
 
     /**
-     * Remove item
+     * Get isMain
      *
-     * @param \Rg\ApiBundle\Entity\Item $item
+     * @return boolean
      */
-    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
+    public function getIsMain()
     {
-        $this->items->removeElement($item);
-    }
-
-    /**
-     * Get items
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getItems()
-    {
-        return $this->items;
+        return $this->is_main;
     }
 
     /**
@@ -242,40 +230,6 @@ class Sale
     {
         return $this->area;
     }
-    /**
-     * @var boolean
-     */
-    private $is_main;
-
-
-    /**
-     * Set isMain
-     *
-     * @param boolean $isMain
-     *
-     * @return Sale
-     */
-    public function setIsMain($isMain)
-    {
-        $this->is_main = $isMain;
-
-        return $this;
-    }
-
-    /**
-     * Get isMain
-     *
-     * @return boolean
-     */
-    public function getIsMain()
-    {
-        return $this->is_main;
-    }
-    /**
-     * @var \Rg\ApiBundle\Entity\Delivery
-     */
-    private $delivery;
-
 
     /**
      * Set delivery
@@ -301,3 +255,4 @@ class Sale
         return $this->delivery;
     }
 }
+

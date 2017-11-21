@@ -33,6 +33,11 @@ class Edition
     private $text;
 
     /**
+     * @var string
+     */
+    private $texta;
+
+    /**
      * @var integer
      */
     private $frequency;
@@ -162,6 +167,30 @@ class Edition
     }
 
     /**
+     * Set texta
+     *
+     * @param string $texta
+     *
+     * @return Edition
+     */
+    public function setTexta($texta)
+    {
+        $this->texta = $texta;
+
+        return $this;
+    }
+
+    /**
+     * Get texta
+     *
+     * @return string
+     */
+    public function getTexta()
+    {
+        return $this->texta;
+    }
+
+    /**
      * Set frequency
      *
      * @param integer $frequency
@@ -242,33 +271,5 @@ class Edition
     {
         return $this->products;
     }
-    /**
-     * @var string
-     */
-    private $texta;
-
-
-    /**
-     * Set texta
-     *
-     * @param string $texta
-     *
-     * @return Edition
-     */
-    public function setTexta($texta)
-    {
-        $this->texta = $texta;
-
-        return $this;
-    }
-
-    /**
-     * Get texta
-     *
-     * @return string
-     */
-    public function getTexta()
-    {
-        return $this->texta;
-    }
 }
+

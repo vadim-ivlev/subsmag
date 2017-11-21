@@ -28,11 +28,17 @@ class Month
     private $sales;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $items;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->sales = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->items = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -126,11 +132,6 @@ class Month
     {
         return $this->sales;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $items;
-
 
     /**
      * Add item
@@ -166,3 +167,4 @@ class Month
         return $this->items;
     }
 }
+

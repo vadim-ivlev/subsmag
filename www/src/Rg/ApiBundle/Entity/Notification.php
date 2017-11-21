@@ -15,103 +15,6 @@ class Notification
     /**
      * @var string
      */
-    private $order_created;
-
-    /**
-     * @var string
-     */
-    private $order_paid;
-
-    /**
-     * @var \Rg\ApiBundle\Entity\Order
-     */
-    private $order;
-
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set orderCreated
-     *
-     * @param string $orderCreated
-     *
-     * @return Notification
-     */
-    public function setOrderCreated($orderCreated)
-    {
-        $this->order_created = $orderCreated;
-
-        return $this;
-    }
-
-    /**
-     * Get orderCreated
-     *
-     * @return string
-     */
-    public function getOrderCreated()
-    {
-        return $this->order_created;
-    }
-
-    /**
-     * Set orderPaid
-     *
-     * @param string $orderPaid
-     *
-     * @return Notification
-     */
-    public function setOrderPaid($orderPaid)
-    {
-        $this->order_paid = $orderPaid;
-
-        return $this;
-    }
-
-    /**
-     * Get orderPaid
-     *
-     * @return string
-     */
-    public function getOrderPaid()
-    {
-        return $this->order_paid;
-    }
-
-    /**
-     * Set order
-     *
-     * @param \Rg\ApiBundle\Entity\Order $order
-     *
-     * @return Notification
-     */
-    public function setOrder(\Rg\ApiBundle\Entity\Order $order = null)
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Get order
-     *
-     * @return \Rg\ApiBundle\Entity\Order
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-    /**
-     * @var string
-     */
     private $type;
 
     /**
@@ -129,6 +32,21 @@ class Notification
      */
     private $error;
 
+    /**
+     * @var \Rg\ApiBundle\Entity\Order
+     */
+    private $order;
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Set type
@@ -225,4 +143,29 @@ class Notification
     {
         return $this->error;
     }
+
+    /**
+     * Set order
+     *
+     * @param \Rg\ApiBundle\Entity\Order $order
+     *
+     * @return Notification
+     */
+    public function setOrder(\Rg\ApiBundle\Entity\Order $order = null)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * Get order
+     *
+     * @return \Rg\ApiBundle\Entity\Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
 }
+

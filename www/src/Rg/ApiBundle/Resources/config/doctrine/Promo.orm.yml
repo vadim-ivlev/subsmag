@@ -61,15 +61,15 @@ Rg\ApiBundle\Entity\Promo:
         products:
             targetEntity: Product
             mappedBy: promos
+        zones:
+            targetEntity: Zone
+            mappedBy: promos
     manyToOne:
         timeunit:
             targetEntity: Timeunit
             inversedBy: promos
         area:
             targetEntity: Area
-            inversedBy: promos
-        zone:
-            targetEntity: Zone
             inversedBy: promos
     oneToMany:
         items:

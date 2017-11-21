@@ -18,6 +18,11 @@ class Zone
     private $name;
 
     /**
+     * @var string
+     */
+    private $description;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tariffs;
@@ -33,6 +38,11 @@ class Zone
     private $patriffs;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $promos;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -40,6 +50,7 @@ class Zone
         $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->areas = new \Doctrine\Common\Collections\ArrayCollection();
         $this->patriffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->promos = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -74,6 +85,30 @@ class Zone
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Zone
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -177,40 +212,6 @@ class Zone
     {
         return $this->patriffs;
     }
-    /**
-     * @var string
-     */
-    private $description;
-
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return Zone
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $promos;
-
 
     /**
      * Add promo
@@ -246,3 +247,4 @@ class Zone
         return $this->promos;
     }
 }
+

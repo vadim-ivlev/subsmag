@@ -28,6 +28,11 @@ class Delivery
     private $description;
 
     /**
+     * @var integer
+     */
+    private $sort;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tariffs;
@@ -38,12 +43,18 @@ class Delivery
     private $patriffs;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $sales;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->patriffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->sales = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -129,6 +140,30 @@ class Delivery
     }
 
     /**
+     * Set sort
+     *
+     * @param integer $sort
+     *
+     * @return Delivery
+     */
+    public function setSort($sort)
+    {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer
+     */
+    public function getSort()
+    {
+        return $this->sort;
+    }
+
+    /**
      * Add tariff
      *
      * @param \Rg\ApiBundle\Entity\Tariff $tariff
@@ -195,40 +230,6 @@ class Delivery
     {
         return $this->patriffs;
     }
-    /**
-     * @var integer
-     */
-    private $sort;
-
-
-    /**
-     * Set sort
-     *
-     * @param integer $sort
-     *
-     * @return Delivery
-     */
-    public function setSort($sort)
-    {
-        $this->sort = $sort;
-
-        return $this;
-    }
-
-    /**
-     * Get sort
-     *
-     * @return integer
-     */
-    public function getSort()
-    {
-        return $this->sort;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $sales;
-
 
     /**
      * Add sale
@@ -264,3 +265,4 @@ class Delivery
         return $this->sales;
     }
 }
+

@@ -20,6 +20,11 @@ class Vendor
     /**
      * @var string
      */
+    private $keyword;
+
+    /**
+     * @var string
+     */
     private $address;
 
     /**
@@ -72,6 +77,31 @@ class Vendor
      */
     private $head_name;
 
+    /**
+     * @var string
+     */
+    private $accountant_title;
+
+    /**
+     * @var string
+     */
+    private $accountant_name;
+
+    /**
+     * @var string
+     */
+    private $stamp_img;
+
+    /**
+     * @var string
+     */
+    private $head_sign_img;
+
+    /**
+     * @var string
+     */
+    private $accountant_sign_img;
+
 
     /**
      * Get id
@@ -105,6 +135,30 @@ class Vendor
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set keyword
+     *
+     * @param string $keyword
+     *
+     * @return Vendor
+     */
+    public function setKeyword($keyword)
+    {
+        $this->keyword = $keyword;
+
+        return $this;
+    }
+
+    /**
+     * Get keyword
+     *
+     * @return string
+     */
+    public function getKeyword()
+    {
+        return $this->keyword;
     }
 
     /**
@@ -370,69 +424,6 @@ class Vendor
     {
         return $this->head_name;
     }
-    /**
-     * @var string
-     */
-    private $keyword;
-
-
-    /**
-     * Set keyword
-     *
-     * @param string $keyword
-     *
-     * @return Vendor
-     */
-    public function setKeyword($keyword)
-    {
-        $this->keyword = $keyword;
-
-        return $this;
-    }
-
-    /**
-     * Get keyword
-     *
-     * @return string
-     */
-    public function getKeyword()
-    {
-        return $this->keyword;
-    }
-    /**
-     * @var string
-     */
-    private $accountant_name;
-
-
-    /**
-     * Set accountantName
-     *
-     * @param string $accountantName
-     *
-     * @return Vendor
-     */
-    public function setAccountantName($accountantName)
-    {
-        $this->accountant_name = $accountantName;
-
-        return $this;
-    }
-
-    /**
-     * Get accountantName
-     *
-     * @return string
-     */
-    public function getAccountantName()
-    {
-        return $this->accountant_name;
-    }
-    /**
-     * @var string
-     */
-    private $accountant_title;
-
 
     /**
      * Set accountantTitle
@@ -457,21 +448,30 @@ class Vendor
     {
         return $this->accountant_title;
     }
-    /**
-     * @var string
-     */
-    private $stamp_img;
 
     /**
-     * @var string
+     * Set accountantName
+     *
+     * @param string $accountantName
+     *
+     * @return Vendor
      */
-    private $head_sign_img;
+    public function setAccountantName($accountantName)
+    {
+        $this->accountant_name = $accountantName;
+
+        return $this;
+    }
 
     /**
-     * @var string
+     * Get accountantName
+     *
+     * @return string
      */
-    private $accountant_sign_img;
-
+    public function getAccountantName()
+    {
+        return $this->accountant_name;
+    }
 
     /**
      * Set stampImg
@@ -545,3 +545,4 @@ class Vendor
         return $this->accountant_sign_img;
     }
 }
+

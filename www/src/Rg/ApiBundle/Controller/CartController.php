@@ -316,14 +316,14 @@ class CartController extends Controller implements SessionHasCartController
                 }
             }
 
-            /** @var Zone $promo_zone */
-            $promo_zone = $promo->getZone();
-            if (!is_null($promo_zone)) {
+            $promo_zones = $promo->getZones();
+            if ($promo_zones->count() > 0) {
                 /** @var Zone $user_zone */
                 $user_zone = $user_area->getZone();
-                if ($user_zone->getId() != $promo_zone->getId()) {
-                    $error = 'Промокод действителен только для ' . $promo_zone->getName()
-                        . ', ваш регион определён как ' . $user_zone->getName();
+
+                if (!$promo_zones->contains($user_zone)) {
+                    $error = 'Промокод недействителен для вашей группы регионов, определённой как '
+                        . $user_zone->getName();
                     throw new \Exception($error);
                 }
             }

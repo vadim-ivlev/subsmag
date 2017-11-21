@@ -38,6 +38,16 @@ class Issue
     private $image;
 
     /**
+     * @var integer
+     */
+    private $is_active;
+
+    /**
+     * @var string
+     */
+    private $image_base64;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $summaries;
@@ -187,6 +197,54 @@ class Issue
     }
 
     /**
+     * Set isActive
+     *
+     * @param integer $isActive
+     *
+     * @return Issue
+     */
+    public function setIsActive($isActive)
+    {
+        $this->is_active = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return integer
+     */
+    public function getIsActive()
+    {
+        return $this->is_active;
+    }
+
+    /**
+     * Set imageBase64
+     *
+     * @param string $imageBase64
+     *
+     * @return Issue
+     */
+    public function setImageBase64($imageBase64)
+    {
+        $this->image_base64 = $imageBase64;
+
+        return $this;
+    }
+
+    /**
+     * Get imageBase64
+     *
+     * @return string
+     */
+    public function getImageBase64()
+    {
+        return $this->image_base64;
+    }
+
+    /**
      * Add summary
      *
      * @param \Rg\ApiBundle\Entity\Summary $summary
@@ -253,62 +311,5 @@ class Issue
     {
         return $this->patriffs;
     }
-    /**
-     * @var string
-     */
-    private $image_base64;
-
-
-    /**
-     * Set imageBase64
-     *
-     * @param string $imageBase64
-     *
-     * @return Issue
-     */
-    public function setImageBase64($imageBase64)
-    {
-        $this->image_base64 = $imageBase64;
-
-        return $this;
-    }
-
-    /**
-     * Get imageBase64
-     *
-     * @return string
-     */
-    public function getImageBase64()
-    {
-        return $this->image_base64;
-    }
-    /**
-     * @var integer
-     */
-    private $is_active;
-
-
-    /**
-     * Set isActive
-     *
-     * @param integer $isActive
-     *
-     * @return Issue
-     */
-    public function setIsActive($isActive)
-    {
-        $this->is_active = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return integer
-     */
-    public function getIsActive()
-    {
-        return $this->is_active;
-    }
 }
+

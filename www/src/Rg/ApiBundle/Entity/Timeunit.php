@@ -43,11 +43,17 @@ class Timeunit
     private $tariffs;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $promos;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->promos = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -213,11 +219,6 @@ class Timeunit
     {
         return $this->tariffs;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $promos;
-
 
     /**
      * Add promo
@@ -253,3 +254,4 @@ class Timeunit
         return $this->promos;
     }
 }
+

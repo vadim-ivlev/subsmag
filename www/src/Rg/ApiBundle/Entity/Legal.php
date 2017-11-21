@@ -133,6 +133,11 @@ class Legal
     private $delivery_appartment;
 
     /**
+     * @var string
+     */
+    private $comment;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $orders;
@@ -737,6 +742,30 @@ class Legal
     }
 
     /**
+     * Set comment
+     *
+     * @param string $comment
+     *
+     * @return Legal
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
      * Add order
      *
      * @param \Rg\ApiBundle\Entity\Order $order
@@ -793,33 +822,5 @@ class Legal
     {
         return $this->delivery_city;
     }
-    /**
-     * @var string
-     */
-    private $comment;
-
-
-    /**
-     * Set comment
-     *
-     * @param string $comment
-     *
-     * @return Legal
-     */
-    public function setComment($comment)
-    {
-        $this->comment = $comment;
-
-        return $this;
-    }
-
-    /**
-     * Get comment
-     *
-     * @return string
-     */
-    public function getComment()
-    {
-        return $this->comment;
-    }
 }
+

@@ -110,3 +110,4 @@ class PostalIndex
         return $this->timeblock;
     }
 }
+

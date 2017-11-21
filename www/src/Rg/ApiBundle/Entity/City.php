@@ -30,6 +30,11 @@ class City
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $orders;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $legal_deliveries;
 
     /**
@@ -42,6 +47,7 @@ class City
      */
     public function __construct()
     {
+        $this->orders = new \Doctrine\Common\Collections\ArrayCollection();
         $this->legal_deliveries = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -128,6 +134,40 @@ class City
     }
 
     /**
+     * Add order
+     *
+     * @param \Rg\ApiBundle\Entity\Order $order
+     *
+     * @return City
+     */
+    public function addOrder(\Rg\ApiBundle\Entity\Order $order)
+    {
+        $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param \Rg\ApiBundle\Entity\Order $order
+     */
+    public function removeOrder(\Rg\ApiBundle\Entity\Order $order)
+    {
+        $this->orders->removeElement($order);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
      * Add legalDelivery
      *
      * @param \Rg\ApiBundle\Entity\Legal $legalDelivery
@@ -184,43 +224,5 @@ class City
     {
         return $this->area;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $orders;
-
-
-    /**
-     * Add order
-     *
-     * @param \Rg\ApiBundle\Entity\Order $order
-     *
-     * @return City
-     */
-    public function addOrder(\Rg\ApiBundle\Entity\Order $order)
-    {
-        $this->orders[] = $order;
-
-        return $this;
-    }
-
-    /**
-     * Remove order
-     *
-     * @param \Rg\ApiBundle\Entity\Order $order
-     */
-    public function removeOrder(\Rg\ApiBundle\Entity\Order $order)
-    {
-        $this->orders->removeElement($order);
-    }
-
-    /**
-     * Get orders
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOrders()
-    {
-        return $this->orders;
-    }
 }
+

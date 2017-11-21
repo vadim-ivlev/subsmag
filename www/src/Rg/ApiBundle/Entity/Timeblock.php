@@ -18,6 +18,11 @@ class Timeblock
     private $name;
 
     /**
+     * @var integer
+     */
+    private $duration;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $postal_indexes;
@@ -65,6 +70,30 @@ class Timeblock
     }
 
     /**
+     * Set duration
+     *
+     * @param integer $duration
+     *
+     * @return Timeblock
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return integer
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
      * Add postalIndex
      *
      * @param \Rg\ApiBundle\Entity\PostalIndex $postalIndex
@@ -97,72 +126,5 @@ class Timeblock
     {
         return $this->postal_indexes;
     }
-    /**
-     * @var integer
-     */
-    private $duration;
-
-
-    /**
-     * Set duration
-     *
-     * @param integer $duration
-     *
-     * @return Timeblock
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    /**
-     * Get duration
-     *
-     * @return integer
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $promos;
-
-
-    /**
-     * Add promo
-     *
-     * @param \Rg\ApiBundle\Entity\Promo $promo
-     *
-     * @return Timeblock
-     */
-    public function addPromo(\Rg\ApiBundle\Entity\Promo $promo)
-    {
-        $this->promos[] = $promo;
-
-        return $this;
-    }
-
-    /**
-     * Remove promo
-     *
-     * @param \Rg\ApiBundle\Entity\Promo $promo
-     */
-    public function removePromo(\Rg\ApiBundle\Entity\Promo $promo)
-    {
-        $this->promos->removeElement($promo);
-    }
-
-    /**
-     * Get promos
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPromos()
-    {
-        return $this->promos;
-    }
 }
+

@@ -33,6 +33,11 @@ class Promo
     private $is_active;
 
     /**
+     * @var boolean
+     */
+    private $is_countrywide;
+
+    /**
      * @var string
      */
     private $code;
@@ -46,6 +51,11 @@ class Promo
      * @var integer
      */
     private $amount;
+
+    /**
+     * @var integer
+     */
+    private $sold;
 
     /**
      * @var string
@@ -68,9 +78,9 @@ class Promo
     private $pins;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Timeblock
+     * @var \Rg\ApiBundle\Entity\Timeunit
      */
-    private $timeblock;
+    private $timeunit;
 
     /**
      * @var \Rg\ApiBundle\Entity\Area
@@ -83,6 +93,11 @@ class Promo
     private $products;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $zones;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -90,6 +105,7 @@ class Promo
         $this->items = new \Doctrine\Common\Collections\ArrayCollection();
         $this->pins = new \Doctrine\Common\Collections\ArrayCollection();
         $this->products = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->zones = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -199,6 +215,30 @@ class Promo
     }
 
     /**
+     * Set isCountrywide
+     *
+     * @param boolean $isCountrywide
+     *
+     * @return Promo
+     */
+    public function setIsCountrywide($isCountrywide)
+    {
+        $this->is_countrywide = $isCountrywide;
+
+        return $this;
+    }
+
+    /**
+     * Get isCountrywide
+     *
+     * @return boolean
+     */
+    public function getIsCountrywide()
+    {
+        return $this->is_countrywide;
+    }
+
+    /**
      * Set code
      *
      * @param string $code
@@ -268,6 +308,30 @@ class Promo
     public function getAmount()
     {
         return $this->amount;
+    }
+
+    /**
+     * Set sold
+     *
+     * @param integer $sold
+     *
+     * @return Promo
+     */
+    public function setSold($sold)
+    {
+        $this->sold = $sold;
+
+        return $this;
+    }
+
+    /**
+     * Get sold
+     *
+     * @return integer
+     */
+    public function getSold()
+    {
+        return $this->sold;
     }
 
     /**
@@ -387,27 +451,27 @@ class Promo
     }
 
     /**
-     * Set timeblock
+     * Set timeunit
      *
-     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
+     * @param \Rg\ApiBundle\Entity\Timeunit $timeunit
      *
      * @return Promo
      */
-    public function setTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock = null)
+    public function setTimeunit(\Rg\ApiBundle\Entity\Timeunit $timeunit = null)
     {
-        $this->timeblock = $timeblock;
+        $this->timeunit = $timeunit;
 
         return $this;
     }
 
     /**
-     * Get timeblock
+     * Get timeunit
      *
-     * @return \Rg\ApiBundle\Entity\Timeblock
+     * @return \Rg\ApiBundle\Entity\Timeunit
      */
-    public function getTimeblock()
+    public function getTimeunit()
     {
-        return $this->timeblock;
+        return $this->timeunit;
     }
 
     /**
@@ -467,120 +531,39 @@ class Promo
     {
         return $this->products;
     }
-    /**
-     * @var \Rg\ApiBundle\Entity\Timeunit
-     */
-    private $timeunit;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Zone
-     */
-    private $zone;
-
-
-    /**
-     * Set timeunit
-     *
-     * @param \Rg\ApiBundle\Entity\Timeunit $timeunit
-     *
-     * @return Promo
-     */
-    public function setTimeunit(\Rg\ApiBundle\Entity\Timeunit $timeunit = null)
-    {
-        $this->timeunit = $timeunit;
-
-        return $this;
-    }
-
-    /**
-     * Get timeunit
-     *
-     * @return \Rg\ApiBundle\Entity\Timeunit
-     */
-    public function getTimeunit()
-    {
-        return $this->timeunit;
-    }
-
-    /**
-     * Set zone
+     * Add zone
      *
      * @param \Rg\ApiBundle\Entity\Zone $zone
      *
      * @return Promo
      */
-    public function setZone(\Rg\ApiBundle\Entity\Zone $zone = null)
+    public function addZone(\Rg\ApiBundle\Entity\Zone $zone)
     {
-        $this->zone = $zone;
+        $this->zones[] = $zone;
 
         return $this;
     }
 
     /**
-     * Get zone
+     * Remove zone
      *
-     * @return \Rg\ApiBundle\Entity\Zone
+     * @param \Rg\ApiBundle\Entity\Zone $zone
      */
-    public function getZone()
+    public function removeZone(\Rg\ApiBundle\Entity\Zone $zone)
     {
-        return $this->zone;
-    }
-    /**
-     * @var integer
-     */
-    private $sold;
-
-
-    /**
-     * Set sold
-     *
-     * @param integer $sold
-     *
-     * @return Promo
-     */
-    public function setSold($sold)
-    {
-        $this->sold = $sold;
-
-        return $this;
+        $this->zones->removeElement($zone);
     }
 
     /**
-     * Get sold
+     * Get zones
      *
-     * @return integer
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getSold()
+    public function getZones()
     {
-        return $this->sold;
-    }
-    /**
-     * @var boolean
-     */
-    private $is_countrywide;
-
-
-    /**
-     * Set isCountrywide
-     *
-     * @param boolean $isCountrywide
-     *
-     * @return Promo
-     */
-    public function setIsCountrywide($isCountrywide)
-    {
-        $this->is_countrywide = $isCountrywide;
-
-        return $this;
-    }
-
-    /**
-     * Get isCountrywide
-     *
-     * @return boolean
-     */
-    public function getIsCountrywide()
-    {
-        return $this->is_countrywide;
+        return $this->zones;
     }
 }
+
