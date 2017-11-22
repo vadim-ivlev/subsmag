@@ -254,4 +254,3 @@ class Timeunit
         return $this->promos;
     }
 }
-

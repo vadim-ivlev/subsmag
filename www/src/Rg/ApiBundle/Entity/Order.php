@@ -729,4 +729,3 @@ class Order
         return $this->city;
     }
 }
-

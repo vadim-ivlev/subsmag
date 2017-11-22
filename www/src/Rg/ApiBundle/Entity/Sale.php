@@ -255,4 +255,3 @@ class Sale
         return $this->delivery;
     }
 }
-

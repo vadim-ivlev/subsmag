@@ -292,40 +292,38 @@ class CartController extends Controller implements SessionHasCartController
         }
 
         // 1. area, zone
-        if (!$promo->getIsCountrywide()) {
-            $from_front_id = $this->getFrontId($request);
-            if (is_null($from_front_id)) {
-                $error = 'Регион не определён. Видимо, его нет в cookie.';
+        $from_front_id = $this->getFrontId($request);
+        if (is_null($from_front_id)) {
+            $error = 'Регион не определён. Видимо, его нет в cookie.';
+            throw new \Exception($error);
+        }
+
+        /** @var null|Area $area */
+        $user_area = $this->getArea($from_front_id);
+        if (is_null($user_area)) {
+            $error = 'В базе не найден регион с id ' . $from_front_id;
+            throw new \Exception($error);
+        }
+
+        /** @var Area $promo_area */
+        $promo_area = $promo->getArea();
+        if (!is_null($promo_area)) {
+            if ($user_area->getId() != $promo_area->getId()) {
+                $error = 'Промокод действителен только для ' . $promo_area->getName()
+                    . ', ваш регион определён как ' . $user_area->getName();
                 throw new \Exception($error);
             }
+        }
 
-            /** @var null|Area $area */
-            $user_area = $this->getArea($from_front_id);
-            if (is_null($user_area)) {
-                $error = 'В базе не найден регион с id ' . $from_front_id;
+        $promo_zones = $promo->getZones();
+        if ($promo_zones->count() > 0) {
+            /** @var Zone $user_zone */
+            $user_zone = $user_area->getZone();
+
+            if (!$promo_zones->contains($user_zone)) {
+                $error = 'Промокод недействителен для вашей группы регионов, определённой как '
+                    . $user_zone->getName();
                 throw new \Exception($error);
-            }
-
-            /** @var Area $promo_area */
-            $promo_area = $promo->getArea();
-            if (!is_null($promo_area)) {
-                if ($user_area->getId() != $promo_area->getId()) {
-                    $error = 'Промокод действителен только для ' . $promo_area->getName()
-                        . ', ваш регион определён как ' . $user_area->getName();
-                    throw new \Exception($error);
-                }
-            }
-
-            $promo_zones = $promo->getZones();
-            if ($promo_zones->count() > 0) {
-                /** @var Zone $user_zone */
-                $user_zone = $user_area->getZone();
-
-                if (!$promo_zones->contains($user_zone)) {
-                    $error = 'Промокод недействителен для вашей группы регионов, определённой как '
-                        . $user_zone->getName();
-                    throw new \Exception($error);
-                }
             }
         }
 
@@ -524,15 +522,13 @@ class CartController extends Controller implements SessionHasCartController
 
     private function doesPromoFitTariff(Promo $p, Tariff $t)
     {
-        if (!$p->getIsCountrywide()) {
-            $promo_area = $p->getArea();
-            if (!is_null($promo_area)) {
-                // промокод регионированный
-                if ($promo_area->getZone()->getId() != $t->getZone()->getId()) return false;
-            } else {
-                // промо зонированный
-                if (!$p->getZones()->contains($t->getZone())) return false;
-            }
+        $promo_area = $p->getArea();
+        if (!is_null($promo_area)) {
+            // промокод регионированный
+            if ($promo_area->getZone()->getId() != $t->getZone()->getId()) return false;
+        } else {
+            // промо зонированный
+            if (!$p->getZones()->contains($t->getZone())) return false;
         }
 
         if ($p->getTimeunit()->getId() != $t->getTimeunit()->getId()) return false;

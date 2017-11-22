@@ -167,4 +167,3 @@ class Month
         return $this->items;
     }
 }
-

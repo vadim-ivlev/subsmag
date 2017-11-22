@@ -33,9 +33,6 @@ Rg\ApiBundle\Entity\Promo:
         is_active:
             type: boolean
             column: is_active
-        is_countrywide:
-            type: boolean
-            column: is_countrywide
         code:
             type: string
             column: code

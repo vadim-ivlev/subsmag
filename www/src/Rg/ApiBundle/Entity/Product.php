@@ -490,4 +490,3 @@ class Product
         return $this->promos;
     }
 }
-

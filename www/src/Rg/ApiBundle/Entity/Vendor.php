@@ -545,4 +545,3 @@ class Vendor
         return $this->accountant_sign_img;
     }
 }
-

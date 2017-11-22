@@ -33,11 +33,6 @@ class Promo
     private $is_active;
 
     /**
-     * @var boolean
-     */
-    private $is_countrywide;
-
-    /**
      * @var string
      */
     private $code;
@@ -212,30 +207,6 @@ class Promo
     public function getIsActive()
     {
         return $this->is_active;
-    }
-
-    /**
-     * Set isCountrywide
-     *
-     * @param boolean $isCountrywide
-     *
-     * @return Promo
-     */
-    public function setIsCountrywide($isCountrywide)
-    {
-        $this->is_countrywide = $isCountrywide;
-
-        return $this;
-    }
-
-    /**
-     * Get isCountrywide
-     *
-     * @return boolean
-     */
-    public function getIsCountrywide()
-    {
-        return $this->is_countrywide;
     }
 
     /**

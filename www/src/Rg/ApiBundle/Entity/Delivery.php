@@ -265,4 +265,3 @@ class Delivery
         return $this->sales;
     }
 }
-

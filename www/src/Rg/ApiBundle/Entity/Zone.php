@@ -247,4 +247,3 @@ class Zone
         return $this->promos;
     }
 }
-

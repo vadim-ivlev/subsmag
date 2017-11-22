@@ -284,4 +284,3 @@ class Item
         return $this->promo;
     }
 }
-

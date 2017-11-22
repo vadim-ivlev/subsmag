@@ -139,4 +139,3 @@ class Pin
         return $this->promo;
     }
 }
-
