@@ -47,3 +47,7 @@ services:
         class: Rg\ApiBundle\Service\CartItemValidator
         arguments:
             - "@validator"
+    rg_api.promo_fetcher:
+        class: Rg\ApiBundle\Service\PromoFetcher
+        arguments:
+            - "@doctrine"

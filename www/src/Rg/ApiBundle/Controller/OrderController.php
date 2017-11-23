@@ -10,6 +10,7 @@ use Rg\ApiBundle\Entity\Item;
 use Rg\ApiBundle\Entity\Legal;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Entity\Patritem;
+use Rg\ApiBundle\Entity\Promo;
 use Rg\ApiBundle\Exception\OrderException;
 use Rg\ApiBundle\Exception\PlatronException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -135,8 +136,11 @@ class OrderController extends Controller
 
         $order->setPayment($payment);
 
+        ### проверим наличие и живость промокода
+        $promo = $this->get('rg_api.promo_fetcher')->getPromoOrNull($request, $session);
+
         ### подготовим массив подписных позиций
-        $items = $this->mapSubscribeItems($cart->getCartItems(), $order);
+        $items = $this->mapSubscribeItems($cart->getCartItems(), $order, $promo);
 
         ### подготовим массив архивных позиций
         $patritems = $this->mapArchiveItems($cart->getCartPatritems(), $order);
@@ -300,11 +304,10 @@ class OrderController extends Controller
 
     private function countTotal(array $items, array $patritems)
     {
-        //
         $items_subtotal = array_reduce(
             $items,
             function ($total = 0, Item $item) {
-                $item_total = $item->getCost() * $item->getQuantity();
+                $item_total = $item->getCost() * $item->getQuantity() * $item->getDiscountCoef();
                 $total += $item_total;
 
                 return $total;
@@ -326,11 +329,11 @@ class OrderController extends Controller
         return $total;
     }
 
-    private function mapSubscribeItems(array $cart_items, Order $order)
+    private function mapSubscribeItems(array $cart_items, Order $order, Promo $promo = null)
     {
         $doctrine = $this->getDoctrine();
         $items = array_map(
-            function (CartItem $cart_item) use ($doctrine, $order) {
+            function (CartItem $cart_item) use ($doctrine, $order, $promo) {
                 $item = new Item();
 
                 $item->setQuantity($cart_item->getQuantity());
@@ -351,7 +354,16 @@ class OrderController extends Controller
                 $cost = $calculator->calculateItemCost($tariff, $duration);
                 $item->setCost($cost);
 
+                ## работаем со скидкой
                 $discount_coef = 1;
+                if (!is_null($promo)) {
+                    if ($this->get('rg_api.promo_fetcher')->doesPromoFitTariff($promo, $tariff)) {
+                        $item->setPromo($promo);
+                        $discount_coef = (100 - $promo->getDiscount()) / 100;
+                    }
+                }
+                ##
+
                 $item->setDiscountCoef($discount_coef);
 
                 $month = $doctrine
