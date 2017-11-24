@@ -19,10 +19,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Rg\ApiBundle\Controller\Outer as Out;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class OrderController extends Controller
 {
+    private $pin = null;
+
     public function createAction(Request $request, SessionInterface $session)
     {
         $doctrine = $this->getDoctrine();
@@ -145,6 +146,7 @@ class OrderController extends Controller
         ### подготовим массив архивных позиций
         $patritems = $this->mapArchiveItems($cart->getCartPatritems(), $order);
 
+
         ### подсчёт Итого
         $total = $this->countTotal($items, $patritems);
         $order->setTotal($total);
@@ -152,6 +154,13 @@ class OrderController extends Controller
         ### записываем заказ в БД
         $em = $doctrine->getManager();
         $em->persist($order);
+        #### если был промо и он с пином
+        if (!is_null($this->pin)) {
+            $this->pin->setOrder($order);
+            $em->persist($this->pin);
+            $order->setPin($this->pin);
+            $em->persist($order);
+        }
         foreach ($items as $item) {
             $em->persist($item);
         }
@@ -173,9 +182,13 @@ class OrderController extends Controller
             } catch (PlatronException $e) {
                 // платрон дважды вернул пустую строку, или у нас с заказом что-то не то.
 
-                // аннулировать заказ
-                $em->remove($order);
-                $em->flush();
+                // освободить pin
+                $saved_pin = $order->getPin();
+                if (!is_null($saved_pin)) {
+                    $saved_pin->setOrder(null);
+                    $em->persist($saved_pin);
+                    $em->flush();
+                }
 
                 //сообщить об ошибке
                 $error = [
@@ -360,6 +373,13 @@ class OrderController extends Controller
                     if ($this->get('rg_api.promo_fetcher')->doesPromoFitTariff($promo, $tariff)) {
                         $item->setPromo($promo);
                         $discount_coef = (100 - $promo->getDiscount()) / 100;
+
+                        if (
+                            is_null($this->pin)
+                            && !is_null($promo->pin)
+                        ) {
+                            $this->pin = $promo->pin;
+                        }
                     }
                 }
                 ##

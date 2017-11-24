@@ -243,7 +243,6 @@ class CartController extends Controller implements SessionHasCartController
 
     private function detailCart(Cart $cart, Promo $promo = null)
     {
-
         ### детализировать подписные позиции
         $detailed_products = array_map(
             function (CartItem $cart_item) use($promo) {

@@ -95,6 +95,8 @@ class PromoFetcher
                 $error = 'Пин-код уже активирован.';
                 throw new \Exception($error);
             }
+
+            $promo->pin = $pin;
         }
 
         // 1. area, zone
