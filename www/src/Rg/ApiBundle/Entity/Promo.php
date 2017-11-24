@@ -537,4 +537,3 @@ class Promo
         return $this->zones;
     }
 }
-

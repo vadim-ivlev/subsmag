@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class OrderController extends Controller
 {
     private $pin = null;
+    private $is_promoted = false;
 
     public function createAction(Request $request, SessionInterface $session)
     {
@@ -155,6 +156,7 @@ class OrderController extends Controller
         $em = $doctrine->getManager();
         $em->persist($order);
         #### если был промо и он с пином
+        if ($this->is_promoted) $order->setIsPromoted(true);
         if (!is_null($this->pin)) {
             $this->pin->setOrder($order);
             $em->persist($this->pin);
@@ -373,6 +375,7 @@ class OrderController extends Controller
                     if ($this->get('rg_api.promo_fetcher')->doesPromoFitTariff($promo, $tariff)) {
                         $item->setPromo($promo);
                         $discount_coef = (100 - $promo->getDiscount()) / 100;
+                        $this->is_promoted = true;
 
                         if (
                             is_null($this->pin)

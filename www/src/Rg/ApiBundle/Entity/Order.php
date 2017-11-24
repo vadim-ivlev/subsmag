@@ -728,4 +728,33 @@ class Order
     {
         return $this->city;
     }
+    /**
+     * @var boolean
+     */
+    private $is_promoted;
+
+
+    /**
+     * Set isPromoted
+     *
+     * @param boolean $isPromoted
+     *
+     * @return Order
+     */
+    public function setIsPromoted($isPromoted)
+    {
+        $this->is_promoted = $isPromoted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPromoted
+     *
+     * @return boolean
+     */
+    public function getIsPromoted()
+    {
+        return $this->is_promoted;
+    }
 }

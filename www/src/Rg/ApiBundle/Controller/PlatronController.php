@@ -2,8 +2,8 @@
 
 namespace Rg\ApiBundle\Controller;
 
+use Rg\ApiBundle\Entity\Item;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -124,13 +124,33 @@ class PlatronController extends Controller
             return new Response($xml->asXML());
         }
 
+        ## платрон может отправлять этот запрос несколько раз. Поэтому статус "оплачено" и инкремент ации
+        ## сделаем только один раз
+        if ($order->getIsPaid() == true) {
+            // send ok to Platron
+            $xml = $this->get('rg_api.platron')->prepareOkOnResult($pg_xml);
+
+            return new Response($xml->asXML());
+        }
+
         ## Успешный платёж.
+        $em = $doctrine->getManager();
         # изменить статус заказа на "оплачено"
         $order->setIsPaid(true);
+        # если был промо, инкрементить его
+        if ($order->getIsPromoted() == true) {
+            /** @var Item $item */
+            foreach ($order->getItems() as $item) {
+                if (!is_null($promo = $item->getPromo())) {
+                    $promo->setSold($promo->getSold() + 1);
+                    $em->persist($promo);
+                    break;
+                }
+            }
+        }
         # добавить в очередь отправку счастливого письма
         $notification = $this->get('rg_api.notification_queue')->onOrderPaid($order);
 
-        $em = $doctrine->getManager();
         $em->persist($order);
         $em->persist($notification);
         $em->flush();
@@ -139,7 +159,6 @@ class PlatronController extends Controller
         $xml = $this->get('rg_api.platron')->prepareOkOnResult($pg_xml);
 
         return new Response($xml->asXML());
-
     }
 
     /**

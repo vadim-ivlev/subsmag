@@ -28,6 +28,9 @@ Rg\ApiBundle\Entity\Order:
         total:
             type: float
             column: total
+        is_promoted:
+            type: boolean
+            column: is_promoted
         is_paid:
             type: boolean
             column: is_paid
