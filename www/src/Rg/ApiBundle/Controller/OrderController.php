@@ -156,7 +156,11 @@ class OrderController extends Controller
         $em = $doctrine->getManager();
         $em->persist($order);
         #### если был промо и он с пином
-        if ($this->is_promoted) $order->setIsPromoted(true);
+        if ($this->is_promoted) {
+            $order->setIsPromoted(true);
+        } else {
+            $order->setIsPromoted(false);
+        }
         if (!is_null($this->pin)) {
             $this->pin->setOrder($order);
             $em->persist($this->pin);
