@@ -23,6 +23,9 @@ Rg\ApiBundle\Entity\Pin:
         order:
             targetEntity: Order
             inversedBy: pin
+        promoRequest:
+            targetEntity: PromoRequest
+            mappedBy: pin
     uniqueConstraints:
         unique_pins_inside_one_promo:
             columns:

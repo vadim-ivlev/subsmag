@@ -1,0 +1,37 @@
+# запрос на промокод от льготника
+Rg\ApiBundle\Entity\PromoRequest:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\PromoRequestRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        email:
+            type: string
+            column: email
+        # gzip encoded image
+        image:
+            type: blob
+            column: image
+        mime:
+            type: string
+            column: mime
+        is_replied:
+            type: boolean
+            column: is_replied
+        created:
+            type: datetime
+            column: created
+        answered:
+            type: datetime
+            column: answered
+            nullable: true
+    oneToOne:
+        pin:
+            targetEntity: Pin
+            inversedBy: promoRequest
+    lifecycleCallbacks: {  }

@@ -138,4 +138,33 @@ class Pin
     {
         return $this->promo;
     }
+    /**
+     * @var \Rg\ApiBundle\Entity\PromoRequest
+     */
+    private $promoRequest;
+
+
+    /**
+     * Set promoRequest
+     *
+     * @param \Rg\ApiBundle\Entity\PromoRequest $promoRequest
+     *
+     * @return Pin
+     */
+    public function setPromoRequest(\Rg\ApiBundle\Entity\PromoRequest $promoRequest = null)
+    {
+        $this->promoRequest = $promoRequest;
+
+        return $this;
+    }
+
+    /**
+     * Get promoRequest
+     *
+     * @return \Rg\ApiBundle\Entity\PromoRequest
+     */
+    public function getPromoRequest()
+    {
+        return $this->promoRequest;
+    }
 }

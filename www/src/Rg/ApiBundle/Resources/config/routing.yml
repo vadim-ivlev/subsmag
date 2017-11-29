@@ -101,3 +101,10 @@ rg_api_cart_apply_promo:
     path:     /promo/
     defaults: { _controller: RgApiBundle:Cart:applyPromo, _format:json }
     methods:  [POST]
+
+### Акция
+# принять заявку студента или другого льготника
+rg_api_upload_document:
+    path:     /request/
+    defaults: { _controller: RgApiBundle:PromoRequest:new }
+    methods:  [POST]
