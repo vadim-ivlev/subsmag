@@ -2,6 +2,8 @@
 
 namespace Rg\ApiBundle\Repository;
 
+use Doctrine\ORM\Query\Expr;
+
 /**
  * OrderRepository
  *
@@ -10,4 +12,37 @@ namespace Rg\ApiBundle\Repository;
  */
 class OrderRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getPlatronPaidOrders()
+    {
+        $qb = $this->createQueryBuilder('o');
+        $result = $qb
+            ->select('
+                o
+            ')
+            ->addSelect('i,p')
+            ->leftJoin('o.items', 'i')
+            ->leftJoin('o.patritems', 'p')
+            ->join(
+                'o.payment',
+                'payment',
+                Expr\Join::WITH,
+                $qb->expr()->andX(
+                    $qb->expr()->eq('payment.name', ':payment')
+                )
+            )
+            ->andWhere(
+                $qb->expr()->andX(
+//                    $qb->expr()->eq('o.payment', ':payment'),
+                    $qb->expr()->eq('o.is_paid', ':tr')
+                )
+            )
+            ->setParameter('payment', 'platron')
+            ->setParameter('tr', 1)
+            ->getQuery()
+//            ->getDQL(); echo $result;die; # for test purpose
+            ->getResult()
+        ;
+
+        return $result;
+    }
 }
