@@ -22,6 +22,9 @@ services:
         class: Rg\ApiBundle\Service\Platron
         arguments:
             - "@monolog.logger.platron"
+            - "@rg_api.sig_helper"
+            - "@rg_api.item_name"
+            - "@rg_api.product_cost_calculator"
             - "%domain%"
     rg_api.encryptor:
         class: Rg\ApiBundle\Service\Encryptor
@@ -51,3 +54,7 @@ services:
         class: Rg\ApiBundle\Service\PromoFetcher
         arguments:
             - "@doctrine"
+    rg_api.sig_helper:
+        class: Rg\ApiBundle\Service\SigHelper
+        arguments:
+            - "%secretkey%"

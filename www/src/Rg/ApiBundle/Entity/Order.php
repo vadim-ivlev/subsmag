@@ -757,4 +757,62 @@ class Order
     {
         return $this->is_promoted;
     }
+    /**
+     * @var string
+     */
+    private $platron_init_xml;
+
+    /**
+     * @var string
+     */
+    private $platron_receipt_create_xml;
+
+
+    /**
+     * Set platronInitXml
+     *
+     * @param string $platronInitXml
+     *
+     * @return Order
+     */
+    public function setPlatronInitXml($platronInitXml)
+    {
+        $this->platron_init_xml = $platronInitXml;
+
+        return $this;
+    }
+
+    /**
+     * Get platronInitXml
+     *
+     * @return string
+     */
+    public function getPlatronInitXml()
+    {
+        return $this->platron_init_xml;
+    }
+
+    /**
+     * Set platronReceiptCreateXml
+     *
+     * @param string $platronReceiptCreateXml
+     *
+     * @return Order
+     */
+    public function setPlatronReceiptCreateXml($platronReceiptCreateXml)
+    {
+        $this->platron_receipt_create_xml = $platronReceiptCreateXml;
+
+        return $this;
+    }
+
+    /**
+     * Get platronReceiptCreateXml
+     *
+     * @return string
+     */
+    public function getPlatronReceiptCreateXml()
+    {
+        return $this->platron_receipt_create_xml;
+    }
 }

@@ -3,8 +3,11 @@
 namespace Rg\ApiBundle\Service;
 
 
+use Doctrine\Common\Collections\Collection;
 use Monolog\Logger;
+use Rg\ApiBundle\Entity\Item;
 use Rg\ApiBundle\Entity\Order;
+use Rg\ApiBundle\Entity\Patritem;
 use Rg\ApiBundle\Exception\PlatronException;
 
 class Platron
@@ -17,28 +20,164 @@ class Platron
     const SECRET_KEY = 'wowakedalapadasy';
 
     private $salt;
+    private $salt1;
 
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
+    const RECEIPT_CREATE = 'https://www.platron.ru/receipt.php';
 
     private $logger;
+    private $sighelper;
+    private $itemNamer;
+    private $calculator;
 
     private $base_url;
     private $api_url;
 
-    public function __construct(Logger $logger, $base_url)
+    public function __construct(
+        Logger $logger,
+        SigHelper $sighelper,
+        ItemName $itemNamer,
+        ProductCostCalculator $calculator,
+        $base_url
+    )
     {
         $this->logger = $logger;
+        $this->sighelper = $sighelper;
+        $this->itemNamer = $itemNamer;
+        $this->calculator = $calculator;
         $this->base_url = $base_url;
+
         $this->api_url = $base_url . '/api';
     }
 
+    /**
+     * @param string $pg_payment_id
+     * @param Order $order
+     * @return \SimpleXMLElement
+     * @throws PlatronException
+     * @throws \Exception
+     */
+    public function createReceipt(string $pg_payment_id, Order $order, array $items, array $patritems)
+    {
+        $request_xml = $this->prepareReceiptCreateRequest($pg_payment_id, $order, $items, $patritems);
+        $resp = $this->sendRequest(['pg_xml' => $request_xml->asXML()], self::RECEIPT_CREATE);
+        $this->logger->info($request_xml->asXML());
+
+        try {
+            $xml = new \SimpleXMLElement($resp);
+        } catch (\Exception $e) {
+            $message = [
+                '<- Error, Response for order ',
+                 $order->getId(),
+                 ', pg_payment_id ',
+                 $pg_payment_id,
+                 ': _',
+                 $resp,
+                 "_, >>>",
+                 $e->getMessage(),
+            ];
+            $message = join('', $message);
+            $this->logger->error($message);
+
+            throw new PlatronException('Receipt not created. Unparseable response from Platron.');
+        }
+
+        if (!$this->isOkReceipt($xml)) {
+            $description = $this->parseErrorOnReceipt($xml);
+
+            $message = 'Not ok response for order ' . $order->getId() . ': ' . $resp;
+            $this->logger->error($message);
+
+            throw new PlatronException('Error response from Platron: ' . $description);
+        }
+
+        return $xml;
+    }
+
+    /**
+     * @param string $pg_payment_id
+     * @param Order $order
+     * @return \SimpleXMLElement
+     */
+    private function prepareReceiptCreateRequest(string $pg_payment_id, Order $order, array $items, array $patritems)
+    {
+		$xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><request/>');
+		$xml->addChild('pg_merchant_id', self::MERCHANT_ID);
+        $xml->addChild('pg_payment_id', $pg_payment_id);
+        $xml->addChild('pg_operation_type', 'payment');
+
+        $this->salt1 = $this->generateSalt();
+        $xml->addChild('pg_salt', $this->salt1);
+
+        /** @var Item $item */
+        foreach ($items as $item) {
+            $item_name = mb_substr($this->itemNamer->form($item), 0, 124);
+            ## для каталожной цены
+            $discountedCatCost = $item->getDiscountedCatCost();
+            if ($discountedCatCost > 0) {
+                $pg_items = $xml->addChild('pg_items');
+                $pg_items->addChild('pg_label', $item_name . ' кат');
+                $pg_items->addChild('pg_price', $discountedCatCost);
+                $pg_items->addChild('pg_quantity', $item->getQuantity());
+                $pg_items->addChild('pg_vat', 10);
+            }
+
+            ## для доставочной
+            $discountedDelCost = $item->getDiscountedDelCost();
+            if ($discountedDelCost > 0) {
+                $pg_items = $xml->addChild('pg_items');
+                $pg_items->addChild('pg_label', $item_name . ' дост');
+                $pg_items->addChild('pg_price', $discountedDelCost);
+                $pg_items->addChild('pg_quantity', $item->getQuantity());
+                $pg_items->addChild('pg_vat', 18);
+            };
+        }
+        /** @var Patritem $patritem */
+        foreach ($patritems as $patritem) {
+            $patriff = $patritem->getPatriff();
+            $name = "Родина №" . $patriff->getIssue()->getMonth() . "-" . $patriff->getIssue()->getYear();
+            ## для каталожной цены
+            $pi_discountedCatCost = $patritem->getDiscountedCatCost();
+            if ($pi_discountedCatCost > 0) {
+                $pg_items = $xml->addChild('pg_items');
+                $pg_items->addChild('pg_label', $name . ' кат');
+                $pg_items->addChild('pg_price', $pi_discountedCatCost);
+                $pg_items->addChild('pg_quantity', $patritem->getQuantity());
+                $pg_items->addChild('pg_vat', 10);
+            }
+
+            ## для доставочной
+            $pi_discountedDelCost = $patritem->getDiscountedDelCost();
+            if ($pi_discountedDelCost > 0) {
+                $pg_items = $xml->addChild('pg_items');
+                $pg_items->addChild('pg_label', $name . ' дост');
+                $pg_items->addChild('pg_price', $pi_discountedDelCost);
+                $pg_items->addChild('pg_quantity', $patritem->getQuantity());
+                $pg_items->addChild('pg_vat', 18);
+            }
+        }
+
+        $xml->addChild(
+            'pg_sig',
+            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_CREATE), $xml)
+        );
+
+        return $xml;
+    }
+
+    /**
+     * @param Order $order
+     * @return \SimpleXMLElement
+     * @throws PlatronException
+     * @throws \Exception
+     */
     public function init(Order $order)
     {
 
         $request = $this->prepareRequest($order);
 
         $id = $order->getId();
-        $resp = $this->sendRequest($request);
+        $resp = $this->sendRequest($request, self::HOST_TO_HOST);
 
         //$this->logger->info('-> Platron init for order ' . $id . $request['pg_amount'] . ' RUB');
 
@@ -49,7 +188,7 @@ class Platron
             $this->logger->error($message);
 
             # если платрон ответил непонятно чем, попробуем ещё раз.
-            $resp = $this->sendRequest($request);
+            $resp = $this->sendRequest($request, self::HOST_TO_HOST);
             //$this->logger->info('-> Bad try. Sent once again: ' . $id );
 
             try {
@@ -353,12 +492,12 @@ RESPONSE_REJECT;
         return $params;
     }
 
-    private function sendRequest(array $params)
+    private function sendRequest(array $params, string $url)
     {
-        $ch = curl_init(self::HOST_TO_HOST);
+        $ch = curl_init($url);
         $query = http_build_query($params);
         $options = [
-            //CURLOPT_URL => self::HOST_TO_HOST,
+            //CURLOPT_URL => $url,
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POSTFIELDS => $query,
@@ -380,7 +519,7 @@ RESPONSE_REJECT;
     private function isOkInit(\SimpleXMLElement $xml)
     {
         $condition = (string) $xml->pg_status == 'ok'
-            && ( (string) $xml->pg_salt == $this->salt)
+//            && ( (string) $xml->pg_salt == $this->salt)
             && filter_var((string) $xml->pg_redirect_url, FILTER_VALIDATE_URL) !== FALSE
             && filter_var((string) $xml->pg_payment_id, FILTER_VALIDATE_INT) !== FALSE
         ;
@@ -388,6 +527,21 @@ RESPONSE_REJECT;
         return $condition;
     }
 
+    private function isOkReceipt(\SimpleXMLElement $xml)
+    {
+        $condition = (string) $xml->pg_status == 'ok'
+//            && ( (string) $xml->pg_salt == $this->salt1)
+            && filter_var((string) $xml->pg_receipt_id, FILTER_VALIDATE_INT) !== FALSE
+        ;
+
+        return $condition;
+    }
+
+    /**
+     * @param \SimpleXMLElement $xml
+     * @return string
+     * @throws \Exception
+     */
     private function parseErrorOnInit(\SimpleXMLElement $xml)
     {
         $condition = (string) $xml->pg_status == 'error'
@@ -397,6 +551,24 @@ RESPONSE_REJECT;
             $message = 'Unknown error from Platron';
             $this->logger->error($message . ': ' . $xml->asXML());
             throw new \Exception($message);
+        }
+        return (string) $xml->pg_error_description;
+    }
+
+    /**
+     * @param \SimpleXMLElement $xml
+     * @return string
+     * @throws \Exception
+     */
+    private function parseErrorOnReceipt(\SimpleXMLElement $xml)
+    {
+        $condition = (string) $xml->pg_status == 'error'
+//            && ( (string) $xml->pg_salt == $this->salt1)
+        ;
+        if (!$condition) {
+            $message = 'Unknown error from Platron';
+            $this->logger->error($message . ': ' . $xml->asXML());
+            throw new PlatronException($message);
         }
         return (string) $xml->pg_error_description;
     }

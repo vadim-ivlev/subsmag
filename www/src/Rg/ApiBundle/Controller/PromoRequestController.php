@@ -11,12 +11,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validation;
 
+/**
+ * Class PromoRequestController
+ * @package Rg\ApiBundle\Controller
+ */
 class PromoRequestController extends Controller
 {
     const maxWidth = 4096;
     const maxHeight = 4096;
     const maxSize = 2097152;
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function newAction(Request $request)
     {
         $email_constraint = new Assert\Email(

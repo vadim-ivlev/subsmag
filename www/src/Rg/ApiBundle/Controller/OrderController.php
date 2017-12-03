@@ -22,9 +22,21 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OrderController extends Controller
 {
+    /**
+     * @var null
+     */
     private $pin = null;
+    /**
+     * @var bool
+     */
     private $is_promoted = false;
 
+    /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function createAction(Request $request, SessionInterface $session)
     {
         $doctrine = $this->getDoctrine();
@@ -178,9 +190,9 @@ class OrderController extends Controller
             ## инициализировать платёж:
             # передать данные о платеже,
             # получить №транзакции и урл для редиректа
-            /** @var \SimpleXMLElement $platron_response */
+            /** @var \SimpleXMLElement $platron_init_xml */
             try {
-                $platron_response = $this->get('rg_api.platron')->init($order);
+                $platron_init_xml = $this->get('rg_api.platron')->init($order);
             } catch (PlatronException $e) {
                 // платрон дважды вернул пустую строку, или у нас с заказом что-то не то.
 
@@ -194,17 +206,43 @@ class OrderController extends Controller
 
                 //сообщить об ошибке
                 $error = [
-                    'error' => 'Platron: error',
+                    'error' => 'Platron: ошибка инициализации платежа',
                     'description' => $e->getMessage(),
                 ];
                 return (new Out())->json($error);
             }
 
-            $redirect_url = (string) $platron_response->pg_redirect_url;
-            $pg_payment_id = (string) $platron_response->pg_payment_id;
+            $redirect_url = (string) $platron_init_xml->pg_redirect_url;
+            $pg_payment_id = (string) $platron_init_xml->pg_payment_id;
+
+            try {
+                /** @var \SimpleXMLElement $platron_receipt_create_xml */
+                $platron_receipt_create_xml = $this->get('rg_api.platron')
+                    ->createReceipt($pg_payment_id, $order, $items, $patritems);
+            } catch (PlatronException $e) {
+                // платрон не вернул чек
+
+                // освободить pin
+                $saved_pin = $order->getPin();
+                if (!is_null($saved_pin)) {
+                    $saved_pin->setOrder(null);
+                    $em->persist($saved_pin);
+                    $em->flush();
+                }
+
+                //сообщить об ошибке
+                $error = [
+                    'error' => 'Platron: ошибка создания чека',
+                    'description' => $e->getMessage(),
+                ];
+                return (new Out())->json($error);
+            }
 
             ## сохранить id транзакции Платрона
+            # и остальные переговоры
             $order->setPgPaymentId($pg_payment_id);
+            $order->setPlatronInitXml($platron_init_xml->asXML());
+            $order->setPlatronReceiptCreateXml($platron_receipt_create_xml->asXML());
             $em->persist($order);
 
             ## с платроном всё в порядке, очищаем корзину
@@ -281,6 +319,10 @@ class OrderController extends Controller
 
     }
 
+    /**
+     * @param $enc_id
+     * @return Response
+     */
     public function getInvoiceByOrderIdAction($enc_id)
     {
         $id = $this->get('rg_api.encryptor')->decryptOrderId($enc_id);
@@ -299,6 +341,10 @@ class OrderController extends Controller
         return $this->createInvoice($order, $items, $patritems);
     }
 
+    /**
+     * @param $enc_id
+     * @return Response
+     */
     public function getReceiptByOrderIdAction($enc_id)
     {
         $id = $this->get('rg_api.encryptor')->decryptOrderId($enc_id);
@@ -317,13 +363,17 @@ class OrderController extends Controller
         return $this->createReceipt($order, $items, $patritems);
     }
 
+    /**
+     * @param array $items
+     * @param array $patritems
+     * @return mixed
+     */
     private function countTotal(array $items, array $patritems)
     {
         $items_subtotal = array_reduce(
             $items,
             function ($total = 0, Item $item) {
-                $item_total = $item->getCost() * $item->getQuantity() * $item->getDiscountCoef();
-                $total += $item_total;
+                $total += $item->getTotal();
 
                 return $total;
             }
@@ -332,8 +382,7 @@ class OrderController extends Controller
         $patritems_subtotal = array_reduce(
             $patritems,
             function ($total = 0, Patritem $patritem) {
-                $item_total = $patritem->getCost() * $patritem->getQuantity();
-                $total += $item_total;
+                $total += $patritem->getTotal();
 
                 return $total;
             }
@@ -344,6 +393,12 @@ class OrderController extends Controller
         return $total;
     }
 
+    /**
+     * @param array $cart_items
+     * @param Order $order
+     * @param Promo|null $promo
+     * @return array
+     */
     private function mapSubscribeItems(array $cart_items, Order $order, Promo $promo = null)
     {
         $doctrine = $this->getDoctrine();
@@ -368,6 +423,10 @@ class OrderController extends Controller
 
                 $cost = $calculator->calculateItemCost($tariff, $duration);
                 $item->setCost($cost);
+                $del_cost = $calculator->calculateItemDelCost($tariff, $duration);
+                $item->setDelCost($del_cost);
+                $cat_cost = $calculator->calculateItemCatCost($tariff, $duration);
+                $item->setCatCost($cat_cost);
 
                 ## работаем со скидкой
                 $discount_coef = 1;
@@ -389,6 +448,15 @@ class OrderController extends Controller
 
                 $item->setDiscountCoef($discount_coef);
 
+                $disc_del_cost = round($del_cost * $discount_coef, 2);
+                $item->setDiscountedDelCost($disc_del_cost);
+
+                $disc_cat_cost = round($cat_cost * $discount_coef, 2);
+                $item->setDiscountedCatCost($disc_cat_cost);
+
+                $total = ($disc_del_cost + $disc_cat_cost) * $item->getQuantity();
+                $item->setTotal($total);
+
                 $month = $doctrine
                     ->getRepository('RgApiBundle:Month')
                     ->findOneBy([
@@ -409,6 +477,11 @@ class OrderController extends Controller
         return $items;
     }
 
+    /**
+     * @param array $cart_patritems
+     * @param Order $order
+     * @return array
+     */
     private function mapArchiveItems(array $cart_patritems, Order $order)
     {
         $doctrine = $this->getDoctrine();
@@ -427,6 +500,24 @@ class OrderController extends Controller
                 $cost = ($patriff->getCataloguePrice() + $patriff->getDeliveryPrice());
                 $patritem->setCost($cost);
 
+                ## работаем со скидкой
+                $discount_coef = 1;
+
+                $catCost = $patriff->getCataloguePrice();
+                $patritem->setCatCost($catCost);
+
+                $delCost = $patriff->getDeliveryPrice();
+                $patritem->setDelCost($delCost);
+
+                $discountedDelCost = round($delCost * $discount_coef, 2);
+                $patritem->setDiscountedDelCost($discountedDelCost);
+
+                $discountedCatCost = round($catCost * $discount_coef, 2);
+                $patritem->setDiscountedCatCost($discountedCatCost);
+
+                $total = ($discountedCatCost + $discountedDelCost) * $patritem->getQuantity();
+                $patritem->setTotal($total);
+
                 // к какому заказу относится
                 $patritem->setOrder($order);
 
@@ -436,6 +527,12 @@ class OrderController extends Controller
         );
     }
 
+    /**
+     * @param Order $order
+     * @param $items
+     * @param $patritems
+     * @return Response
+     */
     private function createReceipt(Order $order, $items, $patritems)
     {
         $doctrine = $this->getDoctrine();
@@ -512,6 +609,12 @@ class OrderController extends Controller
         return $rendered_response;
     }
 
+    /**
+     * @param Order $order
+     * @param $items
+     * @param $patritems
+     * @return Response
+     */
     private function createInvoice(Order $order, $items, $patritems)
     {
         $doctrine = $this->getDoctrine();
@@ -647,6 +750,10 @@ class OrderController extends Controller
         return $rendered_response;
     }
 
+    /**
+     * @param Legal $legal
+     * @return string
+     */
     private function deliveryAddressToString(Legal $legal)
     {
         $del = [
@@ -663,6 +770,11 @@ class OrderController extends Controller
         return join(' ', $del);
     }
 
+    /**
+     * @param \stdClass $order_details
+     * @return Legal
+     * @throws OrderException
+     */
     private function constructLegalFromJson(\stdClass $order_details): Legal
     {
         $legal = new Legal();

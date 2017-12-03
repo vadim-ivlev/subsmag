@@ -28,4 +28,26 @@ class ProductCostCalculator
 
         return $cost;
     }
+
+    public function calculateItemCatCost(Tariff $tariff, int $duration)
+    {
+        $timeunit_amount = $this->calculateTimeunitAmount($tariff, $duration);
+
+        // вычислить стоимость единицы позиции по формуле
+        // cost = tu_amount * tariff.price
+        $cost = $timeunit_amount * $tariff->getCataloguePrice();
+
+        return $cost;
+    }
+
+    public function calculateItemDelCost(Tariff $tariff, int $duration)
+    {
+        $timeunit_amount = $this->calculateTimeunitAmount($tariff, $duration);
+
+        // вычислить стоимость единицы позиции по формуле
+        // cost = tu_amount * tariff.price
+        $cost = $timeunit_amount * $tariff->getDeliveryPrice();
+
+        return $cost;
+    }
 }

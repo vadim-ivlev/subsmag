@@ -24,6 +24,21 @@ Rg\ApiBundle\Entity\Item:
         cost:
             type: float
             column: cost
+        cat_cost:
+            type: float
+            column: cat_cost
+        del_cost:
+            type: float
+            column: del_cost
+        discounted_cat_cost:
+            type: float
+            column: discounted_cat_cost
+        discounted_del_cost:
+            type: float
+            column: discounted_del_cost
+        total:
+            type: float
+            column: total
     manyToOne:
         order:
             targetEntity: Order

@@ -37,6 +37,14 @@ Rg\ApiBundle\Entity\Order:
         pg_payment_id:
             type: string
             column: pg_payment_id
+        platron_init_xml:
+            type: text
+            column: platron_init_xml
+            nullable: true
+        platron_receipt_create_xml:
+            type: text
+            column: platron_receipt_xml
+            nullable: true
         comment:
             type: string
             column: comment

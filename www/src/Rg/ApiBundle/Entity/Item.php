@@ -283,4 +283,149 @@ class Item
     {
         return $this->promo;
     }
+    /**
+     * @var float
+     */
+    private $cat_cost;
+
+    /**
+     * @var float
+     */
+    private $del_cost;
+
+    /**
+     * @var float
+     */
+    private $total;
+
+
+    /**
+     * Set catCost
+     *
+     * @param float $catCost
+     *
+     * @return Item
+     */
+    public function setCatCost($catCost)
+    {
+        $this->cat_cost = $catCost;
+
+        return $this;
+    }
+
+    /**
+     * Get catCost
+     *
+     * @return float
+     */
+    public function getCatCost()
+    {
+        return $this->cat_cost;
+    }
+
+    /**
+     * Set delCost
+     *
+     * @param float $delCost
+     *
+     * @return Item
+     */
+    public function setDelCost($delCost)
+    {
+        $this->del_cost = $delCost;
+
+        return $this;
+    }
+
+    /**
+     * Get delCost
+     *
+     * @return float
+     */
+    public function getDelCost()
+    {
+        return $this->del_cost;
+    }
+
+    /**
+     * Set total
+     *
+     * @param float $total
+     *
+     * @return Item
+     */
+    public function setTotal($total)
+    {
+        $this->total = $total;
+
+        return $this;
+    }
+
+    /**
+     * Get total
+     *
+     * @return float
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+    /**
+     * @var float
+     */
+    private $discounted_cat_cost;
+
+    /**
+     * @var float
+     */
+    private $discounted_del_cost;
+
+
+    /**
+     * Set discountedCatCost
+     *
+     * @param float $discountedCatCost
+     *
+     * @return Item
+     */
+    public function setDiscountedCatCost($discountedCatCost)
+    {
+        $this->discounted_cat_cost = $discountedCatCost;
+
+        return $this;
+    }
+
+    /**
+     * Get discountedCatCost
+     *
+     * @return float
+     */
+    public function getDiscountedCatCost()
+    {
+        return $this->discounted_cat_cost;
+    }
+
+    /**
+     * Set discountedDelCost
+     *
+     * @param float $discountedDelCost
+     *
+     * @return Item
+     */
+    public function setDiscountedDelCost($discountedDelCost)
+    {
+        $this->discounted_del_cost = $discountedDelCost;
+
+        return $this;
+    }
+
+    /**
+     * Get discountedDelCost
+     *
+     * @return float
+     */
+    public function getDiscountedDelCost()
+    {
+        return $this->discounted_del_cost;
+    }
 }

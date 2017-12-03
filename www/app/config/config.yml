@@ -22,6 +22,7 @@ parameters:
     scheme: 'https'
     from_email: 'subsmag@rg.ru'
     from_name: 'Российская газета'
+    secretkey: 'wowakedalapadasy'
 
 
 framework:
