@@ -24,6 +24,7 @@ class Platron
 
     const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
     const RECEIPT_CREATE = 'https://www.platron.ru/receipt.php';
+    const RECEIPT_STATUS = 'https://www.platron.ru/get_receipt_status.php';
 
     private $logger;
     private $sighelper;
@@ -51,8 +52,76 @@ class Platron
     }
 
     /**
+     * @param Order $order
+     * @return \SimpleXMLElement
+     * @throws PlatronException
+     * @throws \Exception
+     */
+    public function getReceiptState(Order $order)
+    {
+        $request_xml = $this->prepareGetReceiptStatusRequest($order);
+        $resp = $this->sendRequest(['pg_xml' => $request_xml->asXML()], self::RECEIPT_STATUS);
+
+        $this->logger->info($request_xml->asXML());
+
+        try {
+            $xml = new \SimpleXMLElement($resp);
+        } catch (\Exception $e) {
+            $message = [
+                '<- Error, Response for order ',
+                $order->getId(),
+                ', pg_receipt_id ',
+                (string) $request_xml->pg_receipt_id,
+                ': _',
+                $resp,
+                "_, >>>",
+                $e->getMessage(),
+            ];
+            $message = join('', $message);
+            $this->logger->error($message);
+
+            throw new PlatronException('Receipt status was not received. Unparseable response from Platron.');
+        }
+
+        if (!$this->isOkReceiptState($xml)) {
+            if (!$this->isPendingReceiptState($xml)) {
+                $description = $this->parseErrorOnReceipt($xml);
+
+                $message = 'Not ok response for order ' . $order->getId() . ': ' . $resp;
+                $this->logger->error($message);
+
+                throw new PlatronException('Error response from Platron: ' . $description);
+            }
+        }
+
+        return $xml;
+    }
+
+    private function prepareGetReceiptStatusRequest(Order $order)
+    {
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><request/>');
+        $xml->addChild('pg_merchant_id', self::MERCHANT_ID);
+
+        // extract receipt id from platron request
+        $receipt_xml = new \SimpleXMLElement($order->getPlatronReceiptCreateXml());
+        $xml->addChild('pg_receipt_id', (string) $receipt_xml->pg_receipt_id);
+
+        $this->salt1 = $this->generateSalt();
+        $xml->addChild('pg_salt', $this->salt1);
+
+        $xml->addChild(
+            'pg_sig',
+            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_STATUS), $xml)
+        );
+
+        return $xml;
+    }
+
+    /**
      * @param string $pg_payment_id
      * @param Order $order
+     * @param array $items
+     * @param array $patritems
      * @return \SimpleXMLElement
      * @throws PlatronException
      * @throws \Exception
@@ -519,9 +588,26 @@ RESPONSE_REJECT;
     private function isOkInit(\SimpleXMLElement $xml)
     {
         $condition = (string) $xml->pg_status == 'ok'
-//            && ( (string) $xml->pg_salt == $this->salt)
             && filter_var((string) $xml->pg_redirect_url, FILTER_VALIDATE_URL) !== FALSE
             && filter_var((string) $xml->pg_payment_id, FILTER_VALIDATE_INT) !== FALSE
+        ;
+
+        return $condition;
+    }
+
+    private function isPendingReceiptState(\SimpleXMLElement $xml)
+    {
+        $condition = (string) $xml->pg_status == 'ok'
+            && (string) $xml->pg_receipt_status == 'pending'
+        ;
+
+        return $condition;
+    }
+
+    private function isOkReceiptState(\SimpleXMLElement $xml)
+    {
+        $condition = (string) $xml->pg_status == 'ok'
+            && (string) $xml->pg_receipt_status == 'ok'
         ;
 
         return $condition;
@@ -530,7 +616,6 @@ RESPONSE_REJECT;
     private function isOkReceipt(\SimpleXMLElement $xml)
     {
         $condition = (string) $xml->pg_status == 'ok'
-//            && ( (string) $xml->pg_salt == $this->salt1)
             && filter_var((string) $xml->pg_receipt_id, FILTER_VALIDATE_INT) !== FALSE
         ;
 
