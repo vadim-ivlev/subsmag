@@ -68,7 +68,7 @@ class Platron
             $xml = new \SimpleXMLElement($resp);
         } catch (\Exception $e) {
             $message = [
-                '<- Error, Response for order ',
+                '<- Error. Receipt for order ',
                 $order->getId(),
                 ', pg_receipt_id ',
                 (string) $request_xml->pg_receipt_id,
@@ -93,26 +93,6 @@ class Platron
                 throw new PlatronException('Error response from Platron: ' . $description);
             }
         }
-
-        return $xml;
-    }
-
-    private function prepareGetReceiptStatusRequest(Order $order)
-    {
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><request/>');
-        $xml->addChild('pg_merchant_id', self::MERCHANT_ID);
-
-        // extract receipt id from platron request
-        $receipt_xml = new \SimpleXMLElement($order->getPlatronReceiptCreateXml());
-        $xml->addChild('pg_receipt_id', (string) $receipt_xml->pg_receipt_id);
-
-        $this->salt1 = $this->generateSalt();
-        $xml->addChild('pg_salt', $this->salt1);
-
-        $xml->addChild(
-            'pg_sig',
-            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_STATUS), $xml)
-        );
 
         return $xml;
     }
@@ -159,77 +139,6 @@ class Platron
 
             throw new PlatronException('Error response from Platron: ' . $description);
         }
-
-        return $xml;
-    }
-
-    /**
-     * @param string $pg_payment_id
-     * @param Order $order
-     * @return \SimpleXMLElement
-     */
-    private function prepareReceiptCreateRequest(string $pg_payment_id, Order $order, array $items, array $patritems)
-    {
-		$xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><request/>');
-		$xml->addChild('pg_merchant_id', self::MERCHANT_ID);
-        $xml->addChild('pg_payment_id', $pg_payment_id);
-        $xml->addChild('pg_operation_type', 'payment');
-
-        $this->salt1 = $this->generateSalt();
-        $xml->addChild('pg_salt', $this->salt1);
-
-        /** @var Item $item */
-        foreach ($items as $item) {
-            $item_name = mb_substr($this->itemNamer->form($item), 0, 124);
-            ## для каталожной цены
-            $discountedCatCost = $item->getDiscountedCatCost();
-            if ($discountedCatCost > 0) {
-                $pg_items = $xml->addChild('pg_items');
-                $pg_items->addChild('pg_label', $item_name . ' кат');
-                $pg_items->addChild('pg_price', $discountedCatCost);
-                $pg_items->addChild('pg_quantity', $item->getQuantity());
-                $pg_items->addChild('pg_vat', 10);
-            }
-
-            ## для доставочной
-            $discountedDelCost = $item->getDiscountedDelCost();
-            if ($discountedDelCost > 0) {
-                $pg_items = $xml->addChild('pg_items');
-                $pg_items->addChild('pg_label', $item_name . ' дост');
-                $pg_items->addChild('pg_price', $discountedDelCost);
-                $pg_items->addChild('pg_quantity', $item->getQuantity());
-                $pg_items->addChild('pg_vat', 18);
-            };
-        }
-        /** @var Patritem $patritem */
-        foreach ($patritems as $patritem) {
-            $patriff = $patritem->getPatriff();
-            $name = "Родина №" . $patriff->getIssue()->getMonth() . "-" . $patriff->getIssue()->getYear();
-            ## для каталожной цены
-            $pi_discountedCatCost = $patritem->getDiscountedCatCost();
-            if ($pi_discountedCatCost > 0) {
-                $pg_items = $xml->addChild('pg_items');
-                $pg_items->addChild('pg_label', $name . ' кат');
-                $pg_items->addChild('pg_price', $pi_discountedCatCost);
-                $pg_items->addChild('pg_quantity', $patritem->getQuantity());
-                $pg_items->addChild('pg_vat', 10);
-            }
-
-            ## для доставочной
-            $pi_discountedDelCost = $patritem->getDiscountedDelCost();
-            if ($pi_discountedDelCost > 0) {
-                $pg_items = $xml->addChild('pg_items');
-                $pg_items->addChild('pg_label', $name . ' дост');
-                $pg_items->addChild('pg_price', $pi_discountedDelCost);
-                $pg_items->addChild('pg_quantity', $patritem->getQuantity());
-                $pg_items->addChild('pg_vat', 18);
-            }
-        }
-
-        $xml->addChild(
-            'pg_sig',
-            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_CREATE), $xml)
-        );
 
         return $xml;
     }
@@ -662,5 +571,95 @@ RESPONSE_REJECT;
     {
         return md5(time());
     }
-}
 
+    /**
+     * @param string $pg_payment_id
+     * @param Order $order
+     * @return \SimpleXMLElement
+     */
+    private function prepareReceiptCreateRequest(string $pg_payment_id, Order $order, array $items, array $patritems)
+    {
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><request/>');
+        $xml->addChild('pg_merchant_id', self::MERCHANT_ID);
+        $xml->addChild('pg_payment_id', $pg_payment_id);
+        $xml->addChild('pg_operation_type', 'payment');
+
+        $this->salt1 = $this->generateSalt();
+        $xml->addChild('pg_salt', $this->salt1);
+
+        /** @var Item $item */
+        foreach ($items as $item) {
+            $item_name = mb_substr($this->itemNamer->form($item), 0, 124);
+            ## для каталожной цены
+            $discountedCatCost = $item->getDiscountedCatCost();
+            if ($discountedCatCost > 0) {
+                $pg_items = $xml->addChild('pg_items');
+                $pg_items->addChild('pg_label', $item_name . ' кат');
+                $pg_items->addChild('pg_price', $discountedCatCost);
+                $pg_items->addChild('pg_quantity', $item->getQuantity());
+                $pg_items->addChild('pg_vat', 10);
+            }
+
+            ## для доставочной
+            $discountedDelCost = $item->getDiscountedDelCost();
+            if ($discountedDelCost > 0) {
+                $pg_items = $xml->addChild('pg_items');
+                $pg_items->addChild('pg_label', $item_name . ' дост');
+                $pg_items->addChild('pg_price', $discountedDelCost);
+                $pg_items->addChild('pg_quantity', $item->getQuantity());
+                $pg_items->addChild('pg_vat', 18);
+            };
+        }
+        /** @var Patritem $patritem */
+        foreach ($patritems as $patritem) {
+            $patriff = $patritem->getPatriff();
+            $name = "Родина №" . $patriff->getIssue()->getMonth() . "-" . $patriff->getIssue()->getYear();
+            ## для каталожной цены
+            $pi_discountedCatCost = $patritem->getDiscountedCatCost();
+            if ($pi_discountedCatCost > 0) {
+                $pg_items = $xml->addChild('pg_items');
+                $pg_items->addChild('pg_label', $name . ' кат');
+                $pg_items->addChild('pg_price', $pi_discountedCatCost);
+                $pg_items->addChild('pg_quantity', $patritem->getQuantity());
+                $pg_items->addChild('pg_vat', 10);
+            }
+
+            ## для доставочной
+            $pi_discountedDelCost = $patritem->getDiscountedDelCost();
+            if ($pi_discountedDelCost > 0) {
+                $pg_items = $xml->addChild('pg_items');
+                $pg_items->addChild('pg_label', $name . ' дост');
+                $pg_items->addChild('pg_price', $pi_discountedDelCost);
+                $pg_items->addChild('pg_quantity', $patritem->getQuantity());
+                $pg_items->addChild('pg_vat', 18);
+            }
+        }
+
+        $xml->addChild(
+            'pg_sig',
+            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_CREATE), $xml)
+        );
+
+        return $xml;
+    }
+
+    private function prepareGetReceiptStatusRequest(Order $order)
+    {
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><request/>');
+        $xml->addChild('pg_merchant_id', self::MERCHANT_ID);
+
+        // extract receipt id from platron request
+        $receipt_xml = new \SimpleXMLElement($order->getPlatronReceiptCreateXml());
+        $xml->addChild('pg_receipt_id', (string) $receipt_xml->pg_receipt_id);
+
+        $this->salt1 = $this->generateSalt();
+        $xml->addChild('pg_salt', $this->salt1);
+
+        $xml->addChild(
+            'pg_sig',
+            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_STATUS), $xml)
+        );
+
+        return $xml;
+    }
+}

@@ -363,6 +363,147 @@ class OrderController extends Controller
         return $this->createReceipt($order, $items, $patritems);
     }
 
+    public function getPlatronReceiptByOrderIdAction($enc_id)
+    {
+        $id = $this->get('rg_api.encryptor')->decryptOrderId($enc_id);
+        $doctrine = $this->getDoctrine();
+
+        $order = $doctrine->getRepository('RgApiBundle:Order')
+            ->findOneBy(['id' => $id]);
+
+        if (is_null($order)) {
+            return new Response('Нет заказа с таким номером.');
+        }
+
+        $vendor = $doctrine->getRepository('RgApiBundle:Vendor')
+            ->findOneBy(['keyword' => 'zaorg']); // magic word. What if there'd be more than one vendor?
+
+        // подготовить товарную составляющую
+        $items = $order->getItems();
+        $patritems = $order->getPatritems();
+        $goods = [];
+
+        /** @var Item $item */
+        foreach ($items as $item) {
+            $item_name = mb_substr($this->get('rg_api.item_name')->form($item), 0, 124);
+            ## для каталожной цены
+            $discountedCatCost = $item->getDiscountedCatCost();
+            if ($discountedCatCost > 0) {
+                $goods[] = [
+                    'name' => $item_name . ' кат',
+                    'price' => $discountedCatCost,
+                    'quantity' => $item->getQuantity(),
+                    'vat' => 10,
+                ];
+            }
+
+            ## для доставочной
+            $discountedDelCost = $item->getDiscountedDelCost();
+            if ($discountedDelCost > 0) {
+                $goods[] = [
+                    'name' => $item_name . ' дост',
+                    'price' => $discountedDelCost,
+                    'quantity' => $item->getQuantity(),
+                    'vat' => 18,
+                ];
+            };
+        }
+        /** @var Patritem $patritem */
+        foreach ($patritems as $patritem) {
+            $patriff = $patritem->getPatriff();
+            $name = "Родина №" . $patriff->getIssue()->getMonth() . "-" . $patriff->getIssue()->getYear();
+            ## для каталожной цены
+            $pi_discountedCatCost = $patritem->getDiscountedCatCost();
+            if ($pi_discountedCatCost > 0) {
+                $goods[] = [
+                    'name' => $name . ' кат',
+                    'price' => $pi_discountedCatCost,
+                    'quantity' => $patritem->getQuantity(),
+                    'vat' => 10,
+                ];
+            }
+
+            ## для доставочной
+            $pi_discountedDelCost = $patritem->getDiscountedDelCost();
+            if ($pi_discountedDelCost > 0) {
+                $goods[] = [
+                    'name' => $name . ' дост',
+                    'price' => $pi_discountedDelCost,
+                    'quantity' => $patritem->getQuantity(),
+                    'vat' => 18,
+                ];
+            }
+        }
+
+        $goods = array_map(
+            function (array $g) {
+                $g['cost'] = $g['price'] * $g['quantity'];
+                return $g;
+            },
+            $goods
+        );
+
+        // подготовить чековую составляющую
+        try {
+            $xml = new \SimpleXMLElement($order->getPlatronReceiptCreateXml());
+        } catch (\Exception $e) {
+            return new Response('В заказе нет данных о чеке.');
+        }
+
+        $pg_receipt_id_xml = $xml->xpath('pg_receipt_id');
+
+        if (empty($pg_receipt_id_xml)) {
+            return new Response('ОФД-чек ещё не создан. Подождите, когда завершится банковская транзакция.');
+        }
+
+//            $pg_receipt_id = (string) $xml->pg_receipt_id;
+
+        try {
+            /** @var \SimpleXMLElement $platron_receipt_state_xml */
+            $platron_receipt_state_xml = $this
+                ->get('rg_api.platron')
+                ->getReceiptState($order)
+            ;
+        } catch (PlatronException $e) {
+            // платрон вернул ... что? Смотри лог
+
+            //сообщить об ошибке
+            return new Response('Сбой связи с оператором платёжной системы. Повторите позже, пожалуйста.');
+        }
+
+//pg_status
+//pg_receipt_status
+//pg_fiscal_receipt_number
+//pg_shift_number
+//pg_receipt_date
+//pg_fn_number
+//pg_ecr_registration_number
+//pg_fiscal_document_number
+//pg_fiscal_document_attribute
+
+        $pg = [
+            'status' => (string) $platron_receipt_state_xml->pg_status,
+            'receipt_status' => (string) $platron_receipt_state_xml->pg_receipt_status,
+            'fiscal_receipt_number' => (string) $platron_receipt_state_xml->pg_fiscal_receipt_number,
+            'shift_number' => (string) $platron_receipt_state_xml->pg_shift_number,
+            'receipt_date' => (string) $platron_receipt_state_xml->pg_receipt_date,
+            'fn_number' => (string) $platron_receipt_state_xml->pg_fn_number,
+            'ecr_registration_number' => (string) $platron_receipt_state_xml->pg_ecr_registration_number,
+            'fiscal_document_number' => (string) $platron_receipt_state_xml->pg_fiscal_document_number,
+            'fiscal_document_attribute' => (string) $platron_receipt_state_xml->pg_fiscal_document_attribute,
+        ];
+
+        $rendered_response = $this->render('@RgApi/order/ofd.html.twig', [
+            'vendor' => $vendor,
+            'order' => $order,
+            'total' => number_format($order->getTotal(), 2, ',', ''),
+            'goods' => $goods,
+            'pg' => $pg,
+        ]);
+
+        return $rendered_response;
+    }
+
     /**
      * @param array $items
      * @param array $patritems

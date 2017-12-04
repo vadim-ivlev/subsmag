@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Чек</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+        table {
+            border: solid 1px black;
+            border-radius: 4px 4px 4px 4px;
+            padding: 4px 7px;
+            border-collapse: collapse;
+        }
+        th {
+            border: solid 1px black;
+        }
+        td {
+            border: solid 1px black;
+        }
+    </style>
+</head>
+<body>
+<p>
+    {{ vendor.name }}
+</p>
+<table>
+    <tr>
+        <th>№</th>
+        <th>Наименование</th>
+        <th>Цена, руб.</th>
+        <th>Кол-во</th>
+        <th>Стоимость, руб.</th>
+        <th>Ставка налога</th>
+    </tr>
+    {% for g in goods %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ g.name }}</td>
+            <td>{{ g.price }}</td>
+            <td>{{ g.quantity }}</td>
+            <td>{{ g.cost }}</td>
+            <td>НДС {{ g.vat }}%</td>
+        </tr>
+    {% endfor %}
+</table>
+<b>Итого: {{ total }} руб.</b>
+<p>
+    Атрибуты ОФД
+</p>
+<ul>
+    {% for k, v in pg %}
+        <li>{{ k }}: {{ v }}</li>
+    {% endfor %}
+</ul>
+</body></html>
