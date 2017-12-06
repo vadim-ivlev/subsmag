@@ -5,7 +5,6 @@ namespace Rg\ApiBundle\Controller;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Rg\ApiBundle\Entity\Area;
-use Rg\ApiBundle\Entity\Delivery;
 use Rg\ApiBundle\Entity\Edition;
 use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Sale;
@@ -295,38 +294,113 @@ class ProductController extends Controller
         );
     }
 
-    private function filterTariffs(Collection $tariffs, $product, $medium, $delivery, Area $area)
+    private function filterTariffs(
+        Collection $tariffs,
+        $medium,
+        $delivery,
+        Area $area,
+        array $sales
+    ): Collection
     {
-        return $tariffs->filter(
-            function (Tariff $tariff) use ($product, $medium, $delivery, $area) {
-                $criterion = ($tariff->getMedium()->getId() == $medium['id']);
-                $criterion = $criterion && ($tariff->getDelivery()->getId() == $delivery['id']);
-                $criterion = $criterion && ($tariff->getZone()->getId() == $area->getZone()->getId());
+        // нет окна продаж?
+        if (empty($sales)) {
+            $tariffs->clear();
+            return $tariffs;
+        }
+        if (count($sales) > 2) {
+            //возможно ли, что окон продаж больше двух?
+            $tariffs->clear();
+            return $tariffs;
+        }
 
+        $filtered_by_today = $tariffs->filter(
+            function (Tariff $tariff) use ($medium, $delivery, $area) {
+                if ($tariff->getMedium()->getId() != $medium['id']) return false;
+                if ($tariff->getDelivery()->getId() != $delivery['id']) return false;
+                if ($tariff->getZone()->getId() != $area->getZone()->getId()) return false;
 
-                // есть два типа тарифов -- месячные и {полугодовые-годовые}
-                // год тарифа д.б. не меньше текущего года.
-                // первый месяц тарифа, если не нулевой (это месячный), д.б. не меньше текущего месяца.
                 /** @var \DateTime $time */
                 $time = $this->current_time;
-                $current_month = (int) $time->format('m');
-                $current_year = (int) $time->format('Y');
 
-                // если больший год, то месяца не фильтруем
-                $tariff_year = (int)$tariff->getTimeunit()->getYear();
+                $tariff_year = (int) $tariff->getTimeunit()->getYear();
+
+                $current_year = (int) $time->format('Y');
                 if ( $tariff_year < $current_year ) return false;
-                if ( $tariff_year > $current_year ) return $criterion;
+
+                $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
+
+                if ( $tariff_year > $current_year ) return true;
 
                 // если текущий год, то полугодие месячного/полугодового тарифа д.б. не меньше полугодия текущего месяца.
+                $current_month = (int) $time->format('m');
                 $current_semiyear = ($current_month < 7) ? 1 : 2;
-                $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
                 $tariff_semiyear = ($tariff_first_month < 7) ? 1 : 2;
 
                 if ($tariff_semiyear < $current_semiyear) return false;
 
-                return $criterion;
+                return true;
             }
         );
+
+        // каждому окну продаж -- тарифы его года
+        $mapped = array_map(
+            function (array $sale) use ($filtered_by_today) {
+                return $filtered_by_today->filter(
+                    function (Tariff $tariff) use ($sale) {
+                        $t_year = $tariff->getTimeunit()->getYear();
+                        if ($t_year != $sale['year']) return false;
+
+                        /** @var \DateTime $time */
+                        $time = $this->current_time;
+                        $current_year = (int) $time->format('Y');
+                        $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
+                        $duration = $tariff->getTimeunit()->getDuration();
+
+                        if ($t_year == $current_year) {
+                            if ($duration != 1) {
+                                // годовой-полугодовой
+                                if ($tariff_first_month < $sale['number']) return false;
+                            }
+                        } else {
+                            if ($duration != 1) {
+                                // первый месяц немесячного тарифа д.б. не меньше месяца доступного сейлза
+                                if ($tariff_first_month < $sale['number']) return false;
+                            } else {
+                                $sale_semiyear = ($sale['number'] < 7) ? 1 : 2;
+                                $tariff_semiyear = ($tariff_first_month < 7) ? 1 : 2;
+
+                                if ($tariff_semiyear < $sale_semiyear) return false;
+                            }
+                        }
+
+
+                        return true;
+                    }
+                );
+            },
+            $sales
+        );
+
+        if (count($mapped) == 1) {
+            return $mapped[0];
+        }
+
+        $reduced = array_reduce(
+            $mapped,
+            function (ArrayCollection $init, ArrayCollection $col) {
+                foreach ($col as $c) {
+                    $init->add($c);
+                }
+                return $init;
+            },
+            $init = new ArrayCollection()
+        );
+//        echo $this->get('rg_api.dev_dumper')->symDump($reduced->map(function(Tariff $t){
+//            return $t->getTimeunit()->getFirstMonth() . ':' . $t->getTimeunit()->getDuration() . ':' . $t->getTimeunit()->getYear();
+//        }));die;
+//        echo $this->get('rg_api.dev_dumper')->symDump($reduced);die;
+
+        return $reduced;
     }
 
     private function fetchFilteredSales(Product $product, Area $area, int $delivery_id)
@@ -413,7 +487,8 @@ class ProductController extends Controller
     private function appendDeliveries(Product $product, $area, $medium)
     {
         return function (array $delivery) use ($product, $area, $medium) {
-            $delivery['sales'] = $this->fetchFilteredSales($product, $area, $delivery['id']);
+            $filteredSales = $this->fetchFilteredSales($product, $area, $delivery['id']);
+            $delivery['sales'] = $filteredSales;
 
             #######
             /**
@@ -424,10 +499,10 @@ class ProductController extends Controller
 
             $filtered_tariffs = $this->filterTariffs(
                 $tariffs,
-                $product,
                 $medium,
                 $delivery,
-                $area
+                $area,
+                $filteredSales
             );
 
             $timeunits_with_prices = $this->appendPrices($filtered_tariffs);
@@ -459,5 +534,39 @@ class ProductController extends Controller
 
             return $delivery;
         };
+    }
+
+    private function DEPRECATED_filterTariffsByCurrentDate(Collection $tariffs, $product, $medium, $delivery, Area $area, array $sales)
+    {
+        return $tariffs->filter(
+            function (Tariff $tariff) use ($product, $medium, $delivery, $area, $sales) {
+                if ($tariff->getMedium()->getId() != $medium['id']) return false;
+                if ($tariff->getDelivery()->getId() != $delivery['id']) return false;
+                if ($tariff->getZone()->getId() != $area->getZone()->getId()) return false;
+
+
+                // есть два типа тарифов -- месячные и {полугодовые-годовые}
+                // год тарифа д.б. не меньше текущего года.
+                // первый месяц тарифа, если не нулевой (это месячный), д.б. не меньше текущего месяца.
+                /** @var \DateTime $time */
+                $time = $this->current_time;
+                $current_month = (int) $time->format('m');
+                $current_year = (int) $time->format('Y');
+
+                // если больший год, то месяца не фильтруем
+                $tariff_year = (int)$tariff->getTimeunit()->getYear();
+                if ( $tariff_year < $current_year ) return false;
+                if ( $tariff_year > $current_year ) return true;
+
+                // если текущий год, то полугодие месячного/полугодового тарифа д.б. не меньше полугодия текущего месяца.
+                $current_semiyear = ($current_month < 7) ? 1 : 2;
+                $tariff_first_month = (int) $tariff->getTimeunit()->getFirstMonth();
+                $tariff_semiyear = ($tariff_first_month < 7) ? 1 : 2;
+
+                if ($tariff_semiyear < $current_semiyear) return false;
+
+                return true;
+            }
+        );
     }
 }
