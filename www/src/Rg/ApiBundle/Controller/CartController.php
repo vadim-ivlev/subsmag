@@ -12,6 +12,7 @@ use Rg\ApiBundle\Entity\Issue;
 use Rg\ApiBundle\Entity\Medium;
 use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Promo;
+use Rg\ApiBundle\Exception\PromoException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -20,12 +21,19 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CartController extends Controller implements SessionHasCartController
 {
+    const COUNTER = 'promo:tries:counter';
 //    private $doctrine;
 //    public function __construct(Registry $doctrine)
 //    {
 //        $this->doctrine = $doctrine;
 //    }
 
+    /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function indexAction(Request $request, SessionInterface $session)
     {
         /** @var Cart $cart */
@@ -38,6 +46,11 @@ class CartController extends Controller implements SessionHasCartController
         return (new Out())->json($detailed_cart);
     }
 
+    /**
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function emptyAction(SessionInterface $session)
     {
         $cart = new Cart();
@@ -47,6 +60,12 @@ class CartController extends Controller implements SessionHasCartController
         return (new Out())->json($cart);
     }
 
+    /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function addAction(Request $request, SessionInterface $session)
     {
         /** @var Cart $cart */
@@ -152,6 +171,12 @@ class CartController extends Controller implements SessionHasCartController
         return (new Out())->json($detailed_cart);
     }
 
+    /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function updateAction(Request $request, SessionInterface $session)
     {
         /** @var Cart $cart */
@@ -179,6 +204,12 @@ class CartController extends Controller implements SessionHasCartController
         return (new Out())->json($detailed_cart);
     }
 
+    /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function removeAction(Request $request, SessionInterface $session)
     {
         /** @var Cart $cart */
@@ -205,13 +236,33 @@ class CartController extends Controller implements SessionHasCartController
         return (new Out())->json($detailed_cart);
     }
 
+    /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function applyPromoAction(Request $request, SessionInterface $session)
     {
+        $counter = $session->get(self::COUNTER) ?? 1;
+        if ($counter == 5) {
+            $session->set('promo:tries:access', time());
+        }
+        if ($counter > 5) {
+            $last_access_time = $session->get('promo:tries:access');
+            if ((time() - $last_access_time) < 30) {
+                return (new Out())->json(['error' => 'Подождите, пожалуйста, 30 секунд.',]);
+            } else {
+                $session->set(self::COUNTER, $counter = 1);
+            }
+        }
+
         $data = json_decode(
             $request->getContent()
         );
 
         if (!isset($data->promocode)) {
+            $session->set(self::COUNTER, $counter + 1);
             $error = 'no promocode given';
             return (new Out())->json(['error' => $error,]);
         }
@@ -219,13 +270,15 @@ class CartController extends Controller implements SessionHasCartController
         $promocode = $data->promocode;
 
         if (!$this->get('rg_api.promo_fetcher')->isValidPromocode($promocode)) {
+            $session->set(self::COUNTER, $counter + 1);
             $error = 'Промокод содержит недопустимые символы. Допускаются 0-9A-z_-%/';
             return (new Out())->json(['error' => $error,]);
         }
 
         try {
             $promo = $this->get('rg_api.promo_fetcher')->fetchPromoFromDB($promocode, $request);
-        } catch (\Exception $e) {
+        } catch (PromoException $e) {
+            $session->set(self::COUNTER, $counter + 1);
             return (new Out())->json(['error' => $e->getMessage(),]);
         }
 
@@ -241,6 +294,11 @@ class CartController extends Controller implements SessionHasCartController
         return (new Out())->json($detailed_cart);
     }
 
+    /**
+     * @param Cart $cart
+     * @param Promo|null $promo
+     * @return array
+     */
     private function detailCart(Cart $cart, Promo $promo = null)
     {
         ### детализировать подписные позиции

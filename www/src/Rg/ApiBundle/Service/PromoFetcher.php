@@ -8,6 +8,7 @@ use Rg\ApiBundle\Entity\Pin;
 use Rg\ApiBundle\Entity\Promo;
 use Rg\ApiBundle\Entity\Tariff;
 use Rg\ApiBundle\Entity\Zone;
+use Rg\ApiBundle\Exception\PromoException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -35,7 +36,7 @@ class PromoFetcher
 
         try {
             $promo = $this->fetchPromoFromDB($promocode, $request);
-        } catch (\Exception $e) {
+        } catch (PromoException $e) {
             // промокод протух, наверное?
             $session->remove('promocode');
         }
@@ -57,7 +58,7 @@ class PromoFetcher
 
         if (is_null($promo)) {
             $error = 'Промокод не найден';
-            throw new \Exception($error);
+            throw new PromoException($error);
         }
 
         ## всё, что не так с промокодом -- объясняю подробно
@@ -66,7 +67,7 @@ class PromoFetcher
             // пользователь отправил пинкод?
             if (count($raw_promo) < 2) {
                 $error = 'Пин-код промокода не передан.';
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
 
             // пин есть у нас в таблице?
@@ -74,7 +75,7 @@ class PromoFetcher
 
             if (!$this->isValidPin($user_pin)) {
                 $error = 'Пин-код промокода не передан или неправильный.';
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
 
             $pins = $promo->getPins()->filter(
@@ -85,7 +86,7 @@ class PromoFetcher
 
             if ($pins->count() != 1) {
                 $error = 'Пин-код не найден.';
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
 
             $pin = $pins->current();
@@ -93,7 +94,7 @@ class PromoFetcher
             // пин уже использован?
             if ($pin->getOrder() != null) {
                 $error = 'Пин-код уже активирован.';
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
 
             $promo->pin = $pin;
@@ -103,14 +104,14 @@ class PromoFetcher
         $from_front_id = $this->getFrontId($request);
         if (is_null($from_front_id)) {
             $error = 'Регион не определён. Видимо, его нет в cookie.';
-            throw new \Exception($error);
+            throw new PromoException($error);
         }
 
         /** @var null|Area $area */
         $user_area = $this->getArea($from_front_id);
         if (is_null($user_area)) {
             $error = 'В базе не найден регион с id ' . $from_front_id;
-            throw new \Exception($error);
+            throw new PromoException($error);
         }
 
         /** @var Area $promo_area */
@@ -119,7 +120,7 @@ class PromoFetcher
             if ($user_area->getId() != $promo_area->getId()) {
                 $error = 'Промокод действителен только для ' . $promo_area->getName()
                     . ', ваш регион определён как ' . $user_area->getName();
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
         }
 
@@ -131,14 +132,14 @@ class PromoFetcher
             if (!$promo_zones->contains($user_zone)) {
                 $error = 'Промокод недействителен для вашей группы регионов, определённой как '
                     . $user_zone->getName();
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
         }
 
         // 2. is active?
         if ($promo->getIsActive() == false) {
             $error = "Промокод не активен.";
-            throw new \Exception($error);
+            throw new PromoException($error);
         }
 
         // 3. has started, ended?
@@ -148,11 +149,11 @@ class PromoFetcher
             $date = new \DateTime(date('Y-m-d'));
             if ($date < $start) {
                 $error = "Период действия промокода ещё не начался.";
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
             if ($date > $end) {
                 $error = "Период действия промокода уже закончился.";
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
         }
 
@@ -163,7 +164,7 @@ class PromoFetcher
 
             if ($amount <= $sold) {
                 $error = "Достигнут лимит активаций по этому промокоду.";
-                throw new \Exception($error);
+                throw new PromoException($error);
             }
         }
 
