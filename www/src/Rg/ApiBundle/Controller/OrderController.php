@@ -709,7 +709,11 @@ class OrderController extends Controller
                 '-' .
                 $last_month .
                 "'" .
-                $month->getYear();
+                $month->getYear() .
+                ' ' .
+                $item->getQuantity() .
+                ' экз'
+            ;
 
             $goods[] = $short_descr;
         }
@@ -721,7 +725,11 @@ class OrderController extends Controller
             $patria = 'Родина №' .
                 $issue->getMonth() .
                 "'" .
-                $issue->getYear();
+                $issue->getYear() .
+                ' ' .
+                $patritem->getQuantity() .
+                ' экз'
+            ;
 
             $goods[] = $patria;
         }
