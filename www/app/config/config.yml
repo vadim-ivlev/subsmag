@@ -23,6 +23,7 @@ parameters:
     from_email: 'subsmag@rg.ru'
     from_name: 'Российская газета'
     secretkey: 'wowakedalapadasy'
+    redis_server: 'redis://localhost'
 
 
 framework:
