@@ -24,6 +24,7 @@
         "jms/serializer-bundle": "^2.0",
         "nelmio/api-doc-bundle": "^2.13",
         "nelmio/cors-bundle": "^1.5",
+        "phpunit/phpunit": "^4.8",
         "predis/predis": "^1.0",
         "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "^3.0.2",

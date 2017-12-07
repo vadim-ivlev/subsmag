@@ -22,6 +22,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class CartController extends Controller implements SessionHasCartController
 {
     const COUNTER = 'promo:tries:counter';
+    const MAX_TRIES = 200;
+
 //    private $doctrine;
 //    public function __construct(Registry $doctrine)
 //    {
@@ -245,10 +247,10 @@ class CartController extends Controller implements SessionHasCartController
     public function applyPromoAction(Request $request, SessionInterface $session)
     {
         $counter = $session->get(self::COUNTER) ?? 1;
-        if ($counter == 5) {
+        if ($counter == self::MAX_TRIES) {
             $session->set('promo:tries:access', time());
         }
-        if ($counter > 5) {
+        if ($counter > self::MAX_TRIES) {
             $last_access_time = $session->get('promo:tries:access');
             if ((time() - $last_access_time) < 30) {
                 return (new Out())->json(['error' => 'Подождите, пожалуйста, 30 секунд.',]);
@@ -271,7 +273,7 @@ class CartController extends Controller implements SessionHasCartController
 
         if (!$this->get('rg_api.promo_fetcher')->isValidPromocode($promocode)) {
             $session->set(self::COUNTER, $counter + 1);
-            $error = 'Промокод содержит недопустимые символы. Допускаются 0-9A-z_-%/';
+            $error = 'Промокод содержит недопустимые символы. Проверьте, пожалуйста, ещё раз строку.';
             return (new Out())->json(['error' => $error,]);
         }
 
