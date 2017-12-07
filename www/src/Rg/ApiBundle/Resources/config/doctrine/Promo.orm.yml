@@ -54,6 +54,17 @@ Rg\ApiBundle\Entity\Promo:
         image:
             type: string
             column: image
+            nullable: true
+        is_alert:
+            type: boolean
+            column: is_alert
+        is_visible:
+            type: boolean
+            column: is_visible
+        document:
+            type: string
+            column: document
+            nullable: true
     manyToMany:
         products:
             targetEntity: Product

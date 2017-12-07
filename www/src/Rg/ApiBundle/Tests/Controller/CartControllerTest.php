@@ -20,6 +20,67 @@ class CartControllerTest extends WebTestCase
     }
 
     /**
+     * @depends testIndex
+     */
+    public function testAddAction()
+    {
+        $client = static::createClient();
+
+        $content = '
+        {
+            "products": [
+                {
+                    "first_month": 1,
+                    "year": 2018,
+                    "duration": 12,
+                    "tariff": 110,
+                    "quantity": 13
+                }
+            ],
+            "archives": [
+                {"quantity": 1, "patriff": 247}
+            ]
+        }
+        ';
+        $client->request('PATCH', '/api/cart/', [], [], [], $content);
+
+        $response = $client->getResponse()->getContent();
+        $dec = new \ArrayObject(json_decode($response));
+        $this->assertThat(
+            $dec,
+            $this->logicalAnd(
+                $this->arrayHasKey(
+                    'products'
+                ),
+                $this->arrayHasKey(
+                    'archives'
+                )
+            )
+        );
+        $this->assertContains(
+            'discount_coef',
+            $response
+        );
+    }
+
+    /**
+     * @depends testAddAction
+     */
+    public function testEmptyAction()
+    {
+        $client = static::createClient();
+
+        $client->request('PUT', '/api/cart/', [], [], [], '');
+
+        $response = $client->getResponse()->getContent();
+
+        $this->assertEquals(
+            '{"products":[],"archives":[]}',
+            $response
+        );
+    }
+
+    /**
      * @dataProvider promocodeProvider
      */
     public function testApplyPromo($uri, $content, $resp)

@@ -536,4 +536,91 @@ class Promo
     {
         return $this->zones;
     }
+    /**
+     * @var boolean
+     */
+    private $is_alert;
+
+    /**
+     * @var boolean
+     */
+    private $is_visible;
+
+    /**
+     * @var string
+     */
+    private $document;
+
+
+    /**
+     * Set isAlert
+     *
+     * @param boolean $isAlert
+     *
+     * @return Promo
+     */
+    public function setIsAlert($isAlert)
+    {
+        $this->is_alert = $isAlert;
+
+        return $this;
+    }
+
+    /**
+     * Get isAlert
+     *
+     * @return boolean
+     */
+    public function getIsAlert()
+    {
+        return $this->is_alert;
+    }
+
+    /**
+     * Set isVisible
+     *
+     * @param boolean $isVisible
+     *
+     * @return Promo
+     */
+    public function setIsVisible($isVisible)
+    {
+        $this->is_visible = $isVisible;
+
+        return $this;
+    }
+
+    /**
+     * Get isVisible
+     *
+     * @return boolean
+     */
+    public function getIsVisible()
+    {
+        return $this->is_visible;
+    }
+
+    /**
+     * Set document
+     *
+     * @param string $document
+     *
+     * @return Promo
+     */
+    public function setDocument($document)
+    {
+        $this->document = $document;
+
+        return $this;
+    }
+
+    /**
+     * Get document
+     *
+     * @return string
+     */
+    public function getDocument()
+    {
+        return $this->document;
+    }
 }
