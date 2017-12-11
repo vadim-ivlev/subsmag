@@ -102,6 +102,25 @@ class CartControllerTest extends WebTestCase
         );
     }
 
+    /**
+     * @depends testApplyPromo
+     */
+    public function testLocPromo()
+    {
+        $client = static::createClient();
+
+        $uri = '/api/promo/';
+        $i = 0;
+        while ($i < 201) {
+            $client->request('POST', $uri, [], [], [], '{"promocode":"abyrvalg"}');
+            $i++;
+        }
+        $this->assertEquals(
+            '{"error":"Подождите, пожалуйста, 30 секунд."}',
+            $client->getResponse()->getContent()
+        );
+    }
+
     public function promocodeProvider()
     {
         return [

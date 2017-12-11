@@ -49,7 +49,7 @@ Rg\ApiBundle\Entity\Promo:
             column: sold
             nullable: true
         description:
-            type: string
+            type: text
             column: description
         image:
             type: string
@@ -61,9 +61,27 @@ Rg\ApiBundle\Entity\Promo:
         is_visible:
             type: boolean
             column: is_visible
+        is_form:
+            type: boolean
+            column: is_form
         document:
             type: string
             column: document
+            nullable: true
+        title:
+            type: string
+            column: title
+        text2:
+            type: text
+            column: text2
+            nullable: true
+        text3:
+            type: text
+            column: text3
+            nullable: true
+        conditions:
+            type: text
+            column: conditions
             nullable: true
     manyToMany:
         products:

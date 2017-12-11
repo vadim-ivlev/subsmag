@@ -623,4 +623,149 @@ class Promo
     {
         return $this->document;
     }
+    /**
+     * @var boolean
+     */
+    private $is_form;
+
+    /**
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @var string
+     */
+    private $text2;
+
+    /**
+     * @var string
+     */
+    private $text3;
+
+    /**
+     * @var string
+     */
+    private $conditions;
+
+
+    /**
+     * Set isForm
+     *
+     * @param boolean $isForm
+     *
+     * @return Promo
+     */
+    public function setIsForm($isForm)
+    {
+        $this->is_form = $isForm;
+
+        return $this;
+    }
+
+    /**
+     * Get isForm
+     *
+     * @return boolean
+     */
+    public function getIsForm()
+    {
+        return $this->is_form;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Promo
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set text2
+     *
+     * @param string $text2
+     *
+     * @return Promo
+     */
+    public function setText2($text2)
+    {
+        $this->text2 = $text2;
+
+        return $this;
+    }
+
+    /**
+     * Get text2
+     *
+     * @return string
+     */
+    public function getText2()
+    {
+        return $this->text2;
+    }
+
+    /**
+     * Set text3
+     *
+     * @param string $text3
+     *
+     * @return Promo
+     */
+    public function setText3($text3)
+    {
+        $this->text3 = $text3;
+
+        return $this;
+    }
+
+    /**
+     * Get text3
+     *
+     * @return string
+     */
+    public function getText3()
+    {
+        return $this->text3;
+    }
+
+    /**
+     * Set conditions
+     *
+     * @param string $conditions
+     *
+     * @return Promo
+     */
+    public function setConditions($conditions)
+    {
+        $this->conditions = $conditions;
+
+        return $this;
+    }
+
+    /**
+     * Get conditions
+     *
+     * @return string
+     */
+    public function getConditions()
+    {
+        return $this->conditions;
+    }
 }
