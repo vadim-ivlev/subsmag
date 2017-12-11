@@ -141,27 +141,27 @@ class CartControllerTest extends WebTestCase
             ],
             [
                 '/api/promo/',
-                '{"promocode":"asdf123"}',
+                '{"promocode":"' . $_ENV['pinless_promo'] . '"}',
                 '{"error":"Пин-код промокода не передан."}',
             ],
             [
                 '/api/promo/',
-                '{"promocode":"asdf123/"}',
+                '{"promocode":"' . $_ENV['pinless_promo'] . '/"}',
                 '{"error":"Пин-код промокода не передан или неправильный."}',
             ],
             [
                 '/api/promo/',
-                '{"promocode":"asdf123/voopycoldberg"}',
+                '{"promocode":"' . $_ENV['pinless_promo'] . '/voopycoldberg"}',
                 '{"error":"Пин-код не найден."}',
             ],
             [
                 '/api/promo/',
-                '{"promocode":"asdf123/d7ba49"}',
+                '{"promocode":"' . $_ENV['pinless_promo'] . '/' . $_ENV['activated_pin'] . '"}',
                 '{"error":"Пин-код уже активирован."}',
             ],
             [
                 '/api/promo/',
-                '{"promocode":"salegood"}',
+                '{"promocode":"' . $_ENV['non_active_promo'] . '"}',
                 '{"error":"Промокод не активен."}',
             ],
         ];
