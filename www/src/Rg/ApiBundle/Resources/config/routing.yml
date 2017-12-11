@@ -1,3 +1,9 @@
+# список городов по региону из куков
+rg_api_promo_list:
+    path:     /promos/
+    defaults: { _controller: "RgApiBundle:Promo:list", _format: 'json' }
+    methods:  [GET, HEAD]
+
 rg_api_homepage:
     path:     /
     defaults: { _controller: "RgApiBundle:Default:index" }

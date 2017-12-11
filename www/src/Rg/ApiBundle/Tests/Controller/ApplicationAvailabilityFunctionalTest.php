@@ -35,6 +35,7 @@ class ApplicationAvailabilityFunctionalTest extends WebTestCase
             ['/api/cart/'],
             ['/api/products/'],
             ['/api/patria/'],
+            ['/api/promos/'],
         ];
     }
 }
