@@ -21,7 +21,7 @@ class PromoControllerTest extends WebTestCase
         $client->request('GET', '/api/promos/');
 
         $this->assertContains(
-            '[{"name":',
+            '[{"id":',
             $client->getResponse()->getContent()
         );
 
@@ -62,7 +62,7 @@ class PromoControllerTest extends WebTestCase
 
         $client->request('GET', '/api/promos/' . $_ENV['valid_promocode_id']);
         $this->assertContains(
-            '{"name":',
+            '{"id":',
             $client->getResponse()->getContent()
         );
     }

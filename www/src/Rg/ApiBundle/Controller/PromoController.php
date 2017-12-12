@@ -27,6 +27,7 @@ class PromoController extends Controller
         $prepared = array_map(
             function (Promo $p) {
                 return [
+                    'id' => $p->getId(),
                     'name' => $p->getName(),
 //                    'start' => $p->getStart()->format('dd-mm-YY'),
 //                    'end' => $p->getEnd()->format('dd-mm-YY'),
@@ -55,6 +56,12 @@ class PromoController extends Controller
         return (new Out())->json($prepared);
     }
 
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
     public function getOneByIdAction(Request $request, int $id)
     {
         if (!$this->validateId($id)) {
@@ -70,6 +77,7 @@ class PromoController extends Controller
         }
 
         $prepared = [
+            'id' => $p->getId(),
             'name' => $p->getName(),
 //                    'start' => $p->getStart()->format('dd-mm-YY'),
 //                    'end' => $p->getEnd()->format('dd-mm-YY'),
@@ -95,6 +103,10 @@ class PromoController extends Controller
         return (new Out())->json($prepared);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     private function validateId($id)
     {
         $options = [
