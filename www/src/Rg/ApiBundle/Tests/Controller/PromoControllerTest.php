@@ -29,6 +29,7 @@ class PromoControllerTest extends WebTestCase
 
     /**
      * @dataProvider promocodeProvider
+     * @depends testListAction
      */
     public function testGetOneByCodeAction($uri, $resp)
     {
@@ -46,17 +47,20 @@ class PromoControllerTest extends WebTestCase
     {
         return [
             [
-                '/api/promos/abyr',
+                '/api/promos/1',
                 '{"error":"Акция не найдена или неактивна."}',
             ],
         ];
     }
 
+    /**
+     * @depends testGetOneByCodeAction
+     */
     public function testGoodGetOneByCodeAction()
     {
         $client = static::createClient();
 
-        $client->request('GET', '/api/promos/' . $_ENV['valid_promocode']);
+        $client->request('GET', '/api/promos/' . $_ENV['valid_promocode_id']);
         $this->assertContains(
             '{"name":',
             $client->getResponse()->getContent()

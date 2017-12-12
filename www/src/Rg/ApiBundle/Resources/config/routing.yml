@@ -5,12 +5,12 @@ rg_api_promo_list:
     methods:  [GET, HEAD]
 
 # квитанция по промокоду
-rg_api_get_promo_by_code:
-    path:     /promos/{code}
-    defaults: { _controller: "RgApiBundle:Promo:getOneByCode" }
+rg_api_get_promo_by_id:
+    path:     /promos/{id}
+    defaults: { _controller: "RgApiBundle:Promo:getOneById" }
     methods:  [GET, HEAD]
     requirements:
-        code: '[\w%-]+'
+        code: \d+
 
 rg_api_homepage:
     path:     /

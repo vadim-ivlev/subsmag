@@ -55,28 +55,15 @@ class PromoController extends Controller
         return (new Out())->json($prepared);
     }
 
-    /**
-     * @param Request $request
-     * @param string $code
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @throws \Exception
-     */
-    public function getOneByCodeAction(Request $request, string $code)
+    public function getOneByIdAction(Request $request, int $id)
     {
-        // оригинальный промокод содержит %
-        $decoded = urldecode($code);
-
-        if (
-            strlen($decoded) > 255 or
-            strlen($decoded) < 3 or
-            preg_match('#[^0-9A-Za-z_%-]#', $decoded)
-        ) {
-            $error = 'invalid promocode';
+        if (!$this->validateId($id)) {
+            $error = 'invalid id';
             return (new Out())->json(['error' => $error]);
         }
 
         $p = $this->getDoctrine()->getRepository('RgApiBundle:Promo')
-            ->findOneBy(['code' => $decoded])
+            ->findOneBy(['id' => $id])
         ;
         if (is_null($p)) {
             return (new Out())->json(['error' => 'Акция не найдена или неактивна.']);
@@ -106,5 +93,16 @@ class PromoController extends Controller
         ];
 
         return (new Out())->json($prepared);
+    }
+
+    private function validateId($id)
+    {
+        $options = [
+            'options' => [
+                'min_range' => 1
+            ],
+        ];
+
+        return filter_var($id, FILTER_VALIDATE_INT, $options);
     }
 }
