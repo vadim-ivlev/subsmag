@@ -1,17 +1,3 @@
-# список акций
-rg_api_promo_list:
-    path:     /promos/
-    defaults: { _controller: "RgApiBundle:Promo:list", _format: 'json' }
-    methods:  [GET, HEAD]
-
-# квитанция по промокоду
-rg_api_get_promo_by_id:
-    path:     /promos/{id}
-    defaults: { _controller: "RgApiBundle:Promo:getOneById" }
-    methods:  [GET, HEAD]
-    requirements:
-        code: \d+
-
 rg_api_homepage:
     path:     /
     defaults: { _controller: "RgApiBundle:Default:index" }
@@ -130,3 +116,17 @@ rg_api_upload_document:
     path:     /request/
     defaults: { _controller: "RgApiBundle:PromoRequest:new" }
     methods:  [POST]
+
+# список акций
+rg_api_promo_list:
+    path:     /promos/
+    defaults: { _controller: "RgApiBundle:Promo:list", _format: 'json' }
+    methods:  [GET, HEAD]
+
+# квитанция по промокоду
+rg_api_get_promo_by_id:
+    path:     /promos/{id}
+    defaults: { _controller: "RgApiBundle:Promo:getOneById" }
+    methods:  [GET, HEAD]
+    requirements:
+        code: \d+
