@@ -16,7 +16,8 @@ class PromoController extends Controller
     public function listAction(Request $request)
     {
         $promos = $this->getDoctrine()->getRepository('RgApiBundle:Promo')
-            ->findAll();
+            ->findAllActive()
+        ;
 
         $prepared = array_map(
             function (Promo $p) {
