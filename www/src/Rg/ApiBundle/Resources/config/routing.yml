@@ -1,8 +1,16 @@
-# список городов по региону из куков
+# список акций
 rg_api_promo_list:
     path:     /promos/
     defaults: { _controller: "RgApiBundle:Promo:list", _format: 'json' }
     methods:  [GET, HEAD]
+
+# квитанция по промокоду
+rg_api_get_promo_by_code:
+    path:     /promos/{code}
+    defaults: { _controller: "RgApiBundle:Promo:getOneByCode" }
+    methods:  [GET, HEAD]
+    requirements:
+        code: '[\w%-]+'
 
 rg_api_homepage:
     path:     /
