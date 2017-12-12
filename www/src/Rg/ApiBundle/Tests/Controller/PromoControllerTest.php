@@ -26,4 +26,40 @@ class PromoControllerTest extends WebTestCase
         );
 
     }
+
+    /**
+     * @dataProvider promocodeProvider
+     */
+    public function testGetOneByCodeAction($uri, $resp)
+    {
+        $client = static::createClient();
+
+        $client->request('GET', $uri);
+
+        $this->assertEquals(
+            $resp,
+            $client->getResponse()->getContent()
+        );
+    }
+
+    public function promocodeProvider()
+    {
+        return [
+            [
+                '/api/promos/abyr',
+                '{"error":"Акция не найдена или неактивна."}',
+            ],
+        ];
+    }
+
+    public function testGoodGetOneByCodeAction()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/api/promos/' . $_ENV['valid_promocode']);
+        $this->assertContains(
+            '{"name":',
+            $client->getResponse()->getContent()
+        );
+    }
 }
