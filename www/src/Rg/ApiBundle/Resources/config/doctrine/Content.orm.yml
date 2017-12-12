@@ -1,0 +1,28 @@
+Rg\ApiBundle\Entity\Content:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\ContentRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        departments:
+            type: text
+            column: departments
+        contacts:
+            type: text
+            column: contacts
+        subscribe:
+            type: text
+            column: subscribe
+        support:
+            type: text
+            column: support
+        auxiliary:
+            type: text
+            column: auxiliary
+            nullable: true
+    lifecycleCallbacks: {  }
