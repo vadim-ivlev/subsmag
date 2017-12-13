@@ -77,6 +77,18 @@ class PlatronController extends Controller
         $pg_xml_str = $request->request->get('pg_xml');
         $pg_xml = new \SimpleXMLElement($pg_xml_str);
 
+        $is_sig_ok = $this->get('rg_api.sig_helper')->checkXml(
+            (string) $pg_xml->pg_sig,
+            'result',
+            $pg_xml_str
+        );
+        if (!$is_sig_ok) {
+            $message = 'Неправильная подпись';
+            $xml = $this->get('rg_api.platron')->prepareErrorOnResult($pg_xml, $message);
+
+            return new Response($xml->asXML());
+        }
+
         # валидация
         $pg_result = (string) $pg_xml->pg_result;
         if (!in_array($pg_result, ['0', '1'], true)) {
@@ -124,7 +136,7 @@ class PlatronController extends Controller
             return new Response($xml->asXML());
         }
 
-        ## платрон может отправлять этот запрос несколько раз. Поэтому статус "оплачено" и инкремент ации
+        ## платрон может отправлять этот запрос несколько раз. Поэтому статус "оплачено" и инкремент акции
         ## сделаем только один раз
         if ($order->getIsPaid() == true) {
             // send ok to Platron
