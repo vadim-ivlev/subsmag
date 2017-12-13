@@ -130,3 +130,10 @@ rg_api_get_promo_by_id:
     methods:  [GET, HEAD]
     requirements:
         code: \d+
+
+### Контакты и другой возможный контент
+# список акций
+rg_api_content:
+    path:     /content/
+    defaults: { _controller: "RgApiBundle:Content:list", _format: 'json' }
+    methods:  [GET, HEAD]

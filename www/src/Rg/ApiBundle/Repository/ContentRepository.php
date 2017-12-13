@@ -10,4 +10,17 @@ namespace Rg\ApiBundle\Repository;
  */
 class ContentRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getSingle()
+    {
+        $qb = $this->createQueryBuilder('c');
+        $result = $qb
+            ->select('
+                c
+            ')
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        return $result;
+    }
 }
