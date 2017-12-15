@@ -246,6 +246,7 @@ class CartController extends Controller implements SessionHasCartController
      */
     public function applyPromoAction(Request $request, SessionInterface $session)
     {
+        $have_you_questions = ' Есть вопросы? Позвоните нам 8(800)100-11-13, звонок бесплатный по России.';
         $counter = $session->get(self::COUNTER) ?? 1;
         if ($counter == self::MAX_TRIES) {
             $session->set('promo:tries:access', time());
@@ -273,7 +274,7 @@ class CartController extends Controller implements SessionHasCartController
 
         if (!$this->get('rg_api.promo_fetcher')->isValidPromocode($promocode)) {
             $session->set(self::COUNTER, $counter + 1);
-            $error = 'Промокод содержит недопустимые символы. Проверьте, пожалуйста, ещё раз строку.';
+            $error = 'Промокод содержит недопустимые символы. Проверьте, пожалуйста, ещё раз строку.' . $have_you_questions;
             return (new Out())->json(['error' => $error,]);
         }
 
@@ -281,7 +282,7 @@ class CartController extends Controller implements SessionHasCartController
             $promo = $this->get('rg_api.promo_fetcher')->fetchPromoFromDB($promocode, $request);
         } catch (PromoException $e) {
             $session->set(self::COUNTER, $counter + 1);
-            return (new Out())->json(['error' => $e->getMessage(),]);
+            return (new Out())->json(['error' => $e->getMessage() . $have_you_questions,]);
         }
 
         ## с промокодом, видимо, всё в порядке.

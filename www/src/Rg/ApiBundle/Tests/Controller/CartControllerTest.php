@@ -123,6 +123,7 @@ class CartControllerTest extends WebTestCase
 
     public function promocodeProvider()
     {
+        $have_you_questions = ' Есть вопросы? Позвоните нам 8(800)100-11-13, звонок бесплатный по России.';
         return [
             [
                 '/api/promo/',
@@ -132,37 +133,37 @@ class CartControllerTest extends WebTestCase
             [
                 '/api/promo/',
                 '{"promocode":"abyrvalg"}',
-                '{"error":"Промокод не найден"}',
+                '{"error":"Промокод не найден.'.$have_you_questions.'"}',
             ],
             [
                 '/api/promo/',
                 '{"promocode":"&(byrvalg"}',
-                '{"error":"Промокод содержит недопустимые символы. Проверьте, пожалуйста, ещё раз строку."}',
+                '{"error":"Промокод содержит недопустимые символы. Проверьте, пожалуйста, ещё раз строку.'.$have_you_questions.'"}',
             ],
             [
                 '/api/promo/',
                 '{"promocode":"' . $_ENV['pinless_promo'] . '"}',
-                '{"error":"Пин-код промокода не передан."}',
+                '{"error":"Пин-код промокода не передан.'.$have_you_questions.'"}',
             ],
             [
                 '/api/promo/',
                 '{"promocode":"' . $_ENV['pinless_promo'] . '/"}',
-                '{"error":"Пин-код промокода не передан или неправильный."}',
+                '{"error":"Пин-код промокода не передан или неправильный.'.$have_you_questions.'"}',
             ],
             [
                 '/api/promo/',
                 '{"promocode":"' . $_ENV['pinless_promo'] . '/voopycoldberg"}',
-                '{"error":"Пин-код не найден."}',
+                '{"error":"Пин-код не найден.'.$have_you_questions.'"}',
             ],
             [
                 '/api/promo/',
                 '{"promocode":"' . $_ENV['pinless_promo'] . '/' . $_ENV['activated_pin'] . '"}',
-                '{"error":"Пин-код уже активирован."}',
+                '{"error":"Этот пин-код уже был использован при оформлении подписки на нашем сайте.'.$have_you_questions.'"}',
             ],
             [
                 '/api/promo/',
                 '{"promocode":"' . $_ENV['non_active_promo'] . '"}',
-                '{"error":"Промокод не активен."}',
+                '{"error":"Промокод не активен.'.$have_you_questions.'"}',
             ],
         ];
     }

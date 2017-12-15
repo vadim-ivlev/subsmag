@@ -44,6 +44,12 @@ class PromoFetcher
         return $promo;
     }
 
+    /**
+     * @param string $promocode
+     * @param Request $request
+     * @return Promo
+     * @throws PromoException
+     */
     public function fetchPromoFromDB(string $promocode, Request $request)
     {
         $raw_promo = explode('/', $promocode);
@@ -57,7 +63,7 @@ class PromoFetcher
             ->findOneBy(['code' => $code]);
 
         if (is_null($promo)) {
-            $error = 'Промокод не найден';
+            $error = 'Промокод не найден.';
             throw new PromoException($error);
         }
 
@@ -93,7 +99,7 @@ class PromoFetcher
 
             // пин уже использован?
             if ($pin->getOrder() != null) {
-                $error = 'Пин-код уже активирован.';
+                $error = 'Этот пин-код уже был использован при оформлении подписки на нашем сайте.';
                 throw new PromoException($error);
             }
 
