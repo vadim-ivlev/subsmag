@@ -186,7 +186,7 @@ class PromoFetcher
 
     private function getFrontId($request)
     {
-        $from_front_id = $request->cookies->get('cityId') ?? null;
+        $from_front_id = (int) $request->cookies->get('cityId') ?? null;
 
         return $from_front_id;
     }
