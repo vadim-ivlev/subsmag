@@ -31,7 +31,7 @@ class ProductController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $from_front_id = $request->query->get('area_id', $this->getParameter('area'));
+        $from_front_id = (int) $request->query->get('area_id', $this->getParameter('area'));
 
         $area = $em->getRepository('RgApiBundle:Area')->findOneBy(['from_front_id' => $from_front_id]);
 
