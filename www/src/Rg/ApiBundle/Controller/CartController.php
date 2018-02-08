@@ -298,6 +298,8 @@ class CartController extends Controller implements SessionHasCartController
     }
 
     /**
+     * Наверное, главная магия происходит здесь. Считаем стоимости позиций, отдаём фронту.
+     * Если есть скидка в промокоде, применяем её.
      * @param Cart $cart
      * @param Promo|null $promo
      * @return array
@@ -367,11 +369,6 @@ class CartController extends Controller implements SessionHasCartController
                     'discount' => $discount,
                     'discount_coef' => $discount_coef,
                     'new_cost' => $new_cost,
-                    'debug' => [
-                        'tu' => $tariff->getTimeunit()->getId(),
-                        'p' => $product->getId(),
-                        'zone' => $tariff->getZone()->getId(),
-                    ],
                 ];
             },
             $cart->getCartItems()
