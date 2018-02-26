@@ -114,7 +114,7 @@ class PromoFetcher
         }
 
         /** @var null|Area $area */
-        $user_area = $this->getArea($from_front_id);
+        $user_area = $this->getArea((int)$from_front_id);
         if (is_null($user_area)) {
             $error = 'В базе не найден регион с id ' . $from_front_id;
             throw new PromoException($error);
@@ -186,7 +186,7 @@ class PromoFetcher
 
     private function getFrontId($request)
     {
-        $from_front_id = (int) $request->cookies->get('cityId') ?? null;
+        $from_front_id = $request->cookies->get('cityId') ?? null;
 
         return $from_front_id;
     }
