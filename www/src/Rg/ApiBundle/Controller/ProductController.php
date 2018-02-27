@@ -466,10 +466,38 @@ class ProductController extends Controller
 
                 return $criterion;
             }
+        )
+        ;
+
+        # т.к. сейчас ещё могут остаться пересекающиеся по дате продаж окна (по ошибке или так надо),
+        # нужно оставить только самые ранние в каждом году
+        // год => самый ранний месяц
+        $years_months = [];
+        /** @var Sale $sale */
+        foreach ($filtered_by_date_and_area_sales->getIterator() as $key => $sale) {
+            $year = $sale->getMonth()->getYear();
+            $month_num = $sale->getMonth()->getNumber();
+
+            if (array_key_exists($year, $years_months)) {
+                if ($years_months[$year] > $month_num) {
+                    // для этого года сохранённый месяц больше месяца рассматриваемого окна?
+                    $years_months[$year] = $month_num;
+                }
+            } else {
+                $years_months[$year] = $month_num;
+            }
+        }
+
+        $sales_earliest_per_year = $filtered_by_date_and_area_sales->filter(
+            function (Sale $sale) use ($years_months) {
+                $year = $sale->getMonth()->getYear();
+                $month_num = $sale->getMonth()->getNumber();
+
+                return $years_months[$year] == $month_num;
+            }
         );
 
-        // неоднозначно...
-        $normalized_sales = $filtered_by_date_and_area_sales->map(
+        $normalized_sales = $sales_earliest_per_year->map(
             function (Sale $sale) {
                 $month = $sale->getMonth();
 
