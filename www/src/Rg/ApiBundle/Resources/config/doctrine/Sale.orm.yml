@@ -34,12 +34,4 @@ Rg\ApiBundle\Entity\Sale:
         delivery:
             targetEntity: Delivery
             inversedBy: sales
-    uniqueConstraints:
-        unique_sale:
-            columns:
-                - 'is_regional'
-                - 'product_id'
-                - 'month_id'
-                - 'delivery_id'
-                - 'area_id'
     lifecycleCallbacks: {  }
