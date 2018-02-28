@@ -18,9 +18,9 @@ Rg\ApiBundle\Entity\Item:
         timeunit_amount:
             type: integer
             column: timeunit_amount
-        discount_coef:
+        discount:
             type: float
-            column: discount_coef
+            column: discount
         cost:
             type: float
             column: cost

@@ -428,4 +428,33 @@ class Item
     {
         return $this->discounted_del_cost;
     }
+    /**
+     * @var float
+     */
+    private $discount;
+
+
+    /**
+     * Set discount
+     *
+     * @param float $discount
+     *
+     * @return Item
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Get discount
+     *
+     * @return float
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
 }

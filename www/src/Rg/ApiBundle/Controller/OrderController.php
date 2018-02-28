@@ -186,133 +186,136 @@ class OrderController extends Controller
         ## переход к оплате
         $payment_name = $order->getPayment()->getName();
 
-        if ($payment_name == 'platron') {
-            ## инициализировать платёж:
-            # передать данные о платеже,
-            # получить №транзакции и урл для редиректа
-            /** @var \SimpleXMLElement $platron_init_xml */
-            try {
-                $platron_init_xml = $this->get('rg_api.platron')->init($order);
-            } catch (PlatronException $e) {
-                // платрон дважды вернул пустую строку, или у нас с заказом что-то не то.
+        switch ($payment_name) {
+            case 'platron':
+                ## инициализировать платёж:
+                # передать данные о платеже,
+                # получить №транзакции и урл для редиректа
+                /** @var \SimpleXMLElement $platron_init_xml */
+                try {
+                    $platron_init_xml = $this->get('rg_api.platron')->init($order);
+                } catch (PlatronException $e) {
+                    // платрон дважды вернул пустую строку, или у нас с заказом что-то не то.
 
-                // освободить pin
-                $saved_pin = $order->getPin();
-                if (!is_null($saved_pin)) {
-                    $saved_pin->setOrder(null);
-                    $em->persist($saved_pin);
-                    $em->flush();
+                    // освободить pin
+                    $saved_pin = $order->getPin();
+                    if (!is_null($saved_pin)) {
+                        $saved_pin->setOrder(null);
+                        $em->persist($saved_pin);
+                        $em->flush();
+                    }
+
+                    //сообщить об ошибке
+                    $error = [
+                        'error' => 'Platron: ошибка инициализации платежа',
+                        'description' => $e->getMessage(),
+                    ];
+                    return (new Out())->json($error);
                 }
 
-                //сообщить об ошибке
-                $error = [
-                    'error' => 'Platron: ошибка инициализации платежа',
-                    'description' => $e->getMessage(),
-                ];
-                return (new Out())->json($error);
-            }
+                $redirect_url = (string) $platron_init_xml->pg_redirect_url;
+                $pg_payment_id = (string) $platron_init_xml->pg_payment_id;
 
-            $redirect_url = (string) $platron_init_xml->pg_redirect_url;
-            $pg_payment_id = (string) $platron_init_xml->pg_payment_id;
+                try {
+                    /** @var \SimpleXMLElement $platron_receipt_create_xml */
+                    $platron_receipt_create_xml = $this->get('rg_api.platron')
+                        ->createReceipt($pg_payment_id, $order, $items, $patritems);
+                } catch (PlatronException $e) {
+                    // платрон не вернул чек
 
-            try {
-                /** @var \SimpleXMLElement $platron_receipt_create_xml */
-                $platron_receipt_create_xml = $this->get('rg_api.platron')
-                    ->createReceipt($pg_payment_id, $order, $items, $patritems);
-            } catch (PlatronException $e) {
-                // платрон не вернул чек
+                    // освободить pin
+                    $saved_pin = $order->getPin();
+                    if (!is_null($saved_pin)) {
+                        $saved_pin->setOrder(null);
+                        $em->persist($saved_pin);
+                        $em->flush();
+                    }
 
-                // освободить pin
-                $saved_pin = $order->getPin();
-                if (!is_null($saved_pin)) {
-                    $saved_pin->setOrder(null);
-                    $em->persist($saved_pin);
-                    $em->flush();
+                    //сообщить об ошибке
+                    $error = [
+                        'error' => 'Platron: ошибка создания чека',
+                        'description' => $e->getMessage(),
+                    ];
+                    return (new Out())->json($error);
                 }
 
-                //сообщить об ошибке
-                $error = [
-                    'error' => 'Platron: ошибка создания чека',
-                    'description' => $e->getMessage(),
+                ## сохранить id транзакции Платрона
+                # и остальные переговоры
+                $order->setPgPaymentId($pg_payment_id);
+                $order->setPlatronInitXml($platron_init_xml->asXML());
+                $order->setPlatronReceiptCreateXml($platron_receipt_create_xml->asXML());
+                $em->persist($order);
+
+                ## с платроном всё в порядке, очищаем корзину
+                $this->get('rg_api.cart_controller')->emptyAction($session);
+
+                ## подготовить запись для почтового уведомления
+                $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
+
+                $em->flush();
+
+                # отправить пользователя на платрон (на фронте)
+                $resp = [
+                    'order' => $order->getId(),
+                    'total' => $order->getTotal(),
+                    'pg_payment_id' => $pg_payment_id,
+                    'pg_redirect_url' => $redirect_url,
                 ];
-                return (new Out())->json($error);
-            }
+                break;
+            case 'receipt':
+                ## очищаем корзину
+                $this->get('rg_api.cart_controller')->emptyAction($session);
 
-            ## сохранить id транзакции Платрона
-            # и остальные переговоры
-            $order->setPgPaymentId($pg_payment_id);
-            $order->setPlatronInitXml($platron_init_xml->asXML());
-            $order->setPlatronReceiptCreateXml($platron_receipt_create_xml->asXML());
-            $em->persist($order);
+                ## записать в очередь почтовое уведомление
+                $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
+                $em->flush();
 
-            ## с платроном всё в порядке, очищаем корзину
-            $this->get('rg_api.cart_controller')->emptyAction($session);
+                /*
+                 * Максим: возвратим на фронт не готовую квитанцию, а ссылку на неё.
+                 */
+    //            return $this->createReceipt($order, $items, $patritems);
+                $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
+                $url = join('', [
+                    $this->getParameter('domain'),
+                    $this->generateUrl(
+                        'rg_api_get_receipt_by_order',
+                        ['enc_id' => $permalink_id]
+                    ),
+                ]);
+                $resp = [
+                    'order_id' => $order->getId(),
+                    'url' => $url,
+                ];
+                break;
+            case 'invoice':
+                ## очищаем корзину
+                $this->get('rg_api.cart_controller')->emptyAction($session);
 
-            ## подготовить запись для почтового уведомления
-            $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
+                ## записать в очередь почтовое уведомление
+                $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
+                $em->flush();
 
-            $em->flush();
-
-            # отправить пользователя на платрон (на фронте)
-            $resp = [
-                'order' => $order->getId(),
-                'total' => $order->getTotal(),
-                'pg_payment_id' => $pg_payment_id,
-                'pg_redirect_url' => $redirect_url,
-            ];
-
-        } elseif ($payment_name == 'receipt') {
-            ## очищаем корзину
-            $this->get('rg_api.cart_controller')->emptyAction($session);
-
-            ## записать в очередь почтовое уведомление
-            $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
-            $em->flush();
-
-            /*
-             * Максим: возвратим на фронт не готовую квитанцию, а ссылку на неё.
-             */
-//            return $this->createReceipt($order, $items, $patritems);
-            $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
-            $url = join('', [
-                $this->getParameter('domain'),
-                $this->generateUrl(
-                    'rg_api_get_receipt_by_order',
-                    ['enc_id' => $permalink_id]
-                ),
-            ]);
-            $resp = [
-                'order_id' => $order->getId(),
-                'url' => $url,
-            ];
-        } elseif ($payment_name == 'invoice') {
-            ## очищаем корзину
-            $this->get('rg_api.cart_controller')->emptyAction($session);
-
-            ## записать в очередь почтовое уведомление
-            $em->persist($this->get('rg_api.notification_queue')->onOrderCreate($order));
-            $em->flush();
-
-            /*
-             * То же, что с квитанцией. Только ссылку на фронт.
-             */
-//            return $this->createInvoice($order, $items, $patritems);
-            $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
-            $url = join('', [
-                $this->getParameter('domain'),
-                $this->generateUrl(
-                    'rg_api_get_invoice_by_order',
-                    ['enc_id' => $permalink_id]
-                ),
-            ]);
-            $resp = [
-                'order_id' => $order->getId(),
-                'url' => $url,
-            ];
-        } else {
-            $resp = [
-                'error' => 'Wrong payment type received.'
-            ];
+                /*
+                 * То же, что с квитанцией. Только ссылку на фронт.
+                 */
+//                return $this->createInvoice($order, $items, $patritems);
+                $permalink_id = $this->get('rg_api.encryptor')->encryptOrderId($order->getId());
+                $url = join('', [
+                    $this->getParameter('domain'),
+                    $this->generateUrl(
+                        'rg_api_get_invoice_by_order',
+                        ['enc_id' => $permalink_id]
+                    ),
+                ]);
+                $resp = [
+                    'order_id' => $order->getId(),
+                    'url' => $url,
+                ];
+                break;
+            default:
+                $resp = [
+                    'error' => 'Wrong payment type received.'
+                ];
         }
 
         return (new Out())->json($resp);
@@ -535,6 +538,9 @@ class OrderController extends Controller
     }
 
     /**
+     * Магия превращения Золушки в тыкву происходит в этом методе.
+     * Подписные позиции из корзины отображаются в заказные позиции.
+     * Если человек увидел скидку и она не успела протухнуть, здесь она применится.
      * @param array $cart_items
      * @param Order $order
      * @param Promo|null $promo
@@ -570,11 +576,13 @@ class OrderController extends Controller
                 $item->setCatCost($cat_cost);
 
                 ## работаем со скидкой
-                $discount_coef = 1;
+                ### Скидка ВЫЧИТАЕТСЯ из каталожной цены. Доставочную не трогаем.
+                #### Раньше умножали.
+                $discount = 0;
                 if (!is_null($promo)) {
                     if ($this->get('rg_api.promo_fetcher')->doesPromoFitTariff($promo, $tariff)) {
                         $item->setPromo($promo);
-                        $discount_coef = (100 - $promo->getDiscount()) / 100;
+                        $discount = $promo->getDiscount();
                         $this->is_promoted = true;
 
                         if (
@@ -587,12 +595,12 @@ class OrderController extends Controller
                 }
                 ##
 
-                $item->setDiscountCoef($discount_coef);
+                $item->setDiscount($discount);
 
-                $disc_del_cost = round($del_cost * $discount_coef, 2);
+                $disc_del_cost = $del_cost;
                 $item->setDiscountedDelCost($disc_del_cost);
 
-                $disc_cat_cost = round($cat_cost * $discount_coef, 2);
+                $disc_cat_cost = $calculator->calculateItemCatCost($tariff, $duration, $discount);
                 $item->setDiscountedCatCost($disc_cat_cost);
 
                 $total = ($disc_del_cost + $disc_cat_cost) * $item->getQuantity();
@@ -642,7 +650,8 @@ class OrderController extends Controller
                 $patritem->setCost($cost);
 
                 ## работаем со скидкой
-                $discount_coef = 1;
+                ### Ждёт своей очереди скидка для архивов.
+                $discount = 0;
 
                 $catCost = $patriff->getCataloguePrice();
                 $patritem->setCatCost($catCost);
@@ -650,10 +659,10 @@ class OrderController extends Controller
                 $delCost = $patriff->getDeliveryPrice();
                 $patritem->setDelCost($delCost);
 
-                $discountedDelCost = round($delCost * $discount_coef, 2);
+                $discountedDelCost = $delCost;
                 $patritem->setDiscountedDelCost($discountedDelCost);
 
-                $discountedCatCost = round($catCost * $discount_coef, 2);
+                $discountedCatCost = $catCost - $discount;
                 $patritem->setDiscountedCatCost($discountedCatCost);
 
                 $total = ($discountedCatCost + $discountedDelCost) * $patritem->getQuantity();

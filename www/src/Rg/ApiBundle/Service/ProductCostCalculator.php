@@ -18,6 +18,12 @@ class ProductCostCalculator
         return 1;
     }
 
+    /*
+     * Цена одной штуки позиции зависит от тарифной цены (кат + дост)
+     * и от таймюнита -- года, полугодия, месяца.
+     * У месяца, есстессно, есть его полугодие -- I-е или II-е.
+     * Скидка теперь применяется только к каталожной цене.
+     */
     public function calculateItemCost(Tariff $tariff, int $duration, float $discount = null)
     {
         $timeunit_amount = $this->calculateTimeunitAmount($tariff, $duration);
@@ -29,13 +35,17 @@ class ProductCostCalculator
         return $cost;
     }
 
-    public function calculateItemCatCost(Tariff $tariff, int $duration)
+    /*
+     * Считаем каталожную цену
+     * Скидка теперь применяется ВЫЧИТАНИЕМ только к каталожной цене.
+     */
+    public function calculateItemCatCost(Tariff $tariff, int $duration, float $discount = null)
     {
         $timeunit_amount = $this->calculateTimeunitAmount($tariff, $duration);
 
         // вычислить стоимость единицы позиции по формуле
         // cost = tu_amount * tariff.price
-        $cost = $timeunit_amount * $tariff->getCataloguePrice();
+        $cost = $timeunit_amount * ($tariff->getCataloguePrice() - $discount);
 
         return $cost;
     }
