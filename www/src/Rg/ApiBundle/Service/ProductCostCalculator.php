@@ -18,13 +18,13 @@ class ProductCostCalculator
         return 1;
     }
 
-    public function calculateItemCost(Tariff $tariff, int $duration)
+    public function calculateItemCost(Tariff $tariff, int $duration, float $discount = null)
     {
         $timeunit_amount = $this->calculateTimeunitAmount($tariff, $duration);
 
         // вычислить стоимость единицы позиции по формуле
         // cost = tu_amount * tariff.price
-        $cost = $timeunit_amount * ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice());
+        $cost = $timeunit_amount * ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice() - $discount);
 
         return $cost;
     }

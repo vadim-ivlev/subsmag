@@ -58,7 +58,7 @@ class CartControllerTest extends WebTestCase
             )
         );
         $this->assertContains(
-            'discount_coef',
+            'discounted_price',
             $response
         );
     }

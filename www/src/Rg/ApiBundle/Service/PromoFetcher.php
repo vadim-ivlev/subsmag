@@ -199,6 +199,10 @@ class PromoFetcher
         return $area;
     }
 
+    /*
+     * Соответствует ли промокод тарифу?
+     * Помним, что промокод может быть ИЛИ зонированным, ИЛИ регионированным
+     */
     public function doesPromoFitTariff(Promo $p, Tariff $t)
     {
         $promo_area = $p->getArea();

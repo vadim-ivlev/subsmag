@@ -299,7 +299,7 @@ class CartController extends Controller implements SessionHasCartController
 
     /**
      * Наверное, главная магия происходит здесь. Считаем стоимости позиций, отдаём фронту.
-     * Если есть скидка в промокоде, применяем её.
+     * Если есть скидка в промокоде, применяем её, чтобы показать покупателю.
      * @param Cart $cart
      * @param Promo|null $promo
      * @return array
@@ -331,10 +331,8 @@ class CartController extends Controller implements SessionHasCartController
 
                 $duration = $cart_item->getDuration();
 
-                $cost = $this->get('rg_api.product_cost_calculator')
-                    ->calculateItemCost($tariff, $duration);
-
-                ## работаем со скидкой
+                ## Работаем со скидкой
+                ### Скидка в рублях ВЫЧИТАЕТСЯ из тарифной цены. Раньше была в процентах и умножалась.
                 $is_promoted = false;
                 if (is_null($promo)) {
                     $discount = 0;
@@ -346,11 +344,20 @@ class CartController extends Controller implements SessionHasCartController
                         $discount = 0;
                 }
 
-                $discount_coef = (100 - $discount) / 100;
-
+                // тарифная цена без скидки, нужна фронту
                 $price = $tariff->getCataloguePrice() + $tariff->getDeliveryPrice();
 
-                $new_cost = $cost * $discount_coef;
+                // тарифная цена со скидкой
+                $discounted_price = $price - $discount;
+
+                // стоимость одной штуки позиции без скидки
+                $cost = $this->get('rg_api.product_cost_calculator')
+                    ->calculateItemCost($tariff, $duration);
+
+
+                // стоимость одной штуки позиции со скидкой
+                $discounted_cost = $this->get('rg_api.product_cost_calculator')
+                    ->calculateItemCost($tariff, $duration, $discount);
 
                 return [
                     'name' => $product->getName(),
@@ -362,13 +369,14 @@ class CartController extends Controller implements SessionHasCartController
                     'medium' => $medium->getName(),
                     'delivery' => $delivery->getName(),
                     'quantity' => $cart_item->getQuantity(),
-                    'price' => $price, // тарифная цена
+                    'price' => $price, // тарифная цена без скидки
                     'cost' => $cost, // цена одной штуки позиции (тарифная * количество тайм-юнитов) без скидки
+
                     'is_promoted' => $is_promoted,
+                    'discounted_price' => $discounted_price,
                     'old_cost' => $cost,
                     'discount' => $discount,
-                    'discount_coef' => $discount_coef,
-                    'new_cost' => $new_cost,
+                    'new_cost' => $discounted_cost,
                 ];
             },
             $cart->getCartItems()
