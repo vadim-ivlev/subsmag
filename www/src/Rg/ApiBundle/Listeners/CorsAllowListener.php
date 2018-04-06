@@ -19,11 +19,11 @@ class CorsAllowListener
 
         $origin = $_SERVER['HTTP_ORIGIN'] ?? null;
 
-//        if($this->checkOrigin($origin)) {
+        if($this->checkOrigin($origin)) {
 //        if($this->checkHost()) {
-        if(false) {
+//        if(false) {
             $responseHeaders->set('Access-Control-Allow-Headers', 'origin, content-type, accept');
-            $responseHeaders->set('Access-Control-Allow-Credentials', 'true');
+//            $responseHeaders->set('Access-Control-Allow-Credentials', 'true');
             $responseHeaders->set('Access-Control-Allow-Origin', $origin);
             $responseHeaders->set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, PATCH, OPTIONS');
         }
@@ -32,7 +32,9 @@ class CorsAllowListener
     private function checkOrigin($origin)
     {
 
-        $check_origin = strpos($origin, 'rg.ru') !== false;
+        $check_origin = strpos($origin, 'localhost:3000') !== false;
+
+//        $check_origin = strpos($origin, 'rg.ru') !== false;
 
 //        $check_origin = strpos($origin, 'subsmag.loc') !== false;
 
