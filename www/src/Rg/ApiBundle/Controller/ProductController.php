@@ -161,39 +161,14 @@ class ProductController extends Controller
         );
 
         ### attach available sales for a product with specified media and deliveries
+        ### attach minimal price
         $container_with_periods = array_map(
             function (array $item) use ($area) {
                 /** @var Product $product */
                 $product = $item[0];
 
-                $item['media'] = array_map(
-                    function (array $medium) use ($product, $area) {
-
-                        if (empty($medium['deliveries'])) return $medium;
-
-                        $medium['deliveries'] = array_map(
-                            $this->appendDeliveries($product, $area, $medium),
-                            $medium['deliveries']
-                        );
-
-                        return $medium;
-                    },
-                    $item['media']
-                );
-
-
-                return $item;
-            },
-            $container_with_deliveries
-        );
-
-
-        ### attach minimal prices
-        $container_with_min_prices = array_map(
-            function (array $item) use ($area) {
-                /** @var Product $product */
-                $product = $item[0];
-
+                ### attach minimal prices
+                ##### min price problem #####
                 $tariffs = $product->getTariffs();
 
                 $filtered_tariffs = $tariffs->filter(
@@ -229,25 +204,39 @@ class ProductController extends Controller
 
                 if ($filtered_tariffs->count() == 0) {
                     $item['min_price'] = null;
+                } else {
+                    $prices = $filtered_tariffs->map(
+                        function (Tariff $tariff) {
+                            return ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice());
+                        }
+                    )
+                        ->toArray();
 
-                    return $item;
+                    $item['min_price'] = min($prices);
                 }
 
-                $prices = $filtered_tariffs->map(
-                    function (Tariff $tariff) {
-                        return ($tariff->getCataloguePrice() + $tariff->getDeliveryPrice());
-                    }
-                )
-                    ->toArray();
+                ### attach available sales for a product with specified media and deliveries
+                $item['media'] = array_map(
+                    function (array $medium) use ($product, $area) {
 
-                $item['min_price'] = min($prices);
+                        if (empty($medium['deliveries'])) return $medium;
+
+                        $medium['deliveries'] = array_map(
+                            $this->appendDeliveries($product, $area, $medium),
+                            $medium['deliveries']
+                        );
+
+                        return $medium;
+                    },
+                    $item['media']
+                );
 
                 return $item;
             },
-            $container_with_periods
+            $container_with_deliveries
         );
 
-        $cleaned_from_Doctrine_element = $this->unsetLuggage($container_with_min_prices);
+        $cleaned_from_Doctrine_element = $this->unsetLuggage($container_with_periods);
 
         return  $out->json($cleaned_from_Doctrine_element);
     }
