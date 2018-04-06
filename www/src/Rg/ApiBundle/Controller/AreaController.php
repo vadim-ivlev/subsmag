@@ -22,7 +22,7 @@ class AreaController extends Controller
         }
 
         $area = $this->getDoctrine()->getRepository('RgApiBundle:Area')
-            ->findOneBy(['from_front_id' => $from_front_id]);
+            ->findOneBy(['from_front_id' => (int) $from_front_id]);
         if (!$area) {
             $error = [
                 'error' => 'Region with id ' . $from_front_id . ' not found.',
