@@ -116,7 +116,7 @@ class PromoFetcher
         /** @var null|Area $area */
         $user_area = $this->getArea((int)$from_front_id);
         if (is_null($user_area)) {
-            $error = 'В базе не найден регион с id ' . $from_front_id;
+            $error = 'В базе не найден регион с id ' . (int)$from_front_id;
             throw new PromoException($error);
         }
 
@@ -191,7 +191,7 @@ class PromoFetcher
         return $from_front_id;
     }
 
-    private function getArea($from_front_id)
+    private function getArea(int $from_front_id)
     {
         $area = $this->doctrine->getRepository('RgApiBundle:Area')
             ->findOneBy(['from_front_id' => $from_front_id]);

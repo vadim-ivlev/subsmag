@@ -14,7 +14,7 @@ class CartControllerTest extends WebTestCase
         $client->request('GET', '/api/cart/');
 
         $this->assertContains(
-            '{"products":[],"archives":[]}',
+            '{"products":[],"archives":[],"promo":null}',
             $client->getResponse()->getContent()
         );
     }

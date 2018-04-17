@@ -306,9 +306,11 @@ class CartController extends Controller implements SessionHasCartController
      */
     private function detailCart(Cart $cart, Promo $promo = null)
     {
+        $has_cart_any_promoted = false;
+
         ### детализировать подписные позиции
         $detailed_products = array_map(
-            function (CartItem $cart_item) use($promo) {
+            function (CartItem $cart_item) use($promo, &$has_cart_any_promoted) {
                 $doctrine = $this->getDoctrine();
                 $tariff = $doctrine
                     ->getRepository('RgApiBundle:Tariff')
@@ -340,6 +342,7 @@ class CartController extends Controller implements SessionHasCartController
                     if ($this->get('rg_api.promo_fetcher')->doesPromoFitTariff($promo, $tariff)) {
                         $discount = $promo->getDiscount();
                         $is_promoted = true;
+                        $has_cart_any_promoted = true;
                     } else
                         $discount = 0;
                 }
@@ -416,9 +419,28 @@ class CartController extends Controller implements SessionHasCartController
             $cart->getCartPatritems()
         );
 
+        if (!is_null($promo)) {
+            $promo_info = [
+                'name' => $promo->getName(),
+                'code' => $promo->getCode(),
+//                'promocode' => '', // возьми из сессии
+                'products' => $promo->getProducts()
+                    ->map(
+                        function (Product $p) {
+                            return $p->getName();
+                        }
+                    )->toArray(),
+            ];
+
+            if (!$has_cart_any_promoted) {
+                $promo_info['error'] = 'В корзине нет продуктов, соответствующих акции.';
+            }
+        }
+
         return [
             'products' => $detailed_products,
             'archives' => $detailed_archives,
+            'promo' => $promo_info ?? null,
         ];
     }
 }
