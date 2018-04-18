@@ -24,6 +24,8 @@ class CartController extends Controller implements SessionHasCartController
     const COUNTER = 'promo:tries:counter';
     const MAX_TRIES = 200;
 
+    private $has_cart_any_promoted = false;
+
 //    private $doctrine;
 //    public function __construct(Registry $doctrine)
 //    {
@@ -294,23 +296,40 @@ class CartController extends Controller implements SessionHasCartController
 
         $detailed_cart = $this->detailCart($cart, $promo);
 
+        if (!$this->has_cart_any_promoted) {
+            $promo_info = 'Промокод действителен, но в корзине нет продуктов, соответствующих данной акции.';
+
+            $url = join('', [
+                $this->getParameter('domain'),
+                $this->generateUrl(
+                    'rg_api_get_promo_by_id',
+                    ['id' => $promo->getId()]
+                ),
+            ]);
+
+            $out = [
+                'error' => $promo_info . $have_you_questions,
+                'link' => $url,
+            ];
+            return (new Out())->json($out);
+        }
+
         return (new Out())->json($detailed_cart);
     }
 
     /**
      * Наверное, главная магия происходит здесь. Считаем стоимости позиций, отдаём фронту.
      * Если есть скидка в промокоде, применяем её, чтобы показать покупателю.
+     * Если в корзине нет акционного товара, вежливо даём понять, что промокод бессмысленен.
      * @param Cart $cart
      * @param Promo|null $promo
      * @return array
      */
     private function detailCart(Cart $cart, Promo $promo = null)
     {
-        $has_cart_any_promoted = false;
-
         ### детализировать подписные позиции
         $detailed_products = array_map(
-            function (CartItem $cart_item) use($promo, &$has_cart_any_promoted) {
+            function (CartItem $cart_item) use($promo) {
                 $doctrine = $this->getDoctrine();
                 $tariff = $doctrine
                     ->getRepository('RgApiBundle:Tariff')
@@ -342,7 +361,7 @@ class CartController extends Controller implements SessionHasCartController
                     if ($this->get('rg_api.promo_fetcher')->doesPromoFitTariff($promo, $tariff)) {
                         $discount = $promo->getDiscount();
                         $is_promoted = true;
-                        $has_cart_any_promoted = true;
+                        $this->has_cart_any_promoted = true;
                     } else
                         $discount = 0;
                 }
@@ -432,7 +451,7 @@ class CartController extends Controller implements SessionHasCartController
                     )->toArray(),
             ];
 
-            if (!$has_cart_any_promoted) {
+            if (!$this->has_cart_any_promoted) {
                 $promo_info['error'] = 'В корзине нет продуктов, соответствующих акции.';
             }
         }
