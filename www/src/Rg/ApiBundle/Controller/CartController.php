@@ -297,7 +297,7 @@ class CartController extends Controller implements SessionHasCartController
         $detailed_cart = $this->detailCart($cart, $promo);
 
         if (!$this->has_cart_any_promoted) {
-            $promo_info = 'Промокод действителен, но в корзине нет продуктов, соответствующих данной акции.';
+            $promo_info = 'В корзине нет продуктов, соответствующих данной акции.';
 
             $url = join('', [
                 $this->getParameter('domain'),
