@@ -13,6 +13,12 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 class CorsAllowListener
 {
+    /**
+     * Глубокая свистопляска с Origin связана с желанием разрабатывать фронт локально и
+     * с политикой WM как проксера заголовков.
+     * Опытным путём выявлено, что WM не отдаёт CORS-заголовок Allow-Origin для портов, отличных от :80
+     * @param FilterResponseEvent $event
+     */
     public function onKernelResponse(FilterResponseEvent $event)
     {
         $responseHeaders = $event->getResponse()->headers;
@@ -22,19 +28,18 @@ class CorsAllowListener
         if($this->checkOrigin($origin)) {
 //        if($this->checkHost()) {
 //        if(false) {
-            $responseHeaders->set('Access-Control-Allow-Headers', 'origin, content-type, accept');
+            $responseHeaders->set('Access-Control-Allow-Headers', 'accept, content-type, origin');
 //            $responseHeaders->set('Access-Control-Allow-Credentials', 'true');
+
             $responseHeaders->set('Access-Control-Allow-Origin', $origin);
-            $responseHeaders->set('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, PATCH, OPTIONS');
+
+            $responseHeaders->set('Access-Control-Allow-Methods', 'OPTIONS, POST, GET, PUT, DELETE, PATCH');
         }
     }
 
     private function checkOrigin($origin)
     {
-
-        $check_origin = strpos($origin, 'localhost:3000') !== false;
-
-//        $check_origin = strpos($origin, 'rg.ru') !== false;
+        $check_origin = ((strpos($origin, 'good.rg.ru:3030') !== false) || (strpos($origin, 'loc.rg.ru:3030') !== false));
 
 //        $check_origin = strpos($origin, 'subsmag.loc') !== false;
 
