@@ -20,6 +20,9 @@ class PromoRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere(
                 $qb->expr()->eq('p.is_active', ':tr')
             )
+            ->andWhere(
+                $qb->expr()->eq('p.is_visible', ':tr')
+            )
             ->setParameter('tr', 1)
             ->getQuery()
 //            ->getDQL(); echo $result;die; # for test purpose
