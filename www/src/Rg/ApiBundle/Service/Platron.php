@@ -22,9 +22,9 @@ class Platron
     private $salt;
     private $salt1;
 
-    const HOST_TO_HOST = 'https://www.platron.ru/init_payment.php';
-    const RECEIPT_CREATE = 'https://www.platron.ru/receipt.php';
-    const RECEIPT_STATUS = 'https://www.platron.ru/get_receipt_status.php';
+    const HOST_TO_HOST_URL = 'https://www.platron.ru/init_payment.php';
+    const RECEIPT_CREATE_URL = 'https://www.platron.ru/receipt.php';
+    const RECEIPT_STATUS_URL = 'https://www.platron.ru/get_receipt_status.php';
 
     private $logger;
     private $sighelper;
@@ -52,15 +52,16 @@ class Platron
     }
 
     /**
+     * Используем для отправки чека в админку
      * @param Order $order
      * @return \SimpleXMLElement
      * @throws PlatronException
      * @throws \Exception
      */
-    public function getReceiptState(Order $order)
+    public function getOFDReceipt(Order $order)
     {
         $request_xml = $this->prepareGetReceiptStatusRequest($order);
-        $resp = $this->sendRequest(['pg_xml' => $request_xml->asXML()], self::RECEIPT_STATUS);
+        $resp = $this->sendRequest(['pg_xml' => $request_xml->asXML()], self::RECEIPT_STATUS_URL);
 
         $this->logger->info($request_xml->asXML());
 
@@ -98,6 +99,35 @@ class Platron
     }
 
     /**
+     * @param Order $order
+     * @return \SimpleXMLElement
+     * @throws PlatronException
+     * @throws \Exception
+     */
+    public function getOFDReceiptForMailer(Order $order)
+    {
+        $request_xml = $this->prepareGetReceiptStatusRequest($order);
+        $resp = $this->sendRequest(['pg_xml' => $request_xml->asXML()], self::RECEIPT_STATUS_URL);
+
+        $this->logger->info($request_xml->asXML());
+
+        $xml = new \SimpleXMLElement($resp);
+
+        if (!$this->isOkReceiptState($xml)) {
+            if (!$this->isPendingReceiptState($xml)) {
+                $description = $this->parseErrorOnReceipt($xml);
+
+                $message = 'Not ok response for order ' . $order->getId() . ': ' . $resp;
+                $this->logger->error($message);
+
+                throw new PlatronException('Error response from Platron: ' . $description);
+            }
+        }
+
+        return $xml;
+    }
+
+    /**
      * @param string $pg_payment_id
      * @param Order $order
      * @param array $items
@@ -109,7 +139,7 @@ class Platron
     public function createReceipt(string $pg_payment_id, Order $order, array $items, array $patritems)
     {
         $request_xml = $this->prepareReceiptCreateRequest($pg_payment_id, $order, $items, $patritems);
-        $resp = $this->sendRequest(['pg_xml' => $request_xml->asXML()], self::RECEIPT_CREATE);
+        $resp = $this->sendRequest(['pg_xml' => $request_xml->asXML()], self::RECEIPT_CREATE_URL);
         $this->logger->info($request_xml->asXML());
 
         try {
@@ -155,7 +185,7 @@ class Platron
         $request = $this->prepareRequest($order);
 
         $id = $order->getId();
-        $resp = $this->sendRequest($request, self::HOST_TO_HOST);
+        $resp = $this->sendRequest($request, self::HOST_TO_HOST_URL);
 
         //$this->logger->info('-> Platron init for order ' . $id . $request['pg_amount'] . ' RUB');
 
@@ -166,7 +196,7 @@ class Platron
             $this->logger->error($message);
 
             # если платрон ответил непонятно чем, попробуем ещё раз.
-            $resp = $this->sendRequest($request, self::HOST_TO_HOST);
+            $resp = $this->sendRequest($request, self::HOST_TO_HOST_URL);
             //$this->logger->info('-> Bad try. Sent once again: ' . $id );
 
             try {
@@ -504,7 +534,7 @@ RESPONSE_REJECT;
         return $condition;
     }
 
-    private function isPendingReceiptState(\SimpleXMLElement $xml)
+    public function isPendingReceiptState(\SimpleXMLElement $xml)
     {
         $condition = (string) $xml->pg_status == 'ok'
             && (string) $xml->pg_receipt_status == 'pending'
@@ -637,7 +667,7 @@ RESPONSE_REJECT;
 
         $xml->addChild(
             'pg_sig',
-            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_CREATE), $xml)
+            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_CREATE_URL), $xml)
         );
 
         return $xml;
@@ -657,7 +687,7 @@ RESPONSE_REJECT;
 
         $xml->addChild(
             'pg_sig',
-            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_STATUS), $xml)
+            $sig = $this->sighelper->makeXml(basename(self::RECEIPT_STATUS_URL), $xml)
         );
 
         return $xml;

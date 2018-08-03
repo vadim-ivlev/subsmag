@@ -162,9 +162,11 @@ class PlatronController extends Controller
         }
         # добавить в очередь отправку счастливого письма
         $notification = $this->get('rg_api.notification_queue')->onOrderPaid($order);
+        $ofd_receipt_to_queue = $this->get('rg_api.notification_queue')->onOFDReceipt($order);
 
         $em->persist($order);
         $em->persist($notification);
+        $em->persist($ofd_receipt_to_queue);
         $em->flush();
 
         // send ok to Platron
@@ -178,6 +180,7 @@ class PlatronController extends Controller
      * https://front.platron.ru/docs/api/return_site_merchant/
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
      */
     public function successURLAction(Request $request)
     {

@@ -49,4 +49,24 @@ class NotificationRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    public function getQueueOfOFDReceipt()
+    {
+        $qb = $this->createQueryBuilder('n');
+        $result = $qb
+            ->select('n')
+            ->where(
+                $qb->expr()->andX(
+                    $qb->expr()->eq('n.type', ':type'),
+                    $qb->expr()->eq('n.state', ":state")
+                )
+            )
+            ->getQuery()
+            ->setParameter('type', 'ofd_receipt')
+            ->setParameter('state', 'queued')
+            ->getResult()
+        ;
+
+        return $result;
+    }
 }

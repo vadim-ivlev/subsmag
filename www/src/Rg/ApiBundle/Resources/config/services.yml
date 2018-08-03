@@ -58,3 +58,8 @@ services:
         class: Rg\ApiBundle\Service\SigHelper
         arguments:
             - "%secretkey%"
+    rg_api.ofd_receipt:
+        class: Rg\ApiBundle\Service\OFDReceipt
+        arguments:
+            - "@rg_api.item_name"
+            - "@doctrine"

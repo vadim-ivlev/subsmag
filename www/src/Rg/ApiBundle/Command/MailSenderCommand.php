@@ -2,17 +2,14 @@
 
 namespace Rg\ApiBundle\Command;
 
-use Rg\ApiBundle\Entity\Item;
 use Rg\ApiBundle\Entity\Notification;
 use Rg\ApiBundle\Entity\Order;
 use Rg\ApiBundle\Entity\Patritem;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class XMLMaterialParserCommand

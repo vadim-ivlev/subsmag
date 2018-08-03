@@ -366,9 +366,16 @@ class OrderController extends Controller
         return $this->createReceipt($order, $items, $patritems);
     }
 
-    public function getPlatronReceiptByOrderIdAction($enc_id)
+    /**
+     * Чек ОФД от Платрона
+     * @param $enc_id
+     * @return Response
+     * @throws \Exception
+     */
+    public function getPlatronReceiptByEncryptedOrderIdAction($enc_id)
     {
         $id = $this->get('rg_api.encryptor')->decryptOrderId($enc_id);
+
         $doctrine = $this->getDoctrine();
 
         $order = $doctrine->getRepository('RgApiBundle:Order')
@@ -459,13 +466,13 @@ class OrderController extends Controller
             return new Response('ОФД-чек ещё не создан. Подождите, когда завершится банковская транзакция.');
         }
 
-//            $pg_receipt_id = (string) $xml->pg_receipt_id;
+//        $pg_receipt_id = (string) $xml->pg_receipt_id;
 
         try {
             /** @var \SimpleXMLElement $platron_receipt_state_xml */
             $platron_receipt_state_xml = $this
                 ->get('rg_api.platron')
-                ->getReceiptState($order)
+                ->getOFDReceipt($order)
             ;
         } catch (PlatronException $e) {
             // платрон вернул ... что? Смотри лог
@@ -473,16 +480,6 @@ class OrderController extends Controller
             //сообщить об ошибке
             return new Response('Сбой связи с оператором платёжной системы. Повторите позже, пожалуйста.');
         }
-
-//pg_status
-//pg_receipt_status
-//pg_fiscal_receipt_number
-//pg_shift_number
-//pg_receipt_date
-//pg_fn_number
-//pg_ecr_registration_number
-//pg_fiscal_document_number
-//pg_fiscal_document_attribute
 
         $pg = [
             'status' => (string) $platron_receipt_state_xml->pg_status,

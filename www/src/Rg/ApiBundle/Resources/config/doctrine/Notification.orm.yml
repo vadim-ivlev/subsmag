@@ -9,7 +9,7 @@ Rg\ApiBundle\Entity\Notification:
             generator:
                 strategy: AUTO
     fields:
-        type: # order_created, order_paid
+        type: # order_created, order_paid, ofd_receipt
             type: string
             column: type
         state: # queued -- в очереди на отправку, sent -- отправлено, failed -- ошибка отправки

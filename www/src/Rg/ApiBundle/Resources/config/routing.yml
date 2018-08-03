@@ -46,7 +46,7 @@ rg_api_get_invoice_by_order:
 # получить чек платрона по номеру заказа
 rg_api_get_platron_receipt_by_order:
     path:     /ofd/{enc_id}/
-    defaults: { _controller: "RgApiBundle:Order:getPlatronReceiptByOrderId" }
+    defaults: { _controller: "RgApiBundle:Order:getPlatronReceiptByEncryptedOrderId" }
     methods:  [GET, HEAD]
     requirements:
         enc_id: \w+

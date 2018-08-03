@@ -34,4 +34,16 @@ class NotificationQueue
 
         return $notification;
     }
+
+    public function onOFDReceipt(Order $order)
+    {
+        $notification = new Notification();
+        $notification->setType('ofd_receipt');
+        $notification->setState('queued');
+        $notification->setDate(new \DateTime());
+        $notification->setOrder($order);
+        $notification->setError('');
+
+        return $notification;
+    }
 }
