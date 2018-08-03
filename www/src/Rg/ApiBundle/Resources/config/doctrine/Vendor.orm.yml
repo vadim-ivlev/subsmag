@@ -33,6 +33,10 @@ Rg\ApiBundle\Entity\Vendor:
             type: string
             length: '50'
             column: email
+        website:
+            type: string
+            length: '50'
+            column: website
         inn:
             type: string
             length: '10'

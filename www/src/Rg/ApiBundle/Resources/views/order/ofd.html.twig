@@ -22,6 +22,20 @@
 <p>
     {{ vendor.name }}
 </p>
+<p>
+    {{ vendor.address }}
+</p>
+<p>
+    {{ vendor.website }}
+</p>
+<p>
+    Кассовый чек № {{ pg.fiscal_receipt_number }}
+    № Авт. KSR13.12-6-38
+    Смена {{ pg.shift_number }}
+</p>
+<p>
+    Приход {{ pg.receipt_date }}
+</p>
 <table>
     <tr>
         <th>№</th>
@@ -43,6 +57,16 @@
     {% endfor %}
 </table>
 <b>Итого: {{ total }} руб.</b>
+<p>Эл.адрес покупателя: {{ order.email }}</p>
+<p>
+    Сайт ФНС <a href="https://www.nalog.ru" target="_blank">https://www.nalog.ru</a>
+</p>
+<ul>
+    <li>РН ККТ: {{ pg.ecr_registration_number }}</li>
+    <li>ФН №: {{ pg.fn_number }}</li>
+    <li>ФД №: {{ pg.fiscal_document_number }}</li>
+    <li>ФП №: {{ pg.fiscal_document_attribute }}</li>
+</ul>
 <p>
     Атрибуты ОФД
 </p>

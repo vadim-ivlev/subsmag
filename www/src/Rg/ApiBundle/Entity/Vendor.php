@@ -544,4 +544,33 @@ class Vendor
     {
         return $this->accountant_sign_img;
     }
+    /**
+     * @var string
+     */
+    private $website;
+
+
+    /**
+     * Set website
+     *
+     * @param string $website
+     *
+     * @return Vendor
+     */
+    public function setWebsite($website)
+    {
+        $this->website = $website;
+
+        return $this;
+    }
+
+    /**
+     * Get website
+     *
+     * @return string
+     */
+    public function getWebsite()
+    {
+        return $this->website;
+    }
 }
