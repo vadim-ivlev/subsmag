@@ -120,7 +120,8 @@ class OFDReceiptSenderCommand extends ContainerAwareCommand
             }
 
             if ($platron->isPendingReceiptState($platron_ofd_receipt_xml)) {
-                // продолжаем ждать.
+                $output->writeln('Order # ' . $order->getId() . ' is in pending state.');
+                // и продолжаем ждать, вдруг оплатят.
                 return;
             }
 
@@ -148,8 +149,6 @@ class OFDReceiptSenderCommand extends ContainerAwareCommand
                 ->setTo($to)
                 ->setBody($body, 'text/html')
             ;
-
-            $output->writeln($message->getBody());
 
             // send an email
             $result = $mailer->send($message);
@@ -179,12 +178,7 @@ class OFDReceiptSenderCommand extends ContainerAwareCommand
     {
         $format = "Y-m-d H:i:s";
 
-        $output->writeln("");
-        $output->writeln("**************************************");
-        $output->writeln("**        SUBSMAG OFD SENDER      **");
         $output->writeln("**       " . date($format) . "      **");
-        $output->writeln("**************************************");
-        $output->writeln("");
     }
 
 }
