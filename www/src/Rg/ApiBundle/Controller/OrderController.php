@@ -788,7 +788,8 @@ class OrderController extends Controller
         $price->integer = floor($order_price);
         $price->decimal = floor( ( $order_price - $price->integer ) * 100);
 
-        $due_date = $order->getDate()->add(
+        $due_date = clone $order->getDate();
+        $due_date->add(
             new \DateInterval('P7D')
         );
 
