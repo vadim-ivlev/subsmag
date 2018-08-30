@@ -694,7 +694,10 @@ class OrderController extends Controller
 //            $price->decimal = fmod($price->total, 1); // bad idea cause of float division tricks!!!
         $price->decimal = floor( ( $price->total - $price->integer ) * 100);
 
-        $due_date = $order->getDate()->add(
+        $order_date = $order->getDate();
+
+        $due_date = clone $order_date;
+        $due_date->add(
             new \DateInterval('P7D')
         );
 
