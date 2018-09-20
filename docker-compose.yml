@@ -1,0 +1,34 @@
+version: '3'
+services:
+
+    subs:
+        container_name: subsmag
+        image: rgru/works:7.0.31
+        network_mode: bridge
+        
+        volumes:
+            - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+            - "./etc/nginx/conf.d:/etc/nginx/conf.d"
+            - ".:/var/www/subsmag"
+        
+        ports:
+            - "3032:81"
+
+        # Not to change db server names  when deploying to the production server.    
+        external_links: 
+            - mysql-com
+            - mysql-com:web-db.rg.ru
+            - mysql-com:g8-8-db.rg.ru
+        
+        command: >
+            bash -c " 
+            echo 'COMMANDS ------------------------>'
+            && composer i -d /var/www/subsmag/www
+            && chmod -R 777  /var/www/subsmag/www/var/
+            && service redis-server start 
+            && php-fpm & nginx -g 'daemon off;'"
+
+        stdin_open: true
+        tty: true
+        restart: always
+    

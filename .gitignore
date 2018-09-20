@@ -1,0 +1,30 @@
+# Global
+.*.swp
+.DS_Store
+
+
+# PHP composer components
+www/vendor
+
+# Symfony
+www/var/*
+!www/var/logs/.gitkeep
+!www/var/sessions/.gitkeep
+
+#**/var/cache/dev/*.php
+#**/var/cache/prod/*
+#**/var/cache/prod/doctrine/orm/Proxies/*.php
+#**/var/cache/prod/pools/*
+#**/var/cache/prod/twig/
+#**/var/logs/*
+
+
+# web/public/subsmag/var/cache
+# **/var/logs/*.log
+
+
+# Frontend assets 
+# web/public/subsmag/web/subs/assets/*
+#**/assets/*
+
+
