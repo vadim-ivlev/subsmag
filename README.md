@@ -37,8 +37,7 @@ Subsmag  (в контейнерах [docker](https://www.docker.com/))
     * [http://localhost:3032](http://localhost:3032/)
     * [http://localhost:3032/api/](http://localhost:3032/api/)  должен показать []
     * [http://localhost:3032/api/products/](http://localhost:3032/api/products/)  JSON продуктов
-    * [http://localhost:3032/api/cities/](http://localhost:3032/api/cities/) JSON с сообщением об ошибке
-    * [http://localhost:3032/subs/](http://localhost:3032/subs/) Фронтэнд.
+    <!-- * [http://localhost:3032/subs/](http://localhost:3032/subs/) Фронтэнд. -->
 
 
 2. Измените и оттестируйте код.
