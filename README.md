@@ -32,6 +32,17 @@ Subsmag  (в контейнерах [docker](https://www.docker.com/))
     ```sh
     docker-compose up -d
     ```
+    Просмотр логов:
+    ```sh
+    docker-compose logs -f
+    ```
+
+
+    Очистка кэша Synfony:
+    ```sh
+    docker-compose exec subs /var/www/subsmag/www/bin/console cache:clear --no-warmup --env=prod
+    ```
+
     Для контроля запуска откройте браузер :
 
     * [http://localhost:3032](http://localhost:3032/)
