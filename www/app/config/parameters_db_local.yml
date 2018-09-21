@@ -1,6 +1,6 @@
 parameters:
-    database.subsmag.host: 127.0.0.1
+    database.subsmag.host: mysql-com
     database.subsmag.port: '3306'
     database.subsmag.name: subsmag
     database.subsmag.user: root
-    database.subsmag.password: password
+    database.subsmag.password: root

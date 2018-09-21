@@ -11,20 +11,9 @@ www/var/*
 !www/var/logs/.gitkeep
 !www/var/sessions/.gitkeep
 
-#**/var/cache/dev/*.php
-#**/var/cache/prod/*
-#**/var/cache/prod/doctrine/orm/Proxies/*.php
-#**/var/cache/prod/pools/*
-#**/var/cache/prod/twig/
-#**/var/logs/*
+# db passwords
+www/app/config/parameters_db.yml
 
-
-# web/public/subsmag/var/cache
-# **/var/logs/*.log
-
-
-# Frontend assets 
-# web/public/subsmag/web/subs/assets/*
-#**/assets/*
-
-
+# frontend suff
+www/web/index.html
+www/web/assests*
