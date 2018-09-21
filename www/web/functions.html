@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style type="text/css">
+        body {
+            background: gray;
+        }
+        .toggle {
+            border-color: #2F611C;
+        }
+    </style>
+</head>
+<body>
+<div class="controls" id="controls">
+    <h2 id="domain"></h2>
+    <button class="toggle" onclick="toggleDomain()">toggle target domain</button>
+    <button onclick="getCart()">Содержимое корзины</button>
+    <button onclick="patchCart()">Добавить товар в корзину</button>
+    <button onclick="cleanCart()">очистить корзину</button>
+    <button onclick="createOrderPlatron()">Оплатить платроном</button>
+    <button onclick="createOrderReceipt()">Оплатить квитком</button>
+    <button onclick="createOrderInvoice()">Оплатить платёжкой</button>
+</div>
+<div class="promo">
+    <input type="text" name="promocode" id="promocode" title="promo"/>
+    <button onclick="applyPromo()">Применить промокод</button>
+</div>
+<div class="response" id="response"></div>
+
+<script>
+
+    function checkCitiesList() {
+        document.cookie = "rg_region_=value; path=/; expires=" + date.toUTCString();
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+
+        var xhr = new XHR();
+
+        xhr.withCredentials = true;
+
+        xhr.open('POST', "http://loc.rg.ru/api/cities/", true);
+
+        xhr.onload = function() {
+            console.log( this.responseText );
+        };
+
+        xhr.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+        var data = {
+            "from_front_id": 96
+        };
+
+        xhr.send(JSON.stringify(data));
+    }
+
+    function testPlatron() {
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+
+        var xhr = new XHR();
+
+        xhr.withCredentials = true;
+
+        xhr.open('GET', 'http://front.platron.ru/', true);
+
+        xhr.onload = function() {
+//                console.log( this.responseText );
+//            window.location.href = this.responseText;
+            var url = JSON.parse(this.responseText);
+            var redir = url.pg_redirect_url;
+            var cont = document.getElementById('response');
+            cont.innerHTML = '<a target="_blank" href="' + redir + '">' + redir + '</a>';
+//            window.location.href = url.pg_redirect_url;
+        };
+
+        xhr.onerror = function() {
+            document.getElementById('response').innerHTML = 'Ошибка ' + this.status;
+//            console.log( 'Ошибка ' + this.status );
+        };
+
+        xhr.send();
+    }
+
+    function getCart() {
+        // (1)
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+
+        var xhr = new XHR();
+
+        xhr.withCredentials = true;
+
+        // (2) запрос на другой домен :)
+        xhr.open('GET', this.cart_url, true);
+
+        xhr.onload = function() {
+            console.log( this.responseText );
+            document.getElementById('response').innerHTML = pretty(this.responseText);
+        };
+
+        xhr.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+        xhr.send();
+    }
+
+    function patchCart() {
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+        // patch
+        var xhr_patch = new XHR();
+
+        xhr_patch.withCredentials = true;
+
+        xhr_patch.open('PATCH', this.cart_url, true);
+
+        //Send the proper header information along with the request
+        xhr_patch.setRequestHeader("Content-type", "application/json");
+
+        xhr_patch.onload = function() {
+            console.log( this.responseText );
+            document.getElementById('response').innerHTML = pretty(this.responseText);
+        };
+
+        xhr_patch.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+
+        xhr_patch.send(JSON.stringify(this.goods));
+    }
+
+    function cleanCart() {
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+        // patch
+        var xhr_patch = new XHR();
+
+        xhr_patch.withCredentials = true;
+
+        xhr_patch.open('PUT', this.cart_url, true);
+
+        xhr_patch.onload = function() {
+            console.log( this.responseText );
+            document.getElementById('response').innerHTML = this.responseText;
+        };
+
+        xhr_patch.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+        xhr_patch.send();
+    }
+
+    function createOrderPlatron() {
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+
+        var xhr = new XHR();
+
+        xhr.withCredentials = true;
+
+        xhr.open('POST', this.order_url, true);
+
+        document.getElementById('response').innerHTML = "sending...";
+
+        xhr.onload = function() {
+            console.log( this.responseText );
+//            document.body.innerHTML = this.responseText;
+
+            var cont = document.getElementById('response');
+
+            var resp = JSON.parse(xhr.responseText);
+            if (resp.error) {
+                console.log(resp.error);
+                cont.innerHTML = resp.error + '<br/>' + resp.description;
+                return;
+            }
+
+            var redir = resp.pg_redirect_url;
+
+            cont.innerHTML = '<a target="_blank" href="' + redir + '">' + redir + '</a>';
+        };
+
+        xhr.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+        var data = {
+            "is_legal": false,
+            "city_id": "1744",
+            "address": "Москва столица, ул.Правды 24/2, 5 этаж",
+            "name": "Aвербух Иllarion Абrамович",
+            "phone": "8-3952-65-65-23",
+            "email": "vedmedrf@gmail.com",
+            "comment": "Тестовый заказ",
+            "postcode": "123242",
+            "street": "ул.Моргул",
+            "building_number": "33",
+            "building_subnumber": "a",
+            "building_part": "1",
+            "appartment": "87",
+            "payment": "platron"
+        };
+
+        xhr.send(JSON.stringify(data));
+    }
+
+    function createOrderReceipt() {
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+
+        var xhr = new XHR();
+
+        xhr.withCredentials = true;
+
+        xhr.open('POST', this.order_url, true);
+
+
+        xhr.onload = function() {
+            var url = JSON.parse(this.responseText);
+            var redir = url.url;
+
+            var cont = document.getElementById('response');
+            cont.innerHTML = '<a target="_blank" href="' + redir + '">' + this.responseText + '</a>';
+            console.log( this.responseText );
+
+        };
+
+        xhr.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+        var data = {
+            "is_legal": false,
+            "address": "Москва столица, ул.Правды 24/2, 5 этаж",
+            "name": "Aвербух Иllarion Абrамович",
+            "phone": "8-3952-65-65-23",
+            "email": "vedmedrf@gmail.com",
+            "city_id": "1744",
+            "comment": "Тестовый заказ",
+            "postcode": "123242",
+            "street": "ул.Моргул",
+            "building_number": "33",
+            "building_subnumber": "a",
+            "building_part": "1",
+            "appartment": "87",
+            "payment": "receipt"
+        };
+
+        xhr.send(JSON.stringify(data));
+    }
+
+    function createOrderInvoice() {
+
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+
+        var xhr = new XHR();
+
+        xhr.withCredentials = true;
+
+
+        xhr.open('POST', this.order_url, true);
+
+        xhr.onload = function() {
+            var url = JSON.parse(this.responseText);
+            var redir = url.url;
+
+            var cont = document.getElementById('response');
+            cont.innerHTML = '<a target="_blank" href="' + redir + '">' + this.responseText + '</a>';
+            console.log( this.responseText );
+
+        };
+
+        xhr.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+        var data = {
+            "is_legal": true,
+            "org_name": "ООО Рога&Копытища",
+            "inn": "12123321123123",
+            "kpp": "123212221",
+            "bank_name": "Сбербанк РК",
+            "bank_account": "12123321123123",
+            "bank_corr": "12123321123123",
+            "bik": "12123321",
+            "region_id": "22",
+            "city": "Москва",
+            "postcode": "123321",
+            "street": "Бакинских хулиганов",
+            "building_number": "34",
+            "building_subnumber": "1",
+            "building_part": "",
+            "appartment": "опенспэйс",
+            "contact_name": "Фыва Фыввфыавфыа",
+            "contact_phone": "8-444-999-99-99",
+            "contact_fax": "8-444-999-99-99",
+            "contact_email": "vedmedrf@gmail.com",
+            "is_delivery_as_legal": false,
+            "delivery_region_id": "34",
+            "delivery_city_id": "24870",
+            "delivery_postcode": "123321",
+            "delivery_street": "Шакро молодого",
+            "delivery_building_number": "34",
+            "delivery_building_subnumber": "2",
+            "delivery_building_part": "",
+            "delivery_appartment": "304 офис",
+            "comment": "Тестовый заказ",
+            "payment": "invoice"
+        };
+
+        xhr.send(JSON.stringify(data));
+    }
+
+    function makeCounter() {
+        var currentCount = 1;
+
+        return function() { // (**)
+            return currentCount++;
+        };
+    }
+
+    function toggleDomain() {
+        var a = [
+            function d1() {
+                window.promo_url = 'https://rg.ru/subs/api/promo/';
+                window.cart_url = 'https://rg.ru/subs/api/cart/';
+                window.order_url = 'https://rg.ru/subs/api/orders/';
+
+                window.patriff_id_1 = 247;
+                window.patriff_id_2 = 248;
+
+                window.tariff_id_1 = 110;
+                window.tariff_id_2 = 128;
+                window.tariff_id_3 = 302;
+
+                window.goods = {
+                    "products": [
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 12,
+                            "tariff": window.tariff_id_1,
+                            "quantity": 1
+                        },
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 6,
+                            "tariff": window.tariff_id_2,
+                            "quantity": 1
+                        },
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 6,
+                            "tariff": window.tariff_id_3,
+                            "quantity": 1
+                        }
+                    ],
+                    "archives": [
+                        { "quantity": 1, "patriff": window.patriff_id_1 },
+                        { "quantity": 1, "patriff": window.patriff_id_2 }
+                    ]
+                };
+            },
+            function d2() {
+                window.cart_url = 'https://subsmag.rg.ru/api/cart/';
+                window.order_url = 'https://subsmag.rg.ru/api/orders/';
+
+                window.patriff_id_1 = 247;
+                window.patriff_id_2 = 248;
+
+                window.tariff_id_1 = 110;
+                window.tariff_id_2 = 128;
+                window.tariff_id_3 = 302;
+            },
+            function d3() {
+                var domain = 'http://localhost:3032';
+
+                document.cookie = "cityId=73; path=/;";
+
+                window.promo_url = domain + '/api/promo/';
+                window.cart_url = domain + '/api/cart/';
+                window.order_url = domain + '/api/orders/';
+                window.requestDiscount_url = domain + '/api/request/';
+
+                window.patriff_id_1 = 247;
+                window.patriff_id_2 = 248;
+
+                window.tariff_id_1 = 110;
+                window.tariff_id_2 = 128;
+                window.tariff_id_3 = 302;
+                window.tariff_id_4 = 542;
+
+                window.goods = {
+                    "products": [
+                        {
+                            "first_month": 7,
+                            "year": 2018,
+                            "duration": 2,
+                            "tariff": window.tariff_id_4,
+                            "quantity": 7
+                        },
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 12,
+                            "tariff": window.tariff_id_1,
+                            "quantity": 13
+                        },
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 6,
+                            "tariff": window.tariff_id_2,
+                            "quantity": 13
+                        },
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 6,
+                            "tariff": window.tariff_id_3,
+                            "quantity": 13
+                        }
+                    ],
+                    "archives": [
+                        {"quantity": 1, "patriff": window.patriff_id_1},
+                        {"quantity": 1, "patriff": window.patriff_id_2}
+                    ]
+                };
+
+            },
+            function d4() {
+                var domain = 'http://loc.rg.ru/app_dev.php';
+                window.cart_url = 'http://loc.rg.ru/app_dev.php/api/cart/';
+                window.order_url = 'http://loc.rg.ru/app_dev.php/api/orders/';
+
+                document.cookie = "cityId=73; path=/;";
+
+                window.promo_url = domain + '/api/promo/';
+                window.cart_url = domain + '/api/cart/';
+                window.order_url = domain + '/api/orders/';
+                window.requestDiscount_url = domain + '/api/request/';
+
+                window.patriff_id_1 = 247;
+                window.patriff_id_2 = 248;
+
+                window.tariff_id_1 = 110;
+                window.tariff_id_2 = 128;
+                window.tariff_id_3 = 302;
+
+                window.goods = {
+                    "products": [
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 12,
+                            "tariff": window.tariff_id_1,
+                            "quantity": 13
+                        },
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 6,
+                            "tariff": window.tariff_id_2,
+                            "quantity": 13
+                        },
+                        {
+                            "first_month": 1,
+                            "year": 2018,
+                            "duration": 6,
+                            "tariff": window.tariff_id_3,
+                            "quantity": 13
+                        }
+                    ],
+                    "archives": [
+                        {"quantity": 1, "patriff": window.patriff_id_1},
+                        {"quantity": 1, "patriff": window.patriff_id_2}
+                    ]
+                };
+
+
+            }
+        ];
+//        a[(this.counter_toggle)() % 3]();
+        a[(this.counter_toggle)() % 4]();
+        document.getElementById('domain').innerHTML = window.cart_url;
+    }
+
+    function pretty(txt) {
+        return "<pre>" + JSON.stringify(JSON.parse(txt), null, 4) + "</pre>";
+    }
+
+    function applyPromo() {
+        document.cookie = "cityId=73; path=/;";
+
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+        var xhr_patch = new XHR();
+
+        xhr_patch.withCredentials = true;
+
+        xhr_patch.open('POST', this.promo_url, true);
+
+        //Send the proper header information along with the request
+        xhr_patch.setRequestHeader("Content-type", "application/json");
+
+        xhr_patch.onload = function() {
+            console.log( this.responseText );
+            document.getElementById('response').innerHTML = pretty(this.responseText);
+        };
+
+        xhr_patch.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+        var promocode = document.getElementById('promocode').value;
+
+        var data = {
+            "promocode": promocode
+        };
+
+        xhr_patch.send(JSON.stringify(data));
+    }
+
+    function requestDiscount() {
+        var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+        var xhr_patch = new XHR();
+
+        xhr_patch.withCredentials = true;
+
+        xhr_patch.open('POST', this.requestDiscount_url, true);
+
+        //Send the proper header information along with the request
+        xhr_patch.setRequestHeader("Content-type", "application/json");
+
+        xhr_patch.onload = function() {
+            console.log( this.responseText );
+            document.getElementById('response').innerHTML = pretty(this.responseText);
+        };
+
+        xhr_patch.onerror = function() {
+            console.log( 'Ошибка ' + this.status );
+        };
+
+        var promocode = document.getElementById('promocode').value;
+
+        var data = {
+            "promocode": promocode
+        };
+
+        xhr_patch.send(JSON.stringify(data));
+    }
+    var counter_toggle = makeCounter();
+
+    var promo_url = 'https://rg.ru/subs/api/promo/';
+    var cart_url = 'https://rg.ru/subs/api/cart/';
+    var order_url = 'https://rg.ru/subs/api/orders/';
+    var patriff_id_1 = 247;
+    var patriff_id_2 = 248;
+    var tariff_id_1 = 110;
+    var tariff_id_2 = 128;
+    var tariff_id_3 = 302;
+
+    var goods = {
+        "products": [
+            {
+                "first_month": 1,
+                "year": 2018,
+                "duration": 12,
+                "tariff": window.tariff_id_1,
+                "quantity": 1
+            },
+            {
+                "first_month": 1,
+                "year": 2018,
+                "duration": 6,
+                "tariff": window.tariff_id_2,
+                "quantity": 1
+            },
+            {
+                "first_month": 1,
+                "year": 2018,
+                "duration": 6,
+                "tariff": window.tariff_id_3,
+                "quantity": 1
+            }
+        ],
+        "archives": [
+            { "quantity": 1, "patriff": window.patriff_id_1 },
+            { "quantity": 1, "patriff": window.patriff_id_2 }
+        ]
+    };
+
+    document.getElementById('domain').innerHTML = cart_url;
+
+    try {
+//        patchCart();
+        document.getElementById('response').innerHTML = '';
+        //        window.setTimeout(getCart, 1000);
+//        window.setTimeout(createOrder, 3000);
+
+    } catch (e) {
+        document.getElementById('response').innerHTML = e.name + 'mess: ' + e.message + 'stack: ' + e.stack;
+    }
+</script>
+</body></html>
