@@ -225,3 +225,4 @@ class City
         return $this->area;
     }
 }
+

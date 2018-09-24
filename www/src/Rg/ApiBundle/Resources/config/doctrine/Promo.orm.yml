@@ -37,9 +37,6 @@ Rg\ApiBundle\Entity\Promo:
             type: string
             column: code
             unique: true
-        discount:
-            type: float
-            column: discount
         amount:
             type: integer
             column: amount
@@ -84,9 +81,6 @@ Rg\ApiBundle\Entity\Promo:
             column: conditions
             nullable: true
     manyToMany:
-        products:
-            targetEntity: Product
-            mappedBy: promos
         zones:
             targetEntity: Zone
             mappedBy: promos
@@ -103,5 +97,8 @@ Rg\ApiBundle\Entity\Promo:
             mappedBy: promo
         pins:
             targetEntity: Pin
+            mappedBy: promo
+        discounts:
+            targetEntity: Discount
             mappedBy: promo
     lifecycleCallbacks: {  }

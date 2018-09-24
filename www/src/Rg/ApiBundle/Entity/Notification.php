@@ -168,3 +168,4 @@ class Notification
         return $this->order;
     }
 }
+

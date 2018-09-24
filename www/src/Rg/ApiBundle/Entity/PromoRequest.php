@@ -23,9 +23,24 @@ class PromoRequest
     private $image;
 
     /**
+     * @var string
+     */
+    private $mime;
+
+    /**
      * @var boolean
      */
     private $is_replied;
+
+    /**
+     * @var \DateTime
+     */
+    private $created;
+
+    /**
+     * @var \DateTime
+     */
+    private $answered;
 
     /**
      * @var \Rg\ApiBundle\Entity\Pin
@@ -92,6 +107,30 @@ class PromoRequest
     }
 
     /**
+     * Set mime
+     *
+     * @param string $mime
+     *
+     * @return PromoRequest
+     */
+    public function setMime($mime)
+    {
+        $this->mime = $mime;
+
+        return $this;
+    }
+
+    /**
+     * Get mime
+     *
+     * @return string
+     */
+    public function getMime()
+    {
+        return $this->mime;
+    }
+
+    /**
      * Set isReplied
      *
      * @param boolean $isReplied
@@ -114,40 +153,6 @@ class PromoRequest
     {
         return $this->is_replied;
     }
-
-    /**
-     * Set pin
-     *
-     * @param \Rg\ApiBundle\Entity\Pin $pin
-     *
-     * @return PromoRequest
-     */
-    public function setPin(\Rg\ApiBundle\Entity\Pin $pin = null)
-    {
-        $this->pin = $pin;
-
-        return $this;
-    }
-
-    /**
-     * Get pin
-     *
-     * @return \Rg\ApiBundle\Entity\Pin
-     */
-    public function getPin()
-    {
-        return $this->pin;
-    }
-    /**
-     * @var \DateTime
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     */
-    private $answered;
-
 
     /**
      * Set created
@@ -196,33 +201,29 @@ class PromoRequest
     {
         return $this->answered;
     }
-    /**
-     * @var string
-     */
-    private $mime;
-
 
     /**
-     * Set mime
+     * Set pin
      *
-     * @param string $mime
+     * @param \Rg\ApiBundle\Entity\Pin $pin
      *
      * @return PromoRequest
      */
-    public function setMime($mime)
+    public function setPin(\Rg\ApiBundle\Entity\Pin $pin = null)
     {
-        $this->mime = $mime;
+        $this->pin = $pin;
 
         return $this;
     }
 
     /**
-     * Get mime
+     * Get pin
      *
-     * @return string
+     * @return \Rg\ApiBundle\Entity\Pin
      */
-    public function getMime()
+    public function getPin()
     {
-        return $this->mime;
+        return $this->pin;
     }
 }
+

@@ -168,3 +168,4 @@ class Content
         return $this->auxiliary;
     }
 }
+

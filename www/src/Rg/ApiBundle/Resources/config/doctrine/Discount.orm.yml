@@ -1,0 +1,23 @@
+# появилась как результат желания каждому продукту назначить разную скидку в рамках одного промокода
+Rg\ApiBundle\Entity\Discount:
+    type: entity
+    table: null
+    repositoryClass: Rg\ApiBundle\Repository\DiscountRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        discount:
+            type: float
+            column: discount
+    manyToOne:
+        product:
+            targetEntity: Product
+            inversedBy: discounts
+        promo:
+            targetEntity: Promo
+            inversedBy: discounts
+    lifecycleCallbacks: {  }

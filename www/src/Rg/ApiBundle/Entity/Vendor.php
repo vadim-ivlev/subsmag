@@ -45,6 +45,11 @@ class Vendor
     /**
      * @var string
      */
+    private $website;
+
+    /**
+     * @var string
+     */
     private $inn;
 
     /**
@@ -255,6 +260,30 @@ class Vendor
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set website
+     *
+     * @param string $website
+     *
+     * @return Vendor
+     */
+    public function setWebsite($website)
+    {
+        $this->website = $website;
+
+        return $this;
+    }
+
+    /**
+     * Get website
+     *
+     * @return string
+     */
+    public function getWebsite()
+    {
+        return $this->website;
     }
 
     /**
@@ -544,33 +573,5 @@ class Vendor
     {
         return $this->accountant_sign_img;
     }
-    /**
-     * @var string
-     */
-    private $website;
-
-
-    /**
-     * Set website
-     *
-     * @param string $website
-     *
-     * @return Vendor
-     */
-    public function setWebsite($website)
-    {
-        $this->website = $website;
-
-        return $this;
-    }
-
-    /**
-     * Get website
-     *
-     * @return string
-     */
-    public function getWebsite()
-    {
-        return $this->website;
-    }
 }
+

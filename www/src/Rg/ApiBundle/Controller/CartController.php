@@ -7,6 +7,7 @@ use Rg\ApiBundle\Cart\CartException;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
 use Rg\ApiBundle\Entity\Delivery;
+use Rg\ApiBundle\Entity\Discount;
 use Rg\ApiBundle\Entity\Edition;
 use Rg\ApiBundle\Entity\Issue;
 use Rg\ApiBundle\Entity\Medium;
@@ -359,9 +360,22 @@ class CartController extends Controller implements SessionHasCartController
                     $discount = 0;
                 } else {
                     if ($this->get('rg_api.promo_fetcher')->doesPromoFitTariff($promo, $tariff)) {
-                        $discount = $promo->getDiscount();
-                        $is_promoted = true;
-                        $this->has_cart_any_promoted = true;
+
+                        // инициализирую на случай... на всякий пожарный случай инициализирую.
+                        $discount = 0;
+
+                        /**
+                         * @var int $key
+                         * @var Discount $discount_obj
+                         */
+                        foreach ($promo->getDiscounts()->getIterator() as $discount_obj) {
+                            if ($discount_obj->getProduct() != $tariff->getProduct()) continue;
+
+                            $discount = $discount_obj->getDiscount();
+                            $is_promoted = true;
+                            $this->has_cart_any_promoted = true;
+                            break;
+                        }
                     } else
                         $discount = 0;
                 }
@@ -443,10 +457,9 @@ class CartController extends Controller implements SessionHasCartController
                 'name' => $promo->getName(),
                 'code' => $promo->getCode(),
 //                'promocode' => '', // возьми из сессии
-                'products' => $promo->getProducts()
-                    ->map(
-                        function (Product $p) {
-                            return $p->getName();
+                'products' => $promo->getDiscounts()->map(
+                        function (Discount $d) {
+                            return $d->getProduct()->getName();
                         }
                     )->toArray(),
             ];

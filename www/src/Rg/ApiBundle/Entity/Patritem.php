@@ -23,6 +23,31 @@ class Patritem
     private $cost;
 
     /**
+     * @var float
+     */
+    private $cat_cost;
+
+    /**
+     * @var float
+     */
+    private $del_cost;
+
+    /**
+     * @var float
+     */
+    private $discounted_cat_cost;
+
+    /**
+     * @var float
+     */
+    private $discounted_del_cost;
+
+    /**
+     * @var float
+     */
+    private $total;
+
+    /**
      * @var \Rg\ApiBundle\Entity\Order
      */
     private $order;
@@ -90,79 +115,6 @@ class Patritem
     {
         return $this->cost;
     }
-
-    /**
-     * Set order
-     *
-     * @param \Rg\ApiBundle\Entity\Order $order
-     *
-     * @return Patritem
-     */
-    public function setOrder(\Rg\ApiBundle\Entity\Order $order = null)
-    {
-        $this->order = $order;
-
-        return $this;
-    }
-
-    /**
-     * Get order
-     *
-     * @return \Rg\ApiBundle\Entity\Order
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    /**
-     * Set patriff
-     *
-     * @param \Rg\ApiBundle\Entity\Patriff $patriff
-     *
-     * @return Patritem
-     */
-    public function setPatriff(\Rg\ApiBundle\Entity\Patriff $patriff = null)
-    {
-        $this->patriff = $patriff;
-
-        return $this;
-    }
-
-    /**
-     * Get patriff
-     *
-     * @return \Rg\ApiBundle\Entity\Patriff
-     */
-    public function getPatriff()
-    {
-        return $this->patriff;
-    }
-    /**
-     * @var float
-     */
-    private $cat_cost;
-
-    /**
-     * @var float
-     */
-    private $del_cost;
-
-    /**
-     * @var float
-     */
-    private $discounted_cat_cost;
-
-    /**
-     * @var float
-     */
-    private $discounted_del_cost;
-
-    /**
-     * @var float
-     */
-    private $total;
-
 
     /**
      * Set catCost
@@ -283,4 +235,53 @@ class Patritem
     {
         return $this->total;
     }
+
+    /**
+     * Set order
+     *
+     * @param \Rg\ApiBundle\Entity\Order $order
+     *
+     * @return Patritem
+     */
+    public function setOrder(\Rg\ApiBundle\Entity\Order $order = null)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * Get order
+     *
+     * @return \Rg\ApiBundle\Entity\Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Set patriff
+     *
+     * @param \Rg\ApiBundle\Entity\Patriff $patriff
+     *
+     * @return Patritem
+     */
+    public function setPatriff(\Rg\ApiBundle\Entity\Patriff $patriff = null)
+    {
+        $this->patriff = $patriff;
+
+        return $this;
+    }
+
+    /**
+     * Get patriff
+     *
+     * @return \Rg\ApiBundle\Entity\Patriff
+     */
+    public function getPatriff()
+    {
+        return $this->patriff;
+    }
 }
+

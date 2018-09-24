@@ -28,6 +28,11 @@ class Pin
     private $order;
 
     /**
+     * @var \Rg\ApiBundle\Entity\PromoRequest
+     */
+    private $promoRequest;
+
+    /**
      * @var \Rg\ApiBundle\Entity\Promo
      */
     private $promo;
@@ -116,35 +121,6 @@ class Pin
     }
 
     /**
-     * Set promo
-     *
-     * @param \Rg\ApiBundle\Entity\Promo $promo
-     *
-     * @return Pin
-     */
-    public function setPromo(\Rg\ApiBundle\Entity\Promo $promo = null)
-    {
-        $this->promo = $promo;
-
-        return $this;
-    }
-
-    /**
-     * Get promo
-     *
-     * @return \Rg\ApiBundle\Entity\Promo
-     */
-    public function getPromo()
-    {
-        return $this->promo;
-    }
-    /**
-     * @var \Rg\ApiBundle\Entity\PromoRequest
-     */
-    private $promoRequest;
-
-
-    /**
      * Set promoRequest
      *
      * @param \Rg\ApiBundle\Entity\PromoRequest $promoRequest
@@ -167,4 +143,29 @@ class Pin
     {
         return $this->promoRequest;
     }
+
+    /**
+     * Set promo
+     *
+     * @param \Rg\ApiBundle\Entity\Promo $promo
+     *
+     * @return Pin
+     */
+    public function setPromo(\Rg\ApiBundle\Entity\Promo $promo = null)
+    {
+        $this->promo = $promo;
+
+        return $this;
+    }
+
+    /**
+     * Get promo
+     *
+     * @return \Rg\ApiBundle\Entity\Promo
+     */
+    public function getPromo()
+    {
+        return $this->promo;
+    }
 }
+

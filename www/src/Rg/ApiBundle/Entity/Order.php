@@ -45,12 +45,27 @@ class Order
     /**
      * @var boolean
      */
+    private $is_promoted;
+
+    /**
+     * @var boolean
+     */
     private $is_paid;
 
     /**
      * @var string
      */
     private $pg_payment_id;
+
+    /**
+     * @var string
+     */
+    private $platron_init_xml;
+
+    /**
+     * @var string
+     */
+    private $platron_receipt_create_xml;
 
     /**
      * @var string
@@ -292,6 +307,30 @@ class Order
     }
 
     /**
+     * Set isPromoted
+     *
+     * @param boolean $isPromoted
+     *
+     * @return Order
+     */
+    public function setIsPromoted($isPromoted)
+    {
+        $this->is_promoted = $isPromoted;
+
+        return $this;
+    }
+
+    /**
+     * Get isPromoted
+     *
+     * @return boolean
+     */
+    public function getIsPromoted()
+    {
+        return $this->is_promoted;
+    }
+
+    /**
      * Set isPaid
      *
      * @param boolean $isPaid
@@ -337,6 +376,54 @@ class Order
     public function getPgPaymentId()
     {
         return $this->pg_payment_id;
+    }
+
+    /**
+     * Set platronInitXml
+     *
+     * @param string $platronInitXml
+     *
+     * @return Order
+     */
+    public function setPlatronInitXml($platronInitXml)
+    {
+        $this->platron_init_xml = $platronInitXml;
+
+        return $this;
+    }
+
+    /**
+     * Get platronInitXml
+     *
+     * @return string
+     */
+    public function getPlatronInitXml()
+    {
+        return $this->platron_init_xml;
+    }
+
+    /**
+     * Set platronReceiptCreateXml
+     *
+     * @param string $platronReceiptCreateXml
+     *
+     * @return Order
+     */
+    public function setPlatronReceiptCreateXml($platronReceiptCreateXml)
+    {
+        $this->platron_receipt_create_xml = $platronReceiptCreateXml;
+
+        return $this;
+    }
+
+    /**
+     * Get platronReceiptCreateXml
+     *
+     * @return string
+     */
+    public function getPlatronReceiptCreateXml()
+    {
+        return $this->platron_receipt_create_xml;
     }
 
     /**
@@ -728,91 +815,5 @@ class Order
     {
         return $this->city;
     }
-    /**
-     * @var boolean
-     */
-    private $is_promoted;
-
-
-    /**
-     * Set isPromoted
-     *
-     * @param boolean $isPromoted
-     *
-     * @return Order
-     */
-    public function setIsPromoted($isPromoted)
-    {
-        $this->is_promoted = $isPromoted;
-
-        return $this;
-    }
-
-    /**
-     * Get isPromoted
-     *
-     * @return boolean
-     */
-    public function getIsPromoted()
-    {
-        return $this->is_promoted;
-    }
-    /**
-     * @var string
-     */
-    private $platron_init_xml;
-
-    /**
-     * @var string
-     */
-    private $platron_receipt_create_xml;
-
-
-    /**
-     * Set platronInitXml
-     *
-     * @param string $platronInitXml
-     *
-     * @return Order
-     */
-    public function setPlatronInitXml($platronInitXml)
-    {
-        $this->platron_init_xml = $platronInitXml;
-
-        return $this;
-    }
-
-    /**
-     * Get platronInitXml
-     *
-     * @return string
-     */
-    public function getPlatronInitXml()
-    {
-        return $this->platron_init_xml;
-    }
-
-    /**
-     * Set platronReceiptCreateXml
-     *
-     * @param string $platronReceiptCreateXml
-     *
-     * @return Order
-     */
-    public function setPlatronReceiptCreateXml($platronReceiptCreateXml)
-    {
-        $this->platron_receipt_create_xml = $platronReceiptCreateXml;
-
-        return $this;
-    }
-
-    /**
-     * Get platronReceiptCreateXml
-     *
-     * @return string
-     */
-    public function getPlatronReceiptCreateXml()
-    {
-        return $this->platron_receipt_create_xml;
-    }
 }
+

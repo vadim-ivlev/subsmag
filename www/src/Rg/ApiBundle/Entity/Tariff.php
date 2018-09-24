@@ -301,3 +301,4 @@ class Tariff
         return $this->medium;
     }
 }
+

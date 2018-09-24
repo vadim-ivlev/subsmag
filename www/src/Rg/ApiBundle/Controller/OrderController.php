@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Rg\ApiBundle\Cart\Cart;
 use Rg\ApiBundle\Cart\CartItem;
 use Rg\ApiBundle\Cart\CartPatritem;
+use Rg\ApiBundle\Entity\Discount;
 use Rg\ApiBundle\Entity\Item;
 use Rg\ApiBundle\Entity\Legal;
 use Rg\ApiBundle\Entity\Order;
@@ -579,15 +580,29 @@ class OrderController extends Controller
                 if (!is_null($promo)) {
                     if ($this->get('rg_api.promo_fetcher')->doesPromoFitTariff($promo, $tariff)) {
                         $item->setPromo($promo);
-                        $discount = $promo->getDiscount();
-                        $this->is_promoted = true;
 
-                        if (
-                            is_null($this->pin)
-                            && !is_null($promo->pin)
-                        ) {
-                            $this->pin = $promo->pin;
+                        // инициализирую на случай... на всякий пожарный случай инициализирую.
+                        $discount = 0;
+
+                        /**
+                         * @var int $key
+                         * @var Discount $discount_obj
+                         */
+                        foreach ($promo->getDiscounts()->getIterator() as $discount_obj) {
+                            if ($discount_obj->getProduct() != $tariff->getProduct()) continue;
+
+                            $discount = $discount_obj->getDiscount();
+                            $this->is_promoted = true;
+
+                            if (
+                                is_null($this->pin)
+                                && !is_null($promo->pin)
+                            ) {
+                                $this->pin = $promo->pin;
+                            }
+                            break;
                         }
+
                     }
                 }
                 ##

@@ -47,11 +47,11 @@ Rg\ApiBundle\Entity\Product:
         sales:
             targetEntity: Sale
             mappedBy: product
+        discounts:
+            targetEntity: Discount
+            mappedBy: product
     manyToMany:
         editions:
             targetEntity: Edition
-            inversedBy: products
-        promos:
-            targetEntity: Promo
             inversedBy: products
     lifecycleCallbacks: {  }
