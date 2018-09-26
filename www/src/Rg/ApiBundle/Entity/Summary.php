@@ -139,3 +139,4 @@ class Summary
         return $this->issue;
     }
 }
+

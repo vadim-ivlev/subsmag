@@ -2,6 +2,7 @@
 
 namespace Rg\ApiBundle\Controller;
 
+use Rg\ApiBundle\Entity\Discount;
 use Rg\ApiBundle\Entity\Promo;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,7 @@ class PromoController extends Controller
 //                    'end' => $p->getEnd()->format('dd-mm-YY'),
                     'is_active' => $p->getIsActive(),
                     'code' => $p->getCode(),
-                    'discount' => $p->getDiscount(),
+                    'discount' => $p->getDiscounts()->map(function (Discount $d) {return $d->getDiscount();})->toArray(),
                     'amount' => $p->getAmount(),
                     'sold' => $p->getSold(),
                     'description' => $p->getDescription(),
@@ -69,6 +70,7 @@ class PromoController extends Controller
             return (new Out())->json(['error' => $error]);
         }
 
+        /** @var Promo $p */
         $p = $this->getDoctrine()->getRepository('RgApiBundle:Promo')
             ->findOneBy(['id' => $id])
         ;
@@ -83,7 +85,7 @@ class PromoController extends Controller
 //                    'end' => $p->getEnd()->format('dd-mm-YY'),
             'is_active' => $p->getIsActive(),
             'code' => $p->getCode(),
-            'discount' => $p->getDiscount(),
+            'discount' => $p->getDiscounts()->map(function (Discount $d) {return $d->getDiscount();})->toArray(),
             'amount' => $p->getAmount(),
             'sold' => $p->getSold(),
             'description' => $p->getDescription(),

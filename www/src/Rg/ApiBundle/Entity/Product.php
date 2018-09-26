@@ -75,12 +75,12 @@ class Product
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $editions;
+    private $discounts;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $promos;
+    private $editions;
 
     /**
      * Constructor
@@ -90,8 +90,8 @@ class Product
         $this->tariffs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->postal_indexes = new \Doctrine\Common\Collections\ArrayCollection();
         $this->sales = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->discounts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->editions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->promos = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -423,6 +423,40 @@ class Product
     }
 
     /**
+     * Add discount
+     *
+     * @param \Rg\ApiBundle\Entity\Discount $discount
+     *
+     * @return Product
+     */
+    public function addDiscount(\Rg\ApiBundle\Entity\Discount $discount)
+    {
+        $this->discounts[] = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Remove discount
+     *
+     * @param \Rg\ApiBundle\Entity\Discount $discount
+     */
+    public function removeDiscount(\Rg\ApiBundle\Entity\Discount $discount)
+    {
+        $this->discounts->removeElement($discount);
+    }
+
+    /**
+     * Get discounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDiscounts()
+    {
+        return $this->discounts;
+    }
+
+    /**
      * Add edition
      *
      * @param \Rg\ApiBundle\Entity\Edition $edition
@@ -455,38 +489,5 @@ class Product
     {
         return $this->editions;
     }
-
-    /**
-     * Add promo
-     *
-     * @param \Rg\ApiBundle\Entity\Promo $promo
-     *
-     * @return Product
-     */
-    public function addPromo(\Rg\ApiBundle\Entity\Promo $promo)
-    {
-        $this->promos[] = $promo;
-
-        return $this;
-    }
-
-    /**
-     * Remove promo
-     *
-     * @param \Rg\ApiBundle\Entity\Promo $promo
-     */
-    public function removePromo(\Rg\ApiBundle\Entity\Promo $promo)
-    {
-        $this->promos->removeElement($promo);
-    }
-
-    /**
-     * Get promos
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPromos()
-    {
-        return $this->promos;
-    }
 }
+

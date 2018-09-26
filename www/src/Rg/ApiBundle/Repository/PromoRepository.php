@@ -31,4 +31,29 @@ class PromoRepository extends \Doctrine\ORM\EntityRepository
 
         return $result;
     }
+
+    public function findOneByCode(string $code)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $result = $qb
+            ->select('
+                p
+            ')
+            ->addSelect('d,pins')
+            ->leftJoin('p.discounts', 'd')
+            ->leftJoin('p.pins', 'pins')
+            ->andWhere(
+                $qb->expr()->andX(
+//                    $qb->expr()->eq('o.payment', ':payment'),
+                    $qb->expr()->eq('p.code', ':code')
+                )
+            )
+            ->setParameter('code', $code)
+            ->getQuery()
+//            ->getDQL(); echo $result;die; # for test purpose
+            ->getResult()
+        ;
+
+        return $result;
+    }
 }

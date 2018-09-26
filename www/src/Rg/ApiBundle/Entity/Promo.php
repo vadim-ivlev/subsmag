@@ -38,11 +38,6 @@ class Promo
     private $code;
 
     /**
-     * @var float
-     */
-    private $discount;
-
-    /**
      * @var integer
      */
     private $amount;
@@ -63,6 +58,46 @@ class Promo
     private $image;
 
     /**
+     * @var boolean
+     */
+    private $is_alert;
+
+    /**
+     * @var boolean
+     */
+    private $is_visible;
+
+    /**
+     * @var boolean
+     */
+    private $is_form;
+
+    /**
+     * @var string
+     */
+    private $document;
+
+    /**
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @var string
+     */
+    private $text2;
+
+    /**
+     * @var string
+     */
+    private $text3;
+
+    /**
+     * @var string
+     */
+    private $conditions;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $items;
@@ -71,6 +106,11 @@ class Promo
      * @var \Doctrine\Common\Collections\Collection
      */
     private $pins;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $discounts;
 
     /**
      * @var \Rg\ApiBundle\Entity\Timeunit
@@ -85,11 +125,6 @@ class Promo
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $products;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
     private $zones;
 
     /**
@@ -99,7 +134,7 @@ class Promo
     {
         $this->items = new \Doctrine\Common\Collections\ArrayCollection();
         $this->pins = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->products = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->discounts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->zones = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -234,30 +269,6 @@ class Promo
     }
 
     /**
-     * Set discount
-     *
-     * @param float $discount
-     *
-     * @return Promo
-     */
-    public function setDiscount($discount)
-    {
-        $this->discount = $discount;
-
-        return $this;
-    }
-
-    /**
-     * Get discount
-     *
-     * @return float
-     */
-    public function getDiscount()
-    {
-        return $this->discount;
-    }
-
-    /**
      * Set amount
      *
      * @param integer $amount
@@ -354,205 +365,6 @@ class Promo
     }
 
     /**
-     * Add item
-     *
-     * @param \Rg\ApiBundle\Entity\Item $item
-     *
-     * @return Promo
-     */
-    public function addItem(\Rg\ApiBundle\Entity\Item $item)
-    {
-        $this->items[] = $item;
-
-        return $this;
-    }
-
-    /**
-     * Remove item
-     *
-     * @param \Rg\ApiBundle\Entity\Item $item
-     */
-    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
-    {
-        $this->items->removeElement($item);
-    }
-
-    /**
-     * Get items
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getItems()
-    {
-        return $this->items;
-    }
-
-    /**
-     * Add pin
-     *
-     * @param \Rg\ApiBundle\Entity\Pin $pin
-     *
-     * @return Promo
-     */
-    public function addPin(\Rg\ApiBundle\Entity\Pin $pin)
-    {
-        $this->pins[] = $pin;
-
-        return $this;
-    }
-
-    /**
-     * Remove pin
-     *
-     * @param \Rg\ApiBundle\Entity\Pin $pin
-     */
-    public function removePin(\Rg\ApiBundle\Entity\Pin $pin)
-    {
-        $this->pins->removeElement($pin);
-    }
-
-    /**
-     * Get pins
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPins()
-    {
-        return $this->pins;
-    }
-
-    /**
-     * Set timeunit
-     *
-     * @param \Rg\ApiBundle\Entity\Timeunit $timeunit
-     *
-     * @return Promo
-     */
-    public function setTimeunit(\Rg\ApiBundle\Entity\Timeunit $timeunit = null)
-    {
-        $this->timeunit = $timeunit;
-
-        return $this;
-    }
-
-    /**
-     * Get timeunit
-     *
-     * @return \Rg\ApiBundle\Entity\Timeunit
-     */
-    public function getTimeunit()
-    {
-        return $this->timeunit;
-    }
-
-    /**
-     * Set area
-     *
-     * @param \Rg\ApiBundle\Entity\Area $area
-     *
-     * @return Promo
-     */
-    public function setArea(\Rg\ApiBundle\Entity\Area $area = null)
-    {
-        $this->area = $area;
-
-        return $this;
-    }
-
-    /**
-     * Get area
-     *
-     * @return \Rg\ApiBundle\Entity\Area
-     */
-    public function getArea()
-    {
-        return $this->area;
-    }
-
-    /**
-     * Add product
-     *
-     * @param \Rg\ApiBundle\Entity\Product $product
-     *
-     * @return Promo
-     */
-    public function addProduct(\Rg\ApiBundle\Entity\Product $product)
-    {
-        $this->products[] = $product;
-
-        return $this;
-    }
-
-    /**
-     * Remove product
-     *
-     * @param \Rg\ApiBundle\Entity\Product $product
-     */
-    public function removeProduct(\Rg\ApiBundle\Entity\Product $product)
-    {
-        $this->products->removeElement($product);
-    }
-
-    /**
-     * Get products
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getProducts()
-    {
-        return $this->products;
-    }
-
-    /**
-     * Add zone
-     *
-     * @param \Rg\ApiBundle\Entity\Zone $zone
-     *
-     * @return Promo
-     */
-    public function addZone(\Rg\ApiBundle\Entity\Zone $zone)
-    {
-        $this->zones[] = $zone;
-
-        return $this;
-    }
-
-    /**
-     * Remove zone
-     *
-     * @param \Rg\ApiBundle\Entity\Zone $zone
-     */
-    public function removeZone(\Rg\ApiBundle\Entity\Zone $zone)
-    {
-        $this->zones->removeElement($zone);
-    }
-
-    /**
-     * Get zones
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getZones()
-    {
-        return $this->zones;
-    }
-    /**
-     * @var boolean
-     */
-    private $is_alert;
-
-    /**
-     * @var boolean
-     */
-    private $is_visible;
-
-    /**
-     * @var string
-     */
-    private $document;
-
-
-    /**
      * Set isAlert
      *
      * @param boolean $isAlert
@@ -601,55 +413,6 @@ class Promo
     }
 
     /**
-     * Set document
-     *
-     * @param string $document
-     *
-     * @return Promo
-     */
-    public function setDocument($document)
-    {
-        $this->document = $document;
-
-        return $this;
-    }
-
-    /**
-     * Get document
-     *
-     * @return string
-     */
-    public function getDocument()
-    {
-        return $this->document;
-    }
-    /**
-     * @var boolean
-     */
-    private $is_form;
-
-    /**
-     * @var string
-     */
-    private $title;
-
-    /**
-     * @var string
-     */
-    private $text2;
-
-    /**
-     * @var string
-     */
-    private $text3;
-
-    /**
-     * @var string
-     */
-    private $conditions;
-
-
-    /**
      * Set isForm
      *
      * @param boolean $isForm
@@ -671,6 +434,30 @@ class Promo
     public function getIsForm()
     {
         return $this->is_form;
+    }
+
+    /**
+     * Set document
+     *
+     * @param string $document
+     *
+     * @return Promo
+     */
+    public function setDocument($document)
+    {
+        $this->document = $document;
+
+        return $this;
+    }
+
+    /**
+     * Get document
+     *
+     * @return string
+     */
+    public function getDocument()
+    {
+        return $this->document;
     }
 
     /**
@@ -768,4 +555,189 @@ class Promo
     {
         return $this->conditions;
     }
+
+    /**
+     * Add item
+     *
+     * @param \Rg\ApiBundle\Entity\Item $item
+     *
+     * @return Promo
+     */
+    public function addItem(\Rg\ApiBundle\Entity\Item $item)
+    {
+        $this->items[] = $item;
+
+        return $this;
+    }
+
+    /**
+     * Remove item
+     *
+     * @param \Rg\ApiBundle\Entity\Item $item
+     */
+    public function removeItem(\Rg\ApiBundle\Entity\Item $item)
+    {
+        $this->items->removeElement($item);
+    }
+
+    /**
+     * Get items
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
+     * Add pin
+     *
+     * @param \Rg\ApiBundle\Entity\Pin $pin
+     *
+     * @return Promo
+     */
+    public function addPin(\Rg\ApiBundle\Entity\Pin $pin)
+    {
+        $this->pins[] = $pin;
+
+        return $this;
+    }
+
+    /**
+     * Remove pin
+     *
+     * @param \Rg\ApiBundle\Entity\Pin $pin
+     */
+    public function removePin(\Rg\ApiBundle\Entity\Pin $pin)
+    {
+        $this->pins->removeElement($pin);
+    }
+
+    /**
+     * Get pins
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPins()
+    {
+        return $this->pins;
+    }
+
+    /**
+     * Add discount
+     *
+     * @param \Rg\ApiBundle\Entity\Discount $discount
+     *
+     * @return Promo
+     */
+    public function addDiscount(\Rg\ApiBundle\Entity\Discount $discount)
+    {
+        $this->discounts[] = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Remove discount
+     *
+     * @param \Rg\ApiBundle\Entity\Discount $discount
+     */
+    public function removeDiscount(\Rg\ApiBundle\Entity\Discount $discount)
+    {
+        $this->discounts->removeElement($discount);
+    }
+
+    /**
+     * Get discounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDiscounts()
+    {
+        return $this->discounts;
+    }
+
+    /**
+     * Set timeunit
+     *
+     * @param \Rg\ApiBundle\Entity\Timeunit $timeunit
+     *
+     * @return Promo
+     */
+    public function setTimeunit(\Rg\ApiBundle\Entity\Timeunit $timeunit = null)
+    {
+        $this->timeunit = $timeunit;
+
+        return $this;
+    }
+
+    /**
+     * Get timeunit
+     *
+     * @return \Rg\ApiBundle\Entity\Timeunit
+     */
+    public function getTimeunit()
+    {
+        return $this->timeunit;
+    }
+
+    /**
+     * Set area
+     *
+     * @param \Rg\ApiBundle\Entity\Area $area
+     *
+     * @return Promo
+     */
+    public function setArea(\Rg\ApiBundle\Entity\Area $area = null)
+    {
+        $this->area = $area;
+
+        return $this;
+    }
+
+    /**
+     * Get area
+     *
+     * @return \Rg\ApiBundle\Entity\Area
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     * Add zone
+     *
+     * @param \Rg\ApiBundle\Entity\Zone $zone
+     *
+     * @return Promo
+     */
+    public function addZone(\Rg\ApiBundle\Entity\Zone $zone)
+    {
+        $this->zones[] = $zone;
+
+        return $this;
+    }
+
+    /**
+     * Remove zone
+     *
+     * @param \Rg\ApiBundle\Entity\Zone $zone
+     */
+    public function removeZone(\Rg\ApiBundle\Entity\Zone $zone)
+    {
+        $this->zones->removeElement($zone);
+    }
+
+    /**
+     * Get zones
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getZones()
+    {
+        return $this->zones;
+    }
 }
+

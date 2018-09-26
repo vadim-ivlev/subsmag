@@ -4,7 +4,9 @@ namespace Rg\ApiBundle\Service;
 
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Rg\ApiBundle\Entity\Area;
+use Rg\ApiBundle\Entity\Discount;
 use Rg\ApiBundle\Entity\Pin;
+use Rg\ApiBundle\Entity\Product;
 use Rg\ApiBundle\Entity\Promo;
 use Rg\ApiBundle\Entity\Tariff;
 use Rg\ApiBundle\Entity\Zone;
@@ -216,7 +218,13 @@ class PromoFetcher
 
         if ($p->getTimeunit()->getId() != $t->getTimeunit()->getId()) return false;
 
-        if (!$p->getProducts()->contains($t->getProduct())) return false;
+        $contains_this_product = $p->getDiscounts()->map(
+            function (Discount $d) {
+                return $d->getProduct();
+            }
+        )->contains($t->getProduct());
+
+        if (!$contains_this_product) return false;
 
         return true;
     }

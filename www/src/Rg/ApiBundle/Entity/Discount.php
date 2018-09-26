@@ -3,9 +3,9 @@
 namespace Rg\ApiBundle\Entity;
 
 /**
- * PostalIndex
+ * Discount
  */
-class PostalIndex
+class Discount
 {
     /**
      * @var integer
@@ -13,9 +13,9 @@ class PostalIndex
     private $id;
 
     /**
-     * @var string
+     * @var float
      */
-    private $value;
+    private $discount;
 
     /**
      * @var \Rg\ApiBundle\Entity\Product
@@ -23,9 +23,9 @@ class PostalIndex
     private $product;
 
     /**
-     * @var \Rg\ApiBundle\Entity\Timeblock
+     * @var \Rg\ApiBundle\Entity\Promo
      */
-    private $timeblock;
+    private $promo;
 
 
     /**
@@ -39,27 +39,27 @@ class PostalIndex
     }
 
     /**
-     * Set value
+     * Set discount
      *
-     * @param string $value
+     * @param float $discount
      *
-     * @return PostalIndex
+     * @return Discount
      */
-    public function setValue($value)
+    public function setDiscount($discount)
     {
-        $this->value = $value;
+        $this->discount = $discount;
 
         return $this;
     }
 
     /**
-     * Get value
+     * Get discount
      *
-     * @return string
+     * @return float
      */
-    public function getValue()
+    public function getDiscount()
     {
-        return $this->value;
+        return $this->discount;
     }
 
     /**
@@ -67,7 +67,7 @@ class PostalIndex
      *
      * @param \Rg\ApiBundle\Entity\Product $product
      *
-     * @return PostalIndex
+     * @return Discount
      */
     public function setProduct(\Rg\ApiBundle\Entity\Product $product = null)
     {
@@ -87,27 +87,27 @@ class PostalIndex
     }
 
     /**
-     * Set timeblock
+     * Set promo
      *
-     * @param \Rg\ApiBundle\Entity\Timeblock $timeblock
+     * @param \Rg\ApiBundle\Entity\Promo $promo
      *
-     * @return PostalIndex
+     * @return Discount
      */
-    public function setTimeblock(\Rg\ApiBundle\Entity\Timeblock $timeblock = null)
+    public function setPromo(\Rg\ApiBundle\Entity\Promo $promo = null)
     {
-        $this->timeblock = $timeblock;
+        $this->promo = $promo;
 
         return $this;
     }
 
     /**
-     * Get timeblock
+     * Get promo
      *
-     * @return \Rg\ApiBundle\Entity\Timeblock
+     * @return \Rg\ApiBundle\Entity\Promo
      */
-    public function getTimeblock()
+    public function getPromo()
     {
-        return $this->timeblock;
+        return $this->promo;
     }
 }
 
