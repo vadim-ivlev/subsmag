@@ -23,6 +23,7 @@ services:
         command: >
             bash -c " 
             echo 'COMMANDS ------------------------>'
+            && touch /var/www/subsmag/www/app/config/parameters_db.yml
             && composer i -d /var/www/subsmag/www
             && chmod -R 777  /var/www/subsmag/www/var/
             && service redis-server start 
